@@ -10,6 +10,7 @@ async function run() {
     } else {
       logger.info('Job completed: No post was processed.');
     }
+    process.exit(0);
   } catch (err) {
     logger.error(err, 'Job failed with error:');
     process.exit(1);
