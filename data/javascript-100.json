@@ -1,0 +1,802 @@
+[
+  {
+    "title": "typeof null",
+    "difficulty": "Easy",
+    "code": "console.log(typeof null);",
+    "answer": "\"object\"",
+    "explanation": "This is a known bug in JavaScript. typeof null returns 'object' instead of 'null' for legacy reasons.",
+    "day": 1
+  },
+  {
+    "title": "var vs let hoisting",
+    "difficulty": "Easy",
+    "code": "console.log(a);\nvar a = 5;",
+    "answer": "undefined",
+    "explanation": "Variables declared with var are hoisted to the top of their scope but initialized with undefined.",
+    "day": 2
+  },
+  {
+    "title": "let hoisting",
+    "difficulty": "Easy",
+    "code": "console.log(a);\nlet a = 5;",
+    "answer": "ReferenceError",
+    "explanation": "Variables declared with let are hoisted but not initialized. Accessing them before declaration results in a ReferenceError (Temporal Dead Zone).",
+    "day": 3
+  },
+  {
+    "title": "String concatenation",
+    "difficulty": "Easy",
+    "code": "console.log('5' + 3);",
+    "answer": "\"53\"",
+    "explanation": "When adding a string and a number, the number is coerced to a string and concatenated.",
+    "day": 4
+  },
+  {
+    "title": "String subtraction",
+    "difficulty": "Easy",
+    "code": "console.log('5' - 3);",
+    "answer": "2",
+    "explanation": "The minus operator triggers numeric coercion, converting '5' to the number 5.",
+    "day": 5
+  },
+  {
+    "title": "Boolean coercion",
+    "difficulty": "Easy",
+    "code": "console.log(Boolean([]));",
+    "answer": "true",
+    "explanation": "All objects in JavaScript are truthy, including empty arrays.",
+    "day": 6
+  },
+  {
+    "title": "Loose equality",
+    "difficulty": "Easy",
+    "code": "console.log(0 == false);",
+    "answer": "true",
+    "explanation": "The loose equality operator converts both operands to a common type (number), so 0 == 0 is true.",
+    "day": 7
+  },
+  {
+    "title": "Strict equality",
+    "difficulty": "Easy",
+    "code": "console.log(0 === false);",
+    "answer": "false",
+    "explanation": "Strict equality checks both value and type. Number and boolean are different types.",
+    "day": 8
+  },
+  {
+    "title": "Array typeof",
+    "difficulty": "Easy",
+    "code": "console.log(typeof []);",
+    "answer": "\"object\"",
+    "explanation": "Arrays are a special type of object in JavaScript.",
+    "day": 9
+  },
+  {
+    "title": "Undefined vs Null",
+    "difficulty": "Easy",
+    "code": "console.log(undefined == null);",
+    "answer": "true",
+    "explanation": "undefined and null are loosely equal to each other, but nothing else.",
+    "day": 10
+  },
+  {
+    "title": "Function declaration",
+    "difficulty": "Easy",
+    "code": "foo();\nfunction foo() { console.log('bar'); }",
+    "answer": "\"bar\"",
+    "explanation": "Function declarations are fully hoisted, so they can be called before they are defined.",
+    "day": 11
+  },
+  {
+    "title": "Function expression",
+    "difficulty": "Easy",
+    "code": "foo();\nvar foo = function() { console.log('bar'); }",
+    "answer": "TypeError",
+    "explanation": "The variable foo is hoisted with 'undefined', so calling undefined() throws a TypeError.",
+    "day": 12
+  },
+  {
+    "title": "NaN equality",
+    "difficulty": "Easy",
+    "code": "console.log(NaN === NaN);",
+    "answer": "false",
+    "explanation": "NaN is never equal to itself. Use Number.isNaN() to check for NaN.",
+    "day": 13
+  },
+  {
+    "title": "parseInt",
+    "difficulty": "Easy",
+    "code": "console.log(parseInt('10px'));",
+    "answer": "10",
+    "explanation": "parseInt parses up to the first non-numeric character.",
+    "day": 14
+  },
+  {
+    "title": "Array length",
+    "difficulty": "Easy",
+    "code": "let arr = [1, 2, 3];\narr.length = 0;\nconsole.log(arr[0]);",
+    "answer": "undefined",
+    "explanation": "Setting an array's length to 0 empties the array.",
+    "day": 15
+  },
+  {
+    "title": "delete operator",
+    "difficulty": "Easy",
+    "code": "let arr = [1, 2, 3];\ndelete arr[1];\nconsole.log(arr.length);",
+    "answer": "3",
+    "explanation": "delete removes the element but does not reindex the array, leaving an empty slot.",
+    "day": 16
+  },
+  {
+    "title": "Object keys",
+    "difficulty": "Easy",
+    "code": "let obj = {1: 'a', 2: 'b'};\nconsole.log(Object.keys(obj));",
+    "answer": "[\"1\", \"2\"]",
+    "explanation": "Object keys are always converted to strings.",
+    "day": 17
+  },
+  {
+    "title": "Adding to arrays",
+    "difficulty": "Easy",
+    "code": "let arr = [1];\narr[3] = 4;\nconsole.log(arr.length);",
+    "answer": "4",
+    "explanation": "Assigning to an index out of bounds expands the array, filling intermediate slots with empty items.",
+    "day": 18
+  },
+  {
+    "title": "parseFloat",
+    "difficulty": "Easy",
+    "code": "console.log(parseFloat('12.3.4'));",
+    "answer": "12.3",
+    "explanation": "parseFloat parses up to the first invalid character for a float.",
+    "day": 19
+  },
+  {
+    "title": "Math.max",
+    "difficulty": "Easy",
+    "code": "console.log(Math.max());",
+    "answer": "-Infinity",
+    "explanation": "With no arguments, Math.max returns -Infinity.",
+    "day": 20
+  },
+  {
+    "title": "Math.min",
+    "difficulty": "Easy",
+    "code": "console.log(Math.min());",
+    "answer": "Infinity",
+    "explanation": "With no arguments, Math.min returns Infinity.",
+    "day": 21
+  },
+  {
+    "title": "Const object mutation",
+    "difficulty": "Easy",
+    "code": "const obj = {a: 1};\nobj.a = 2;\nconsole.log(obj.a);",
+    "answer": "2",
+    "explanation": "const prevents reassignment of the variable, but does not make the object immutable.",
+    "day": 22
+  },
+  {
+    "title": "String index",
+    "difficulty": "Easy",
+    "code": "console.log('hello'[1]);",
+    "answer": "\"e\"",
+    "explanation": "Strings can be accessed by index like arrays.",
+    "day": 23
+  },
+  {
+    "title": "Double NOT",
+    "difficulty": "Easy",
+    "code": "console.log(!!'false');",
+    "answer": "true",
+    "explanation": "Non-empty strings are truthy. !! converts it to a boolean.",
+    "day": 24
+  },
+  {
+    "title": "Array push",
+    "difficulty": "Easy",
+    "code": "let arr = [];\nconsole.log(arr.push(1));",
+    "answer": "1",
+    "explanation": "Array.prototype.push returns the new length of the array.",
+    "day": 25
+  },
+  {
+    "title": "typeof function",
+    "difficulty": "Easy",
+    "code": "console.log(typeof function(){});",
+    "answer": "\"function\"",
+    "explanation": "Functions have their own specific typeof result, even though they are objects.",
+    "day": 26
+  },
+  {
+    "title": "typeof NaN",
+    "difficulty": "Easy",
+    "code": "console.log(typeof NaN);",
+    "answer": "\"number\"",
+    "explanation": "NaN stands for Not-a-Number, but its type is technically 'number'.",
+    "day": 27
+  },
+  {
+    "title": "delete property",
+    "difficulty": "Easy",
+    "code": "let obj = {a: 1};\nconsole.log(delete obj.a);",
+    "answer": "true",
+    "explanation": "The delete operator returns true if the property was successfully deleted.",
+    "day": 28
+  },
+  {
+    "title": "in operator",
+    "difficulty": "Easy",
+    "code": "let arr = [1, 2];\nconsole.log(1 in arr);",
+    "answer": "true",
+    "explanation": "The 'in' operator checks if an index/key exists in the object/array.",
+    "day": 29
+  },
+  {
+    "title": "Spread operator",
+    "difficulty": "Easy",
+    "code": "console.log([...\"hi\"]);",
+    "answer": "[\"h\", \"i\"]",
+    "explanation": "The spread operator expands an iterable (like a string) into an array.",
+    "day": 30
+  },
+  {
+    "title": "Closure basics",
+    "difficulty": "Medium",
+    "code": "function make() { let i=0; return () => i++; }\nlet fn = make(); fn();\nconsole.log(fn());",
+    "answer": "1",
+    "explanation": "The inner arrow function forms a closure over 'i', preserving its state.",
+    "day": 31
+  },
+  {
+    "title": "Arrow function this",
+    "difficulty": "Medium",
+    "code": "const obj = {\n  fn: () => this\n};\nconsole.log(obj.fn() === window);",
+    "answer": "true",
+    "explanation": "Arrow functions do not have their own 'this'. They inherit it from the enclosing lexical scope (global object in this case).",
+    "day": 32
+  },
+  {
+    "title": "setTimeout let",
+    "difficulty": "Medium",
+    "code": "for(let i=0; i<3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
+    "answer": "0, 1, 2",
+    "explanation": "Using 'let' creates a new block scope for each iteration, preserving the value of 'i'.",
+    "day": 33
+  },
+  {
+    "title": "setTimeout var",
+    "difficulty": "Medium",
+    "code": "for(var i=0; i<3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
+    "answer": "3, 3, 3",
+    "explanation": "Using 'var' binds 'i' to the function scope. By the time setTimeout runs, 'i' is 3.",
+    "day": 34
+  },
+  {
+    "title": "Object coercion",
+    "difficulty": "Medium",
+    "code": "console.log({} + []);",
+    "answer": "\"[object Object]\"",
+    "explanation": "The object is converted to '[object Object]' and the array to an empty string.",
+    "day": 35
+  },
+  {
+    "title": "Array comparison",
+    "difficulty": "Medium",
+    "code": "console.log([1] == [1]);",
+    "answer": "false",
+    "explanation": "Arrays are objects. Objects are compared by reference, not by value.",
+    "day": 36
+  },
+  {
+    "title": "typeof null and undefined",
+    "difficulty": "Medium",
+    "code": "console.log(typeof null === typeof undefined);",
+    "answer": "false",
+    "explanation": "typeof null is 'object', typeof undefined is 'undefined'.",
+    "day": 37
+  },
+  {
+    "title": "bind method",
+    "difficulty": "Medium",
+    "code": "function f(){return this.a;}\nlet g = f.bind({a: 1});\nconsole.log(g());",
+    "answer": "1",
+    "explanation": "bind creates a new function with 'this' permanently bound to the provided object.",
+    "day": 38
+  },
+  {
+    "title": "call method",
+    "difficulty": "Medium",
+    "code": "function f(b){return this.a + b;}\nconsole.log(f.call({a: 1}, 2));",
+    "answer": "3",
+    "explanation": "call invokes the function immediately with the provided 'this' value and arguments.",
+    "day": 39
+  },
+  {
+    "title": "IIFE scope",
+    "difficulty": "Medium",
+    "code": "(function(){\n  var a = b = 3;\n})();\nconsole.log(typeof a, typeof b);",
+    "answer": "\"undefined\" \"number\"",
+    "explanation": "b = 3 creates a global variable 'b'. 'a' is locally scoped to the IIFE.",
+    "day": 40
+  },
+  {
+    "title": "Default arguments",
+    "difficulty": "Medium",
+    "code": "function f(a = 1, b = 2) { return a + b; }\nconsole.log(f(undefined, null));",
+    "answer": "1",
+    "explanation": "Default parameters only trigger on undefined, not null. So a becomes 1, b remains null. 1 + null -> 1.",
+    "day": 41
+  },
+  {
+    "title": "Arguments object",
+    "difficulty": "Medium",
+    "code": "function f(a) {\n  arguments[0] = 2;\n  console.log(a);\n}\nf(1);",
+    "answer": "2",
+    "explanation": "In non-strict mode, the arguments object is linked to named parameters.",
+    "day": 42
+  },
+  {
+    "title": "Array map with parseInt",
+    "difficulty": "Medium",
+    "code": "console.log(['1', '7', '11'].map(parseInt));",
+    "answer": "[1, NaN, 3]",
+    "explanation": "map passes (value, index) to parseInt. parseInt('7', 1) is NaN, parseInt('11', 2) is 3.",
+    "day": 43
+  },
+  {
+    "title": "Object properties",
+    "difficulty": "Medium",
+    "code": "let a={}, b={key:'b'}, c={key:'c'};\na[b]=123; a[c]=456;\nconsole.log(a[b]);",
+    "answer": "456",
+    "explanation": "Object keys are stringified. Both 'b' and 'c' become '[object Object]'. Thus a['[object Object]'] is overwritten.",
+    "day": 44
+  },
+  {
+    "title": "typeof undeclared",
+    "difficulty": "Medium",
+    "code": "console.log(typeof undeclaredVariable);",
+    "answer": "\"undefined\"",
+    "explanation": "typeof is a safe operator that returns 'undefined' for undeclared variables instead of throwing an error.",
+    "day": 45
+  },
+  {
+    "title": "Destructuring",
+    "difficulty": "Medium",
+    "code": "const {a: x = 1} = {a: 2};\nconsole.log(x);",
+    "answer": "2",
+    "explanation": "Destructuring extracts 'a' into variable 'x'. Since 'a' is provided (2), the default (1) is ignored.",
+    "day": 46
+  },
+  {
+    "title": "Rest parameters",
+    "difficulty": "Medium",
+    "code": "function f(...args) { return typeof args; }\nconsole.log(f(1, 2));",
+    "answer": "\"object\"",
+    "explanation": "Rest parameters collect arguments into an array, and typeof an array is 'object'.",
+    "day": 47
+  },
+  {
+    "title": "Promise executor",
+    "difficulty": "Medium",
+    "code": "console.log('A');\nnew Promise(() => console.log('B'));\nconsole.log('C');",
+    "answer": "\"A B C\"",
+    "explanation": "The Promise executor function runs synchronously.",
+    "day": 48
+  },
+  {
+    "title": "Microtasks",
+    "difficulty": "Medium",
+    "code": "Promise.resolve().then(() => console.log(1));\nconsole.log(2);",
+    "answer": "\"2 1\"",
+    "explanation": ".then() callbacks are pushed to the microtask queue and run after synchronous code completes.",
+    "day": 49
+  },
+  {
+    "title": "Object assign",
+    "difficulty": "Medium",
+    "code": "let a = {x: 1};\nlet b = Object.assign(a, {y: 2});\nconsole.log(a === b);",
+    "answer": "true",
+    "explanation": "Object.assign mutates the target object and returns it, so they refer to the same object.",
+    "day": 50
+  },
+  {
+    "title": "String slice",
+    "difficulty": "Medium",
+    "code": "console.log('hello'.slice(-1));",
+    "answer": "\"o\"",
+    "explanation": "Negative indices in slice count backwards from the end of the string.",
+    "day": 51
+  },
+  {
+    "title": "Array sort",
+    "difficulty": "Medium",
+    "code": "console.log([10, 1, 5].sort());",
+    "answer": "[1, 10, 5]",
+    "explanation": "Array.prototype.sort converts elements to strings and compares their UTF-16 code units.",
+    "day": 52
+  },
+  {
+    "title": "Array reduce",
+    "difficulty": "Medium",
+    "code": "console.log([1, 2].reduce((x, y) => x + y, ''));",
+    "answer": "\"12\"",
+    "explanation": "The initial value is an empty string, so the numbers are concatenated as strings.",
+    "day": 53
+  },
+  {
+    "title": "Nullish coalescing",
+    "difficulty": "Medium",
+    "code": "console.log(0 ?? 42);",
+    "answer": "0",
+    "explanation": "Nullish coalescing (??) only falls back if the left operand is null or undefined, not 0 or false.",
+    "day": 54
+  },
+  {
+    "title": "Optional chaining",
+    "difficulty": "Medium",
+    "code": "let obj = null;\nconsole.log(obj?.a);",
+    "answer": "undefined",
+    "explanation": "Optional chaining returns undefined if the target is null or undefined without throwing an error.",
+    "day": 55
+  },
+  {
+    "title": "Number precision",
+    "difficulty": "Medium",
+    "code": "console.log(0.1 + 0.2 === 0.3);",
+    "answer": "false",
+    "explanation": "Floating-point math in JS uses IEEE 754, resulting in 0.30000000000000004.",
+    "day": 56
+  },
+  {
+    "title": "Number.MAX_SAFE_INTEGER",
+    "difficulty": "Medium",
+    "code": "console.log(9007199254740992 === 9007199254740993);",
+    "answer": "true",
+    "explanation": "Numbers beyond Number.MAX_SAFE_INTEGER lose precision, making them evaluate as equal.",
+    "day": 57
+  },
+  {
+    "title": "String replace",
+    "difficulty": "Medium",
+    "code": "console.log('a b a'.replace('a', 'c'));",
+    "answer": "\"c b a\"",
+    "explanation": "String.prototype.replace only replaces the first occurrence unless a global regex is used.",
+    "day": 58
+  },
+  {
+    "title": "Function length",
+    "difficulty": "Medium",
+    "code": "function f(a, b = 1, c) {}\nconsole.log(f.length);",
+    "answer": "1",
+    "explanation": "A function's length is the number of parameters before the first one with a default value.",
+    "day": 59
+  },
+  {
+    "title": "eval scope",
+    "difficulty": "Medium",
+    "code": "function f() { eval('var a = 1'); return a; }\nconsole.log(f());",
+    "answer": "1",
+    "explanation": "eval in non-strict mode modifies the local scope, declaring 'a'.",
+    "day": 60
+  },
+  {
+    "title": "this in classes",
+    "difficulty": "Medium",
+    "code": "class A { getThis() { return this; } }\nconst a = new A(); const fn = a.getThis;\nconsole.log(fn());",
+    "answer": "undefined",
+    "explanation": "Class bodies are implicitly in strict mode, so 'this' does not default to the global object.",
+    "day": 61
+  },
+  {
+    "title": "Object freeze",
+    "difficulty": "Medium",
+    "code": "let obj = Object.freeze({a: [1]});\nobj.a.push(2);\nconsole.log(obj.a);",
+    "answer": "[1, 2]",
+    "explanation": "Object.freeze is shallow; it doesn't freeze nested objects or arrays.",
+    "day": 62
+  },
+  {
+    "title": "Symbol equality",
+    "difficulty": "Medium",
+    "code": "console.log(Symbol('a') === Symbol('a'));",
+    "answer": "false",
+    "explanation": "Every Symbol() call creates a completely unique symbol.",
+    "day": 63
+  },
+  {
+    "title": "Object spread",
+    "difficulty": "Medium",
+    "code": "let obj = {a: 1, ...{a: 2}};\nconsole.log(obj.a);",
+    "answer": "2",
+    "explanation": "Spread properties to the right overwrite properties with the same key to the left.",
+    "day": 64
+  },
+  {
+    "title": "Set duplicate",
+    "difficulty": "Medium",
+    "code": "let set = new Set([1, '1']);\nconsole.log(set.size);",
+    "answer": "2",
+    "explanation": "Sets use same-value-zero equality. 1 and '1' are different types.",
+    "day": 65
+  },
+  {
+    "title": "Map key types",
+    "difficulty": "Medium",
+    "code": "let map = new Map();\nmap.set({}, 1);\nconsole.log(map.get({}));",
+    "answer": "undefined",
+    "explanation": "Maps check keys by reference. {} creates a new object reference.",
+    "day": 66
+  },
+  {
+    "title": "Proxy traps",
+    "difficulty": "Medium",
+    "code": "let p = new Proxy({}, { get: () => 42 });\nconsole.log(p.x);",
+    "answer": "42",
+    "explanation": "The Proxy 'get' trap intercepts property access, returning 42 for any property.",
+    "day": 67
+  },
+  {
+    "title": "yield*",
+    "difficulty": "Medium",
+    "code": "function* f(){ yield* [1,2]; }\nconsole.log([...f()]);",
+    "answer": "[1, 2]",
+    "explanation": "yield* delegates to another iterable object.",
+    "day": 68
+  },
+  {
+    "title": "in operator vs undefined",
+    "difficulty": "Medium",
+    "code": "let a = [undefined];\nconsole.log(0 in a);",
+    "answer": "true",
+    "explanation": "The index 0 exists in the array and holds the value undefined.",
+    "day": 69
+  },
+  {
+    "title": "Delete array element",
+    "difficulty": "Medium",
+    "code": "let a = [1];\ndelete a[0];\nconsole.log(0 in a);",
+    "answer": "false",
+    "explanation": "delete removes the element entirely, making 'in' return false for that index.",
+    "day": 70
+  },
+  {
+    "title": "Promise.all fail-fast",
+    "difficulty": "Advanced",
+    "code": "Promise.all([\n  Promise.resolve(1),\n  Promise.reject(2)\n]).catch(console.log);",
+    "answer": "2",
+    "explanation": "Promise.all rejects immediately if any of the provided promises reject.",
+    "day": 71
+  },
+  {
+    "title": "Async/await sequence",
+    "difficulty": "Advanced",
+    "code": "async function f() {\n  return await 1;\n}\nf().then(console.log);",
+    "answer": "1",
+    "explanation": "await converts non-promises into resolved promises.",
+    "day": 72
+  },
+  {
+    "title": "Event loop ordering",
+    "difficulty": "Advanced",
+    "code": "setTimeout(()=>console.log(1));\nPromise.resolve().then(()=>console.log(2));\nconsole.log(3);",
+    "answer": "3 2 1",
+    "explanation": "Synchronous runs first (3), then microtasks (2), then macrotasks (1).",
+    "day": 73
+  },
+  {
+    "title": "Reflect API",
+    "difficulty": "Advanced",
+    "code": "let obj = {a: 1};\nconsole.log(Reflect.deleteProperty(obj, 'a'));",
+    "answer": "true",
+    "explanation": "Reflect API methods like deleteProperty return a boolean indicating success.",
+    "day": 74
+  },
+  {
+    "title": "WeakMap GC",
+    "difficulty": "Advanced",
+    "code": "let wm = new WeakMap();\nlet obj = {};\nwm.set(obj, 1);\nobj = null;",
+    "answer": "Garbage collected",
+    "explanation": "WeakMaps allow keys to be garbage collected if there are no other references to them.",
+    "day": 75
+  },
+  {
+    "title": "Generator state",
+    "difficulty": "Advanced",
+    "code": "function* f() { yield 1; }\nlet g = f();\ng.next();\nconsole.log(g.next().done);",
+    "answer": "true",
+    "explanation": "After yielding 1, the generator is finished on the next call, so done becomes true.",
+    "day": 76
+  },
+  {
+    "title": "Tagged template",
+    "difficulty": "Advanced",
+    "code": "function t(strings, ...values) { return values; }\nconsole.log(t`A${1}B${2}`);",
+    "answer": "[1, 2]",
+    "explanation": "Tagged template literals pass string parts as the first argument, and evaluated expressions as the rest.",
+    "day": 77
+  },
+  {
+    "title": "Array.from mapping",
+    "difficulty": "Advanced",
+    "code": "console.log(Array.from({length: 2}, () => 1));",
+    "answer": "[1, 1]",
+    "explanation": "Array.from can take a map function as a second argument, populating the new array.",
+    "day": 78
+  },
+  {
+    "title": "Custom iterables",
+    "difficulty": "Advanced",
+    "code": "let obj = { *[Symbol.iterator]() { yield 1; yield 2; } };\nconsole.log([...obj]);",
+    "answer": "[1, 2]",
+    "explanation": "Objects can become iterable by defining a Symbol.iterator method.",
+    "day": 79
+  },
+  {
+    "title": "try/catch/finally",
+    "difficulty": "Advanced",
+    "code": "function f() {\n  try { return 1; }\n  finally { return 2; }\n}\nconsole.log(f());",
+    "answer": "2",
+    "explanation": "A return statement in the finally block overwrites any return in the try block.",
+    "day": 80
+  },
+  {
+    "title": "Throwing null",
+    "difficulty": "Advanced",
+    "code": "try {\n  throw null;\n} catch (e) {\n  console.log(e === null);\n}",
+    "answer": "true",
+    "explanation": "You can throw anything in JavaScript, including null.",
+    "day": 81
+  },
+  {
+    "title": "BigInt type",
+    "difficulty": "Advanced",
+    "code": "console.log(typeof 1n);",
+    "answer": "\"bigint\"",
+    "explanation": "Appending 'n' creates a BigInt primitive.",
+    "day": 82
+  },
+  {
+    "title": "BigInt mixing",
+    "difficulty": "Advanced",
+    "code": "console.log(1n + 1);",
+    "answer": "TypeError",
+    "explanation": "You cannot implicitly mix BigInt and Number types in mathematical operations.",
+    "day": 83
+  },
+  {
+    "title": "Static properties",
+    "difficulty": "Advanced",
+    "code": "class A { static x = 1; }\nclass B extends A {}\nconsole.log(B.x);",
+    "answer": "1",
+    "explanation": "Static properties are inherited by subclasses.",
+    "day": 84
+  },
+  {
+    "title": "Private fields",
+    "difficulty": "Advanced",
+    "code": "class A { #x = 1; getX() { return this.#x; } }\nconsole.log(new A().getX());",
+    "answer": "1",
+    "explanation": "Private fields (#x) are accessible only within the class body.",
+    "day": 85
+  },
+  {
+    "title": "new.target",
+    "difficulty": "Advanced",
+    "code": "function F() { console.log(new.target === F); }\nnew F();",
+    "answer": "true",
+    "explanation": "new.target refers to the constructor that was directly invoked by 'new'.",
+    "day": 86
+  },
+  {
+    "title": "Dynamic import",
+    "difficulty": "Advanced",
+    "code": "import('fs').then(m => console.log(typeof m));",
+    "answer": "\"object\"",
+    "explanation": "Dynamic import() returns a Promise that resolves to a module namespace object.",
+    "day": 87
+  },
+  {
+    "title": "Array flat",
+    "difficulty": "Advanced",
+    "code": "console.log([1, [2, [3]]].flat(Infinity));",
+    "answer": "[1, 2, 3]",
+    "explanation": "flat(Infinity) flattens nested arrays of arbitrary depth.",
+    "day": 88
+  },
+  {
+    "title": "Nullish coalescing vs OR",
+    "difficulty": "Advanced",
+    "code": "console.log('' || 'default', '' ?? 'default');",
+    "answer": "\"default\" \"\"",
+    "explanation": "|| falls back on falsy values (like ''). ?? falls back only on nullish values.",
+    "day": 89
+  },
+  {
+    "title": "String matchAll",
+    "difficulty": "Advanced",
+    "code": "let it = 'a b c'.matchAll(/\\w/g);\nconsole.log([...it].length);",
+    "answer": "3",
+    "explanation": "matchAll returns an iterator of all regex matches.",
+    "day": 90
+  },
+  {
+    "title": "Object.fromEntries",
+    "difficulty": "Advanced",
+    "code": "console.log(Object.fromEntries([['a', 1]]));",
+    "answer": "{ a: 1 }",
+    "explanation": "Object.fromEntries transforms a list of key-value pairs into an object.",
+    "day": 91
+  },
+  {
+    "title": "Intl.NumberFormat",
+    "difficulty": "Advanced",
+    "code": "let nf = new Intl.NumberFormat('en-US');\nconsole.log(nf.format(1000));",
+    "answer": "\"1,000\"",
+    "explanation": "The Intl API provides powerful language-sensitive formatting.",
+    "day": 92
+  },
+  {
+    "title": "Promise.any",
+    "difficulty": "Advanced",
+    "code": "Promise.any([Promise.reject(), Promise.resolve(1)])\n.then(console.log);",
+    "answer": "1",
+    "explanation": "Promise.any resolves as soon as any promise fulfills, ignoring rejections.",
+    "day": 93
+  },
+  {
+    "title": "Top-level await",
+    "difficulty": "Advanced",
+    "code": "await Promise.resolve(1);\nconsole.log('done');",
+    "answer": "\"done\"",
+    "explanation": "In ES modules, await can be used outside of async functions.",
+    "day": 94
+  },
+  {
+    "title": "Logical assignment",
+    "difficulty": "Advanced",
+    "code": "let a = 0;\na ||= 1;\nconsole.log(a);",
+    "answer": "1",
+    "explanation": "a ||= 1 assigns 1 to a only if a is falsy (0 is falsy).",
+    "day": 95
+  },
+  {
+    "title": "Nullish assignment",
+    "difficulty": "Advanced",
+    "code": "let a = 0;\na ??= 1;\nconsole.log(a);",
+    "answer": "0",
+    "explanation": "a ??= 1 assigns 1 to a only if a is null or undefined.",
+    "day": 96
+  },
+  {
+    "title": "String replaceAll",
+    "difficulty": "Advanced",
+    "code": "console.log('a a'.replaceAll('a', 'b'));",
+    "answer": "\"b b\"",
+    "explanation": "replaceAll replaces all occurrences without needing a global regex.",
+    "day": 97
+  },
+  {
+    "title": "Array at",
+    "difficulty": "Advanced",
+    "code": "console.log([1, 2].at(-1));",
+    "answer": "2",
+    "explanation": "The at() method supports negative indexing.",
+    "day": 98
+  },
+  {
+    "title": "Object.hasOwn",
+    "difficulty": "Advanced",
+    "code": "let obj = {a: 1};\nconsole.log(Object.hasOwn(obj, 'a'));",
+    "answer": "true",
+    "explanation": "Object.hasOwn is a safer alternative to obj.hasOwnProperty('a').",
+    "day": 99
+  },
+  {
+    "title": "structuredClone",
+    "difficulty": "Advanced",
+    "code": "let obj = {a: [1]};\nlet copy = structuredClone(obj);\nconsole.log(obj.a === copy.a);",
+    "answer": "false",
+    "explanation": "structuredClone performs a deep copy, so nested references are different.",
+    "day": 100
+  }
+]
