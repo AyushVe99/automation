@@ -48,13 +48,17 @@ async function initializeDb(db: Database): Promise<void> {
 
   try {
     await db.exec(`ALTER TABLE posts ADD COLUMN brute_force_code TEXT;`);
-  } catch (e) {
-    // Column might already exist
-  }
+  } catch (e) {}
 
   try {
     await db.exec(`ALTER TABLE posts ADD COLUMN optimal_code TEXT;`);
-  } catch (e) {
-    // Column might already exist
-  }
+  } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN example_input TEXT;`);
+  } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN example_output TEXT;`);
+  } catch (e) {}
 }

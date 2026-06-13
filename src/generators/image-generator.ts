@@ -34,6 +34,8 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{QUESTION}}/g, escapeHtml(post.question || ''));
     html = html.replace(/{{BRUTE_FORCE}}/g, escapeHtml(post.brute_force_code || '// No brute force code provided'));
     html = html.replace(/{{OPTIMAL}}/g, escapeHtml(post.optimal_code || '// No optimal code provided'));
+    html = html.replace(/{{INPUT}}/g, escapeHtml(post.example_input || 'N/A'));
+    html = html.replace(/{{OUTPUT}}/g, escapeHtml(post.example_output || 'N/A'));
   }
 
   const browser = await puppeteer.launch({
