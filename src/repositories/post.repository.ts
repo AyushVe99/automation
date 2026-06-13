@@ -15,6 +15,8 @@ export interface Post {
   published: number;
   published_at: string | null;
   instagram_post_id: string | null;
+  brute_force_code?: string;
+  optimal_code?: string;
 }
 
 export class PostRepository {

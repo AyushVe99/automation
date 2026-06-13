@@ -17,16 +17,24 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, "&#039;");
 }
 
-export async function generateImage(post: Post): Promise<string> {
-  const templatePath = path.resolve(__dirname, '../templates/post.html');
+export async function generateImage(post: Post): Promise<string[]> {
+  const isDSA = post.series === 'dsa';
+  const templateName = isDSA ? 'dsa-post.html' : 'post.html';
+  const templatePath = path.resolve(__dirname, `../templates/${templateName}`);
   let html = await fs.readFile(templatePath, 'utf8');
 
   // Replace placeholders
-  html = html.replace('{{SERIES}}', post.series.charAt(0).toUpperCase() + post.series.slice(1));
-  html = html.replace('{{DAY}}', post.day.toString());
-  html = html.replace('{{TITLE}}', escapeHtml(post.title));
-  html = html.replace('{{CODE}}', escapeHtml(post.code));
-  html = html.replace('{{DIFFICULTY}}', escapeHtml(post.difficulty));
+  html = html.replace(/{{SERIES}}/g, post.series.charAt(0).toUpperCase() + post.series.slice(1));
+  html = html.replace(/{{DAY}}/g, post.day.toString());
+  html = html.replace(/{{TITLE}}/g, escapeHtml(post.title));
+  html = html.replace(/{{CODE}}/g, escapeHtml(post.code || ''));
+  html = html.replace(/{{DIFFICULTY}}/g, escapeHtml(post.difficulty));
+  
+  if (isDSA) {
+    html = html.replace(/{{QUESTION}}/g, escapeHtml(post.question || ''));
+    html = html.replace(/{{BRUTE_FORCE}}/g, escapeHtml(post.brute_force_code || '// No brute force code provided'));
+    html = html.replace(/{{OPTIMAL}}/g, escapeHtml(post.optimal_code || '// No optimal code provided'));
+  }
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -41,10 +49,27 @@ export async function generateImage(post: Post): Promise<string> {
     const outputDir = path.resolve(__dirname, '../../generated/posts');
     await fs.mkdir(outputDir, { recursive: true });
     
-    const outputPath = path.join(outputDir, `${post.series}-day-${post.day}.png`);
-    await page.screenshot({ path: outputPath, type: 'png' });
-    
-    return outputPath;
+    if (isDSA) {
+      const paths: string[] = [];
+      for (let i = 0; i < 4; i++) {
+        // Evaluate script to show slide i
+        await page.evaluate((index) => {
+          (window as any).showSlide(index);
+        }, i);
+        
+        // Wait a bit for syntax highlighting or rendering if needed
+        await new Promise(r => setTimeout(r, 100));
+
+        const outputPath = path.join(outputDir, `${post.series}-day-${post.day}-slide-${i + 1}.png`);
+        await page.screenshot({ path: outputPath, type: 'png' });
+        paths.push(outputPath);
+      }
+      return paths;
+    } else {
+      const outputPath = path.join(outputDir, `${post.series}-day-${post.day}.png`);
+      await page.screenshot({ path: outputPath, type: 'png' });
+      return [outputPath];
+    }
   } catch (err) {
     logger.error(err, 'Error generating image:');
     throw err;

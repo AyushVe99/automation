@@ -1,10 +1,12 @@
 import { processNextPost } from '../services/poster.js';
 import { logger } from '../utils/logger.js';
+import { env } from '../config/env.js';
 
 async function run() {
-  logger.info('Starting scheduled Instagram post job...');
+  const seriesName = process.argv[2] || env.SERIES || 'javascript';
+  logger.info(`Starting scheduled Instagram post job for series: ${seriesName}...`);
   try {
-    const post = await processNextPost();
+    const post = await processNextPost(seriesName);
     if (post) {
       logger.info('Job completed successfully.');
     } else {

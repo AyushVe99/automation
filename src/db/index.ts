@@ -45,4 +45,16 @@ async function initializeDb(db: Database): Promise<void> {
       UNIQUE(series, day)
     )
   `);
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN brute_force_code TEXT;`);
+  } catch (e) {
+    // Column might already exist
+  }
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN optimal_code TEXT;`);
+  } catch (e) {
+    // Column might already exist
+  }
 }

@@ -1,0 +1,44 @@
+name: 150 Days DSA Challenge Automation
+
+on:
+  schedule:
+    # Runs at 09:30 UTC daily, which is 3:00 PM IST
+    - cron: '30 9 * * *'
+  workflow_dispatch:
+    # Allow manual triggering from the Actions tab
+
+jobs:
+  publish-post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Daily DSA Post Job
+        env:
+          GITHUB_ACTIONS: true
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          USE_GEMINI: ${{ secrets.USE_GEMINI || 'false' }}
+          SERIES: dsa
+        run: npm run post
+
+      - name: Commit and Push Updated Database
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add database.sqlite
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update database post status for DSA [skip ci]" && git push)
