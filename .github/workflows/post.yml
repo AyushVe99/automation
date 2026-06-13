@@ -2,8 +2,8 @@ name: 100 Days Content Automation
 
 on:
   schedule:
-    # Runs at 03:30 UTC daily, which is 9:00 AM IST
-    - cron: '30 3 * * *'
+    # Runs at 16:38 UTC daily, which is 10:08 PM IST
+    - cron: '38 16 * * *'
   workflow_dispatch:
     # Allow manual triggering from the Actions tab
 
