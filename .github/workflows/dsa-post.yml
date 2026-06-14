@@ -2,8 +2,8 @@ name: 150 Days DSA Challenge Automation
 
 on:
   schedule:
-    # Runs at 09:30 UTC daily, which is 3:00 PM IST
-    - cron: '30 9 * * *'
+    # Runs at 09:33 UTC daily, which is 3:03 PM IST
+    - cron: '33 9 * * *'
   workflow_dispatch:
     # Allow manual triggering from the Actions tab
 
