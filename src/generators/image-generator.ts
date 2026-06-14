@@ -19,7 +19,8 @@ function escapeHtml(unsafe: string): string {
 
 export async function generateImage(post: Post): Promise<string[]> {
   const isDSA = post.series === 'dsa';
-  const templateName = isDSA ? 'dsa-post.html' : 'post.html';
+  const isJsArch = post.series === 'js-arch';
+  const templateName = isJsArch ? 'jsarch-post.html' : isDSA ? 'dsa-post.html' : 'post.html';
   const templatePath = path.resolve(__dirname, `../templates/${templateName}`);
   let html = await fs.readFile(templatePath, 'utf8');
 
@@ -38,6 +39,14 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{OUTPUT}}/g, escapeHtml(post.example_output || 'N/A'));
   }
 
+  if (isJsArch) {
+    html = html.replace(/{{MODULE_NAME}}/g, escapeHtml(post.module_name || 'JavaScript Masterclass'));
+    html = html.replace(/{{HOOK_TEXT}}/g, escapeHtml(post.hook_text || ''));
+    html = html.replace(/{{EXPLANATION_1}}/g, post.explanation_1 || ''); // Allow HTML in explanations for bold tags
+    html = html.replace(/{{EXPLANATION_2}}/g, post.explanation_2 || '');
+    html = html.replace(/{{PRO_TIP}}/g, escapeHtml(post.pro_tip || 'Keep coding!'));
+  }
+
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
@@ -51,9 +60,20 @@ export async function generateImage(post: Post): Promise<string[]> {
     const outputDir = path.resolve(__dirname, '../../generated/posts');
     await fs.mkdir(outputDir, { recursive: true });
     
-    if (isDSA) {
+    if (isDSA || isJsArch) {
       const paths: string[] = [];
-      for (let i = 0; i < 4; i++) {
+      
+      // Determine how many slides we have
+      let totalSlides = 4; // default for DSA
+      if (isJsArch) {
+        totalSlides = await page.evaluate(() => {
+          return typeof (window as any).getTotalSlides === 'function' 
+            ? (window as any).getTotalSlides() 
+            : 4;
+        });
+      }
+
+      for (let i = 0; i < totalSlides; i++) {
         // Evaluate script to show slide i
         await page.evaluate((index) => {
           (window as any).showSlide(index);

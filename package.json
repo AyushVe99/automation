@@ -7,7 +7,9 @@
     "start": "tsx src/app.ts",
     "dev": "tsx watch src/app.ts",
     "generate": "tsx scripts/generate-dataset.ts",
-    "post": "tsx src/cron/post-job.ts"
+    "post": "tsx src/cron/post-job.ts",
+    "post:dsa": "cross-env SERIES=dsa tsx src/cron/post-job.ts",
+    "post:jsarch": "cross-env SERIES=js-arch tsx src/cron/post-job.ts"
   },
   "keywords": [],
   "author": "",

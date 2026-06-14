@@ -61,4 +61,24 @@ async function initializeDb(db: Database): Promise<void> {
   try {
     await db.exec(`ALTER TABLE posts ADD COLUMN example_output TEXT;`);
   } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN hook_text TEXT;`);
+  } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN explanation_1 TEXT;`);
+  } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN explanation_2 TEXT;`);
+  } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN pro_tip TEXT;`);
+  } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN module_name TEXT;`);
+  } catch (e) {}
 }

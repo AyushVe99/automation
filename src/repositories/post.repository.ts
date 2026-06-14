@@ -19,6 +19,11 @@ export interface Post {
   optimal_code?: string;
   example_input?: string;
   example_output?: string;
+  hook_text?: string;
+  explanation_1?: string;
+  explanation_2?: string;
+  pro_tip?: string;
+  module_name?: string;
 }
 
 export class PostRepository {

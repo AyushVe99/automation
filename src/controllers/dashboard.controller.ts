@@ -114,7 +114,8 @@ export const previewImage = async (req: Request, res: Response, next: NextFuncti
       throw new NotFoundError('Post Not Found');
     }
 
-    const imagePath = await generateImage(post);
+    const imagePaths = await generateImage(post);
+    const imagePath = Array.isArray(imagePaths) ? imagePaths[0] : imagePaths;
     res.sendFile(imagePath);
   } catch (err) {
     next(err);
