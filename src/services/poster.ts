@@ -49,13 +49,11 @@ export async function processNextPost(seriesName: string = env.SERIES): Promise<
     let igPostId = 'dry-run-id';
     if (env.DRY_RUN !== 'true') {
       igPostId = await publishToInstagram(publicImageUrls, caption);
+      await postRepository.markPostAsPublished(post.id, igPostId, caption);
+      logger.info(`Successfully completed and published Day ${post.day}!`);
     } else {
-      logger.info('DRY_RUN=true. Skipping actual Instagram post.');
+      logger.info('DRY_RUN=true. Skipping actual Instagram post and database update.');
     }
-
-    await postRepository.markPostAsPublished(post.id, igPostId, caption);
-
-    logger.info(`Successfully completed Day ${post.day}!`);
     return post;
 
   } catch (err: any) {
