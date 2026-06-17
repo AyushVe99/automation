@@ -37,6 +37,13 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{OPTIMAL}}/g, escapeHtml(post.optimal_code || '// No optimal code provided'));
     html = html.replace(/{{INPUT}}/g, escapeHtml(post.example_input || 'N/A'));
     html = html.replace(/{{OUTPUT}}/g, escapeHtml(post.example_output || 'N/A'));
+    html = html.replace(/{{APPROACH_EXPLANATION}}/g, escapeHtml(post.explanation || 'Think about how to solve this step by step.'));
+    
+    // Complexities
+    html = html.replace(/{{BRUTE_TIME}}/g, escapeHtml(post.brute_time || 'O(n)'));
+    html = html.replace(/{{BRUTE_SPACE}}/g, escapeHtml(post.brute_space || 'O(1)'));
+    html = html.replace(/{{OPTIMAL_TIME}}/g, escapeHtml(post.optimal_time || 'O(n)'));
+    html = html.replace(/{{OPTIMAL_SPACE}}/g, escapeHtml(post.optimal_space || 'O(1)'));
   }
 
   if (isJsArch) {
@@ -64,14 +71,11 @@ export async function generateImage(post: Post): Promise<string[]> {
       const paths: string[] = [];
       
       // Determine how many slides we have
-      let totalSlides = 4; // default for DSA
-      if (isJsArch) {
-        totalSlides = await page.evaluate(() => {
-          return typeof (window as any).getTotalSlides === 'function' 
-            ? (window as any).getTotalSlides() 
-            : 4;
-        });
-      }
+      let totalSlides = await page.evaluate(() => {
+        return typeof (window as any).getTotalSlides === 'function' 
+          ? (window as any).getTotalSlides() 
+          : 4; // fallback
+      });
 
       for (let i = 0; i < totalSlides; i++) {
         // Evaluate script to show slide i

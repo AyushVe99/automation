@@ -9,6 +9,10 @@
     "optimalCode": "function twoSum(nums, target) {\n  const map = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const comp = target - nums[i];\n    if (map.has(comp)) return [map.get(comp), i];\n    map.set(nums[i], i);\n  }\n}",
     "answer": "Optimal uses Hash Map for O(n) lookup.",
     "explanation": "Brute force takes O(n^2). Using a Hash Map reduces time to O(n).",
+    "brute_time": "O(n²)",
+    "brute_space": "O(1)",
+    "optimal_time": "O(n)",
+    "optimal_space": "O(n)",
     "day": 1,
     "code": ""
   },

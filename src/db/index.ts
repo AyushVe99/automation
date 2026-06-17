@@ -81,4 +81,11 @@ async function initializeDb(db: Database): Promise<void> {
   try {
     await db.exec(`ALTER TABLE posts ADD COLUMN module_name TEXT;`);
   } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN brute_time TEXT;`);
+    await db.exec(`ALTER TABLE posts ADD COLUMN brute_space TEXT;`);
+    await db.exec(`ALTER TABLE posts ADD COLUMN optimal_time TEXT;`);
+    await db.exec(`ALTER TABLE posts ADD COLUMN optimal_space TEXT;`);
+  } catch (e) {}
 }

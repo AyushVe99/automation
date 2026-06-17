@@ -16,7 +16,11 @@ const questions = [
     bruteForceCode: "function twoSum(nums, target) {\n  for (let i = 0; i < nums.length; i++) {\n    for (let j = i + 1; j < nums.length; j++) {\n      if (nums[i] + nums[j] === target) return [i, j];\n    }\n  }\n}",
     optimalCode: "function twoSum(nums, target) {\n  const map = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const comp = target - nums[i];\n    if (map.has(comp)) return [map.get(comp), i];\n    map.set(nums[i], i);\n  }\n}",
     answer: "Optimal uses Hash Map for O(n) lookup.",
-    explanation: "Brute force takes O(n^2). Using a Hash Map reduces time to O(n)."
+    explanation: "Brute force takes O(n^2). Using a Hash Map reduces time to O(n).",
+    brute_time: "O(n²)",
+    brute_space: "O(1)",
+    optimal_time: "O(n)",
+    optimal_space: "O(n)"
   },
   {
     title: "Valid Anagram",
@@ -842,8 +846,8 @@ async function run() {
     
     await db.run(`
       INSERT OR REPLACE INTO posts 
-      (series, day, title, difficulty, code, question, answer, explanation, brute_force_code, optimal_code, example_input, example_output)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (series, day, title, difficulty, code, question, answer, explanation, brute_force_code, optimal_code, example_input, example_output, brute_time, brute_space, optimal_time, optimal_space)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       'dsa',
       i + 1,
@@ -856,7 +860,11 @@ async function run() {
       q.bruteForceCode,
       q.optimalCode,
       q.example_input,
-      q.example_output
+      q.example_output,
+      (q as any).brute_time || 'O(n)', // Default placeholders
+      (q as any).brute_space || 'O(1)',
+      (q as any).optimal_time || 'O(n)',
+      (q as any).optimal_space || 'O(1)'
     ]);
   }
   

@@ -24,6 +24,10 @@ export interface Post {
   explanation_2?: string;
   pro_tip?: string;
   module_name?: string;
+  brute_time?: string;
+  brute_space?: string;
+  optimal_time?: string;
+  optimal_space?: string;
 }
 
 export class PostRepository {

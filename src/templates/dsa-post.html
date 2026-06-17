@@ -235,6 +235,8 @@
       line-height: 1.6 !important;
       font-family: 'JetBrains Mono', monospace !important;
       text-shadow: none !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
     }
 
     code[class*="language-"], pre[class*="language-"] {
@@ -345,15 +347,26 @@
     <div id="slide-0" class="slide active">
       <div class="slide-title">Question</div>
       <h1 class="main-title">{{TITLE}}</h1>
-      <div class="question-text">{{QUESTION}}</div>
-      <div class="io-container">
-        <div class="io-block"><strong>Input:</strong>{{INPUT}}</div>
-        <div class="io-block"><strong>Output:</strong>{{OUTPUT}}</div>
+      <div class="question-text" style="margin-bottom: 20px;">{{QUESTION}}</div>
+      <div class="example-container" style="background: rgba(255,255,255,0.03); border-radius: 24px; padding: 30px; border: 1px solid rgba(255,255,255,0.05);">
+        <div style="font-size: 32px; font-weight: 800; color: #818cf8; margin-bottom: 20px;">Example:</div>
+        <div style="font-size: 30px; color: #e2e8f0; margin-bottom: 15px;"><strong style="color: #94a3b8;">Input:</strong> {{INPUT}}</div>
+        <div style="font-size: 30px; color: #e2e8f0;"><strong style="color: #94a3b8;">Output:</strong> {{OUTPUT}}</div>
       </div>
     </div>
 
-    <!-- Slide 2: Brute Force -->
+    <!-- Slide 2: Approach Explanation -->
     <div id="slide-1" class="slide">
+      <div class="slide-title">Approach</div>
+      <h1 class="main-title">{{TITLE}}</h1>
+      <div class="question-text" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
+        <h2 style="color: #34d399; margin-bottom: 20px; font-size: 40px;">💡 Core Idea</h2>
+        <div style="font-size: 36px; line-height: 1.6;">{{APPROACH_EXPLANATION}}</div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Brute Force -->
+    <div id="slide-2" class="slide">
       <div class="slide-title">Approach 1: Brute Force</div>
       <h1 class="main-title">{{TITLE}}</h1>
       <div class="code-container">
@@ -364,10 +377,20 @@
         </div>
         <pre><code class="language-javascript">{{BRUTE_FORCE}}</code></pre>
       </div>
+      <div class="complexity-container" style="display: flex; gap: 20px; margin-top: 25px;">
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 16px; font-size: 28px;">
+          <span style="color: #94a3b8; margin-right: 10px;">⏱️ Time Complexity:</span>
+          <strong style="color: #f8fafc;">{{BRUTE_TIME}}</strong>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 16px; font-size: 28px;">
+          <span style="color: #94a3b8; margin-right: 10px;">💾 Space Complexity:</span>
+          <strong style="color: #f8fafc;">{{BRUTE_SPACE}}</strong>
+        </div>
+      </div>
     </div>
 
-    <!-- Slide 3: Optimal Solution -->
-    <div id="slide-2" class="slide">
+    <!-- Slide 4: Optimal Solution -->
+    <div id="slide-3" class="slide">
       <div class="slide-title">Approach 2: Optimal Solution</div>
       <h1 class="main-title">{{TITLE}}</h1>
       <div class="code-container">
@@ -378,10 +401,20 @@
         </div>
         <pre><code class="language-javascript">{{OPTIMAL}}</code></pre>
       </div>
+      <div class="complexity-container" style="display: flex; gap: 20px; margin-top: 25px;">
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 16px; font-size: 28px;">
+          <span style="color: #94a3b8; margin-right: 10px;">⏱️ Time Complexity:</span>
+          <strong style="color: #f8fafc;">{{OPTIMAL_TIME}}</strong>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 16px; font-size: 28px;">
+          <span style="color: #94a3b8; margin-right: 10px;">💾 Space Complexity:</span>
+          <strong style="color: #f8fafc;">{{OPTIMAL_SPACE}}</strong>
+        </div>
+      </div>
     </div>
 
-    <!-- Slide 4: Follow -->
-    <div id="slide-3" class="slide follow-slide">
+    <!-- Slide 5: Follow -->
+    <div id="slide-4" class="slide follow-slide">
       <div class="profile-pic">🚀</div>
       <div class="follow-title">Save & Share</div>
       <div class="follow-subtitle">if you found this helpful!</div>
@@ -401,12 +434,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
   <script>
+    function getTotalSlides() {
+      return 5;
+    }
+
     function showSlide(index) {
       document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
       document.getElementById('slide-' + index).classList.add('active');
       
       // Hide footer on last slide if needed
-      if(index === 3) {
+      if(index === 4) {
         document.querySelector('.footer').style.display = 'none';
       } else {
         document.querySelector('.footer').style.display = 'flex';
