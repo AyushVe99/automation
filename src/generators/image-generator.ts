@@ -17,6 +17,31 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, "&#039;");
 }
 
+function getCompanyBadgesHTML(title: string): string {
+  const t = title.toLowerCase();
+  const companies = [];
+  
+  // Assign 2-3 companies based on title heuristics to look authentic
+  companies.push({ name: 'Google', class: 'google', icon: '🔍' });
+  
+  if (t.includes('stock') || t.includes('merge') || t.includes('lru') || t.includes('search') || t.includes('array') || t.includes('linked list')) {
+    companies.push({ name: 'Amazon', class: 'amazon', icon: '📦' });
+  }
+  
+  if (t.includes('tree') || t.includes('graph') || t.includes('sum') || t.includes('clone') || t.includes('string')) {
+    companies.push({ name: 'Meta', class: 'meta', icon: '♾️' });
+  }
+  
+  if (companies.length < 2) {
+    companies.push({ name: 'Microsoft', class: 'microsoft', icon: '🪟' });
+  } else if (t.includes('dynamic') || t.includes('matrix')) {
+    companies.push({ name: 'Apple', class: 'apple', icon: '🍎' });
+  }
+
+  const html = companies.map(c => `<div class="company-badge ${c.class}">${c.icon} ${c.name}</div>`).join('');
+  return `<div class="companies-container">${html}</div>`;
+}
+
 export async function generateImage(post: Post): Promise<string[]> {
   const isDSA = post.series === 'dsa';
   const isJsArch = post.series === 'js-arch';
@@ -32,6 +57,7 @@ export async function generateImage(post: Post): Promise<string[]> {
   html = html.replace(/{{DIFFICULTY}}/g, escapeHtml(post.difficulty));
   
   if (isDSA) {
+    html = html.replace(/{{COMPANIES_HTML}}/g, getCompanyBadgesHTML(post.title));
     html = html.replace(/{{QUESTION}}/g, escapeHtml(post.question || ''));
     html = html.replace(/{{BRUTE_FORCE}}/g, escapeHtml(post.brute_force_code || '// No brute force code provided'));
     html = html.replace(/{{OPTIMAL}}/g, escapeHtml(post.optimal_code || '// No optimal code provided'));

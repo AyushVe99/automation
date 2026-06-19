@@ -18,10 +18,10 @@ export async function generateCaption(post: Post): Promise<string> {
       : '#javascript #webdev #coding #100daysofcode';
       
     if (post.series === 'js-arch') {
-      return `Day ${post.day} of JavaScript Masterclass 🚀\n\nTopic: ${post.title}\n\n${post.hook_text}\n\nSwipe left to dive deep into how this works under the hood! 🧠\n\nSave this for later 📌 and follow @debugwithayush for daily JS architecture content!\n\n${fallbackHashtags}`;
+      return `Day ${post.day} of JavaScript Masterclass 🚀\n\nTopic: ${post.title}\n\n${post.hook_text}\n\nSwipe left to dive deep into how this works under the hood! 🧠\n\n💡 Question of the Day: Have you ever used this concept in a real project? Let me know below! 👇\n\nSave this for later 📌 and follow @debugwithayush for daily JS architecture content!\n\n${fallbackHashtags}`;
     }
     
-    return `Day ${post.day} of 100 Days of ${post.series.toUpperCase()} 🚀\n\n${post.title}\n\nCan you solve this? Comment below! 👇\n\nExplanation:\n${post.explanation}\n\n${fallbackHashtags}`;
+    return `Day ${post.day} of 100 Days of ${post.series.toUpperCase()} 🚀\n\nTopic: ${post.title}\n\nSwipe to see the optimal approach and code! 👉\n\n💡 Question of the Day: What time complexity did you get for your solution? Drop it in the comments below! 👇\n\n${fallbackHashtags}`;
   }
 
   try {
@@ -32,11 +32,13 @@ export async function generateCaption(post: Post): Promise<string> {
 You are an expert JavaScript developer running an educational Masterclass series on Instagram.
 Generate a highly engaging Instagram caption for the following JavaScript topic.
 
+Day: ${post.day}
 Topic: ${post.title}
 Module: ${post.module_name || 'JavaScript Masterclass'}
 Hook: ${post.hook_text || ''}
 
 Requirements:
+- Start the caption with exactly: "Day ${post.day} of JavaScript Masterclass 🚀"
 - Educational and professional tone
 - Include an engagement hook (e.g., "Save this post for later 📌" or "Have you used this in production? 👇")
 - Include exactly 15 highly relevant hashtags (e.g., #javascript #webdevelopment #frontenddeveloper #jsarchitecture #coding)
@@ -50,11 +52,13 @@ Return ONLY the caption text.
 You are an expert developer running a "100 Days of Code" series on Instagram.
 Generate a highly engaging Instagram caption for the following ${post.series.toUpperCase()} question.
 
+Day: ${post.day}
 Topic: ${post.title}
 Difficulty: ${post.difficulty}
 Explanation: ${post.explanation}
 
 Requirements:
+- Start the caption with exactly: "Day ${post.day} of 100 Days of ${post.series.toUpperCase()} 🚀"
 - Educational and beginner friendly
 - Include an engagement hook (e.g., "Comment your answer before checking the explanation 👇")
 - Include 10-15 relevant hashtags for ${post.series.toUpperCase()} and coding
@@ -84,9 +88,9 @@ Return ONLY the caption text.
       : '#javascript #webdev #coding #100daysofcode';
       
     if (post.series === 'js-arch') {
-      return `Day ${post.day} of JavaScript Masterclass 🚀\n\nTopic: ${post.title}\n\n${post.hook_text}\n\nSwipe left to dive deep into how this works under the hood! 🧠\n\nSave this for later 📌 and follow @debugwithayush for daily JS architecture content!\n\n${fallbackHashtags}`;
+      return `Day ${post.day} of JavaScript Masterclass 🚀\n\nTopic: ${post.title}\n\n${post.hook_text}\n\nSwipe left to dive deep into how this works under the hood! 🧠\n\n💡 Question of the Day: Have you ever used this concept in a real project? Let me know below! 👇\n\nSave this for later 📌 and follow @debugwithayush for daily JS architecture content!\n\n${fallbackHashtags}`;
     }
     
-    return `Day ${post.day} of 100 Days of ${post.series.toUpperCase()} 🚀\n\n${post.title}\n\nCan you solve this? Comment below! 👇\n\nExplanation:\n${post.explanation}\n\n${fallbackHashtags}`;
+    return `Day ${post.day} of 100 Days of ${post.series.toUpperCase()} 🚀\n\nTopic: ${post.title}\n\nSwipe to see the optimal approach and code! 👉\n\n💡 Question of the Day: What time complexity did you get for your solution? Drop it in the comments below! 👇\n\n${fallbackHashtags}`;
   }
 }
