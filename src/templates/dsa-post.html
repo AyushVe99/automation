@@ -242,6 +242,8 @@
     code[class*="language-"], pre[class*="language-"] {
       color: #f8fafc !important;
       text-shadow: none !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
     }
 
     .footer {
@@ -440,7 +442,21 @@
 
     function showSlide(index) {
       document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
-      document.getElementById('slide-' + index).classList.add('active');
+      const activeSlide = document.getElementById('slide-' + index);
+      activeSlide.classList.add('active');
+      
+      // Auto-scale font size for code blocks if they overflow the body height (1350px)
+      const codeBlocks = activeSlide.querySelectorAll('pre');
+      if (codeBlocks.length > 0) {
+        let fontSize = 32; // Default starting size
+        codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+        
+        // Reduce font size until it fits, but don't go below 12px
+        while (document.body.scrollHeight > 1350 && fontSize > 12) {
+          fontSize--;
+          codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+        }
+      }
       
       // Hide footer on last slide if needed
       if(index === 4) {

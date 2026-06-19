@@ -183,7 +183,10 @@ const modules = [
     topics: [
       "Hoisting Interview Questions", "Closures Interview Questions", "Event Loop Interview Questions", 
       "Promise Interview Questions", "this Keyword Questions", "Prototype Questions", "Output-Based Questions", 
-      "Machine Coding Problems"
+      "Machine Coding Problems",
+      "Implement a Deep Clone Function", "Implement Promise.all()", "Implement a Debounce Function",
+      "Implement a Throttle Function", "Flatten a Nested Array", "Implement an Event Emitter",
+      "Implement Function.prototype.bind", "Implement Array.prototype.reduce", "Currying implementation", "Implement a basic LRU Cache"
     ]
   },
   {
@@ -233,7 +236,7 @@ Respond ONLY with valid JSON. Do not use markdown code blocks (\`\`\`json) aroun
     
     return JSON.parse(text);
   } catch (err) {
-    logger.error(`Failed to generate content for ${topic}:`, err);
+    logger.error(`Failed to generate content for ${topic}:`);
     return null;
   }
 }

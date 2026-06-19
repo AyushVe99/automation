@@ -266,6 +266,11 @@
       font-family: 'JetBrains Mono', monospace !important;
     }
 
+    code[class*="language-"], pre[class*="language-"] {
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+
     /* Pro Tip Slide */
     .pro-tip-container {
       flex-grow: 1;
@@ -517,6 +522,19 @@
       const target = document.getElementById('slide-' + index);
       if(target) {
         target.classList.add('active');
+        
+        // Auto-scale font size for code blocks if they overflow the body height (1350px)
+        const codeBlocks = target.querySelectorAll('pre');
+        if (codeBlocks.length > 0) {
+          let fontSize = 32; // Default starting size
+          codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+          
+          // Reduce font size until it fits, but don't go below 12px
+          while (document.body.scrollHeight > 1350 && fontSize > 12) {
+            fontSize--;
+            codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+          }
+        }
       }
       
       // Hide footer on last slide

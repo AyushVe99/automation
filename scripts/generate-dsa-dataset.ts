@@ -1295,9 +1295,24 @@ async function run() {
     const q = questions[i];
     
     await db.run(`
-      INSERT OR REPLACE INTO posts 
+      INSERT INTO posts 
       (series, day, title, difficulty, code, question, answer, explanation, brute_force_code, optimal_code, example_input, example_output, brute_time, brute_space, optimal_time, optimal_space)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(series, day) DO UPDATE SET
+        title = excluded.title,
+        difficulty = excluded.difficulty,
+        code = excluded.code,
+        question = excluded.question,
+        answer = excluded.answer,
+        explanation = excluded.explanation,
+        brute_force_code = excluded.brute_force_code,
+        optimal_code = excluded.optimal_code,
+        example_input = excluded.example_input,
+        example_output = excluded.example_output,
+        brute_time = excluded.brute_time,
+        brute_space = excluded.brute_space,
+        optimal_time = excluded.optimal_time,
+        optimal_space = excluded.optimal_space
     `, [
       'dsa',
       i + 1,
