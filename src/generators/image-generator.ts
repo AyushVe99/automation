@@ -45,7 +45,8 @@ function getCompanyBadgesHTML(title: string): string {
 export async function generateImage(post: Post): Promise<string[]> {
   const isDSA = post.series === 'dsa';
   const isJsArch = post.series === 'js-arch';
-  const templateName = isJsArch ? 'jsarch-post.html' : isDSA ? 'dsa-post.html' : 'post.html';
+  const isFaangDsa = post.series === 'faang-dsa';
+  const templateName = isJsArch ? 'jsarch-post.html' : isFaangDsa ? 'faang-dsa-post.html' : isDSA ? 'dsa-post.html' : 'post.html';
   const templatePath = path.resolve(__dirname, `../templates/${templateName}`);
   let html = await fs.readFile(templatePath, 'utf8');
 
@@ -72,7 +73,7 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{OPTIMAL_SPACE}}/g, escapeHtml(post.optimal_space || 'O(1)'));
   }
 
-  if (isJsArch) {
+  if (isJsArch || isFaangDsa) {
     html = html.replace(/{{MODULE_NAME}}/g, escapeHtml(post.module_name || 'JavaScript Masterclass'));
     html = html.replace(/{{HOOK_TEXT}}/g, escapeHtml(post.hook_text || ''));
     html = html.replace(/{{EXPLANATION_1}}/g, post.explanation_1 || ''); // Allow HTML in explanations for bold tags
@@ -81,6 +82,10 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{COMMON_EDGE_CASES}}/g, escapeHtml(post.common_edge_cases || ''));
     html = html.replace(/{{INTERVIEW_QUESTION}}/g, escapeHtml(post.interview_question || ''));
     html = html.replace(/{{PRO_TIP}}/g, escapeHtml(post.pro_tip || 'Keep coding!'));
+  }
+  
+  if (isFaangDsa) {
+    html = html.replace(/{{COMPANIES_HTML}}/g, getCompanyBadgesHTML(post.title));
   }
 
   const browser = await puppeteer.launch({
@@ -96,7 +101,7 @@ export async function generateImage(post: Post): Promise<string[]> {
     const outputDir = path.resolve(__dirname, '../../generated/posts');
     await fs.mkdir(outputDir, { recursive: true });
     
-    if (isDSA || isJsArch) {
+    if (isDSA || isJsArch || isFaangDsa) {
       const paths: string[] = [];
       
       // Determine how many slides we have

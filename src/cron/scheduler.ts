@@ -22,4 +22,14 @@ cron.schedule('0 15 * * *', async () => {
   }
 });
 
-logger.info('Scheduler started. JS @ 9:00 AM | DSA @ 3:00 PM.');
+// Run every day at 9:30 AM for FAANG DSA series
+cron.schedule('30 9 * * *', async () => {
+  logger.info('Cron triggered: Starting daily FAANG DSA post job');
+  try {
+    await processNextPost('faang-dsa');
+  } catch (err) {
+    logger.error(err, 'Cron job failed for FAANG DSA:');
+  }
+});
+
+logger.info('Scheduler started. JS @ 9:00 AM | FAANG DSA @ 9:30 AM | DSA @ 3:00 PM.');
