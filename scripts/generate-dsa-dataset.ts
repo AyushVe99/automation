@@ -2,9 +2,90 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getDb } from '../src/db/index.js';
+import { GoogleGenAI } from '@google/genai';
+import { env } from '../src/config/env.js';
+import { logger } from '../src/utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const apiKeys = [env.GEMINI_API_KEY, env.GEMINI_API_KEY_2].filter(Boolean) as string[];
+if (apiKeys.length === 0) {
+  logger.error('No GEMINI_API_KEY provided in environment variables.');
+  process.exit(1);
+}
+
+let currentKeyIndex = 0;
+let ai = new GoogleGenAI({ apiKey: apiKeys[currentKeyIndex] });
+
+function rotateApiKey() {
+  currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+  logger.info(`Switching to API key index ${currentKeyIndex}`);
+  ai = new GoogleGenAI({ apiKey: apiKeys[currentKeyIndex] });
+}
+
+async function generateEnhancedDSAContent(q: any, retries = 0): Promise<any> {
+  const prompt = `
+You are a world-class Data Structures and Algorithms educator creating content for a professional learning platform.
+
+Topic: ${q.title}
+Difficulty: ${q.difficulty}
+Question: ${q.question}
+
+Brute Force Code:
+${q.bruteForceCode}
+
+Optimal Code:
+${q.optimalCode}
+
+Generate a JSON object with exactly these fields:
+{
+  "explanation_1": string,
+  "explanation_2": string
+}
+
+Requirements:
+1. explanation_1 (The Intuition & Problem Breakdown)
+- Explain the core problem and why the brute force approach is slow or naive.
+- Focus on the intuition behind the optimal solution.
+- Keep it highly engaging and easy to understand for beginners.
+
+2. explanation_2 (The Optimal Mechanics)
+- Explain exactly how the optimal solution improves over the brute force solution.
+- Break down the step-by-step mechanics of the optimal code.
+- This is the "deep explanation" that connects the intuition to the code.
+
+Rules:
+- Make the explanations very thorough and deep so the user can understand the problem as well as the solution properly.
+- Use plain English and simple analogies where possible.
+- Respond ONLY with valid raw JSON.
+- Do not include markdown, code fences, comments, or additional text.
+`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
+    
+    let text = response.text?.trim() || '{}';
+    if (text.startsWith('```json')) {
+      text = text.replace(/^```json\n/, '').replace(/\n```$/, '');
+    } else if (text.startsWith('```')) {
+      text = text.replace(/^```\n/, '').replace(/\n```$/, '');
+    }
+    
+    return JSON.parse(text);
+  } catch (err: any) {
+    logger.error(`Failed to generate content for ${q.title} with key index ${currentKeyIndex}: ${err.message}`);
+    if (retries < apiKeys.length - 1) {
+      logger.info('Rotating API key and retrying...');
+      rotateApiKey();
+      return generateEnhancedDSAContent(q, retries + 1);
+    }
+    return null;
+  }
+}
 
 const questions = [
   {
@@ -1293,47 +1374,72 @@ async function run() {
   
   for (let i = 0; i < questions.length; i++) {
     const q = questions[i];
+    logger.info(`Generating content for DSA Day ${i + 1}: ${q.title}...`);
     
-    await db.run(`
-      INSERT INTO posts 
-      (series, day, title, difficulty, code, question, answer, explanation, brute_force_code, optimal_code, example_input, example_output, brute_time, brute_space, optimal_time, optimal_space)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(series, day) DO UPDATE SET
-        title = excluded.title,
-        difficulty = excluded.difficulty,
-        code = excluded.code,
-        question = excluded.question,
-        answer = excluded.answer,
-        explanation = excluded.explanation,
-        brute_force_code = excluded.brute_force_code,
-        optimal_code = excluded.optimal_code,
-        example_input = excluded.example_input,
-        example_output = excluded.example_output,
-        brute_time = excluded.brute_time,
-        brute_space = excluded.brute_space,
-        optimal_time = excluded.optimal_time,
-        optimal_space = excluded.optimal_space
-    `, [
-      'dsa',
-      i + 1,
-      q.title,
-      q.difficulty,
-      "", // original code field unused for DSA
-      q.question,
-      q.answer,
-      q.explanation,
-      q.bruteForceCode,
-      q.optimalCode,
-      q.example_input,
-      q.example_output,
-      (q as any).brute_time || 'O(n)', // Default placeholders
-      (q as any).brute_space || 'O(1)',
-      (q as any).optimal_time || 'O(n)',
-      (q as any).optimal_space || 'O(1)'
-    ]);
+    const exists = await db.get('SELECT explanation_1, published FROM posts WHERE series = ? AND day = ?', ['dsa', i + 1]);
+    if (exists) {
+       if (exists.published) {
+         logger.info(`Day ${i + 1} is already published, skipping to prevent overwriting.`);
+         continue;
+       }
+       if (exists.explanation_1 && exists.explanation_1.length > 10) {
+         logger.info(`Day ${i + 1} already has enhanced explanation, skipping AI generation.`);
+         continue;
+       }
+    }
+
+    const enhanced = await generateEnhancedDSAContent(q);
+    
+    if (enhanced) {
+      await db.run(`
+        INSERT INTO posts 
+        (series, day, title, difficulty, code, question, answer, explanation, brute_force_code, optimal_code, example_input, example_output, brute_time, brute_space, optimal_time, optimal_space, explanation_1, explanation_2)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(series, day) DO UPDATE SET
+          title = excluded.title,
+          difficulty = excluded.difficulty,
+          code = excluded.code,
+          question = excluded.question,
+          answer = excluded.answer,
+          explanation = excluded.explanation,
+          brute_force_code = excluded.brute_force_code,
+          optimal_code = excluded.optimal_code,
+          example_input = excluded.example_input,
+          example_output = excluded.example_output,
+          brute_time = excluded.brute_time,
+          brute_space = excluded.brute_space,
+          optimal_time = excluded.optimal_time,
+          optimal_space = excluded.optimal_space,
+          explanation_1 = excluded.explanation_1,
+          explanation_2 = excluded.explanation_2
+      `, [
+        'dsa',
+        i + 1,
+        q.title,
+        q.difficulty,
+        "", // original code field unused for DSA
+        q.question,
+        q.answer,
+        q.explanation,
+        q.bruteForceCode,
+        q.optimalCode,
+        q.example_input,
+        q.example_output,
+        (q as any).brute_time || 'O(n)',
+        (q as any).brute_space || 'O(1)',
+        (q as any).optimal_time || 'O(n)',
+        (q as any).optimal_space || 'O(1)',
+        enhanced.explanation_1 || '',
+        enhanced.explanation_2 || ''
+      ]);
+      logger.info(`Successfully saved enhanced Day ${i + 1} to DB.`);
+    }
+    
+    // Sleep to avoid rate limits
+    await new Promise(r => setTimeout(r, 2000));
   }
   
-  console.log(`Successfully generated and seeded ${questions.length} DSA posts!`);
+  logger.info(`Successfully generated and seeded DSA posts!`);
   
   fs.writeFileSync(
     path.resolve(__dirname, '../data/dsa-150.json'), 
@@ -1341,4 +1447,4 @@ async function run() {
   );
 }
 
-run().catch(console.error);
+run().catch(err => logger.error(err));
