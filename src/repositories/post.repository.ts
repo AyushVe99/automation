@@ -24,6 +24,9 @@ export interface Post {
   explanation_2?: string;
   pro_tip?: string;
   module_name?: string;
+  real_world_usecase?: string;
+  common_edge_cases?: string;
+  interview_question?: string;
   brute_time?: string;
   brute_space?: string;
   optimal_time?: string;

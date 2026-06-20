@@ -221,20 +221,87 @@ const modules = [
 
 async function generateTopicContent(moduleName: string, topic: string, retries = 0): Promise<any> {
   const prompt = `
-You are an expert JavaScript architect creating a masterclass carousel post.
+You are a world-class JavaScript educator and architect creating content for a professional learning platform.
+
 Topic: ${topic}
 Module: ${moduleName}
 
-Generate a structured JSON response with the following fields:
-- hook_text: A catchy 1-2 sentence hook explaining why this topic matters. (String)
-- code: A concise JS code snippet demonstrating the core syntax or concept. (String)
-- explanation_1: Deep dive explanation part 1 (e.g. how it works under the hood). Keep it to 2-3 sentences. (String)
-- explanation_2: Deep dive explanation part 2 (e.g. common gotchas or memory implications). Keep it to 2-3 sentences. (String)
-- pro_tip: A professional tip or best practice regarding this topic. (String)
-- difficulty: "Beginner", "Intermediate", or "Advanced". (String)
+Generate a JSON object with exactly these fields:
 
-Respond ONLY with valid JSON. Do not use markdown code blocks (\`\`\`json) around the response, just the raw JSON object.
-  `;
+{
+"hook_text": string,
+"code": string,
+"explanation_1": string,
+"explanation_2": string,
+"real_world_usecase": string,
+"common_edge_cases": string,
+"interview_question": string,
+"pro_tip": string,
+"difficulty": string
+}
+
+Requirements:
+
+1. hook_text
+* Write an engaging 1-2 sentence hook explaining why this topic matters in real-world JavaScript development.
+* Keep it concise, practical, and beginner-friendly.
+* Avoid hype, clickbait, or exaggerated claims.
+
+2. code
+* Provide a concise, modern JavaScript example demonstrating the core concept.
+* Use ES6+ syntax whenever appropriate.
+* Use realistic variable names.
+* Keep the example under 8 lines.
+
+3. explanation_1
+* Explain what the concept is and how developers use it.
+* Focus on understanding rather than syntax.
+* Keep it to 3-4 sentences.
+* Prioritize clarity over implementation details.
+
+4. explanation_2
+* Explain important behavior, caveats, limitations, or common mistakes developers should know.
+* Keep it to 3-4 sentences.
+* Avoid unnecessary engine internals unless the topic specifically concerns JavaScript internals.
+
+5. real_world_usecase
+* Explain a realistic, production-level scenario or architecture where this concept is actively used.
+* Keep it to 3-4 sentences.
+
+6. common_edge_cases
+* Explain a specific hidden gotcha, edge case, or silent bug that happens when developers misuse this concept.
+* Keep it to 3-4 sentences.
+
+7. interview_question
+* Provide a high-level technical interview question (and brief answer) that tests true understanding of this topic.
+* Format it nicely in 3-4 sentences.
+
+8. pro_tip
+* Provide a modern best practice or practical recommendation used in professional codebases.
+* Avoid outdated micro-optimizations.
+* Avoid absolute statements such as "always" or "never" unless universally true.
+
+9. difficulty
+* Must be exactly one of:
+  * "Beginner"
+  * "Intermediate"
+  * "Advanced"
+
+General Rules:
+* PROGRESSIVE DISCLOSURE: This content must be a 10/10 for BOTH beginners and intermediate developers.
+* Start Simple (hook, code, explanation_1): Use plain English, simple analogies, and basic code examples (e.g., simple strings/variables, not complex objects or APIs) so absolute beginners instantly understand.
+* End Deep (real_world, edge_cases, interview): Provide advanced, high-value insights, deep mechanics, and production-level architecture so intermediate developers learn something new.
+* Explain jargon: If you must use advanced terms (like 'interpolation' or 'lexical scope'), explain them briefly.
+* Prioritize technical accuracy over sounding advanced.
+* Avoid unverified performance claims.
+* Avoid mentioning memory usage, CPU optimizations, or engine internals unless directly relevant to the topic.
+* Use a consistent professional tone.
+* Content should be suitable for a JavaScript learning platform.
+* Explanations must be timeless and aligned with modern JavaScript best practices.
+
+Respond ONLY with valid raw JSON.
+Do not include markdown, code fences, comments, or additional text.
+`;
 
   try {
     const response = await ai.models.generateContent({
@@ -280,8 +347,8 @@ async function seedDatabase() {
       if (content) {
         await db.run(
           `INSERT INTO posts 
-          (series, day, title, difficulty, code, question, answer, explanation, hook_text, explanation_1, explanation_2, pro_tip, module_name) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          (series, day, title, difficulty, code, question, answer, explanation, hook_text, explanation_1, explanation_2, pro_tip, module_name, real_world_usecase, common_edge_cases, interview_question) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             'js-arch', 
             day, 
@@ -295,7 +362,10 @@ async function seedDatabase() {
             content.explanation_1 || '',
             content.explanation_2 || '',
             content.pro_tip || '',
-            mod.name
+            mod.name,
+            content.real_world_usecase || '',
+            content.common_edge_cases || '',
+            content.interview_question || ''
           ]
         );
         logger.info(`Successfully saved Day ${day} to DB.`);

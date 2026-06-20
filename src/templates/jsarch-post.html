@@ -444,9 +444,36 @@
       </div>
     </div>
 
-    <!-- Slide 5: Pro Tip -->
+    <!-- Slide 5: Real World -->
+    <div class="slide" id="real-world-slide" data-slide="true">
+      <div class="slide-number">05</div>
+      <h2 class="sub-slide-title">Real-World <span class="highlight">Architecture</span> 🏗️</h2>
+      <div class="concept-box" style="font-size: 34px;" id="real-world-text">
+        {{REAL_WORLD_USECASE}}
+      </div>
+    </div>
+
+    <!-- Slide 6: Edge Cases -->
+    <div class="slide" id="edge-cases-slide" data-slide="true">
+      <div class="slide-number">06</div>
+      <h2 class="sub-slide-title">Hidden <span class="highlight">Gotchas</span> 🐛</h2>
+      <div class="concept-box" style="font-size: 34px;" id="edge-cases-text">
+        {{COMMON_EDGE_CASES}}
+      </div>
+    </div>
+
+    <!-- Slide 7: Interview Qs -->
+    <div class="slide" id="interview-slide" data-slide="true">
+      <div class="slide-number">07</div>
+      <h2 class="sub-slide-title">Interview <span class="highlight">Prep</span> 💼</h2>
+      <div class="concept-box" style="font-size: 34px;" id="interview-text">
+        {{INTERVIEW_QUESTION}}
+      </div>
+    </div>
+
+    <!-- Slide 8: Pro Tip -->
     <div class="slide" data-slide="true">
-      <div class="slide-number" id="protip-num">05</div>
+      <div class="slide-number">08</div>
       <div class="pro-tip-container">
         <h2 class="pro-tip-title">Pro Tip ⭐</h2>
         <div class="pro-tip-text">
@@ -478,24 +505,39 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
   <script>
-    // Remove the code slide if it's empty or placeholder
-    const codeBlock = document.getElementById('code-block');
-    const codeText = codeBlock.textContent.trim();
-    if (!codeText || codeText === '// No code' || codeText === 'N/A' || codeText === 'None') {
-      const codeSlide = document.getElementById('code-slide');
-      codeSlide.removeAttribute('data-slide');
-      codeSlide.style.display = 'none'; // Ensure it's hidden
-      codeSlide.parentNode.removeChild(codeSlide); // completely remove
-      
-      // Update numbering for remaining slides
-      document.getElementById('internals-num').textContent = '03';
-      document.getElementById('protip-num').textContent = '04';
+    function removeIfEmpty(slideId, placeholderValue, defaultPlaceholder) {
+      const text = placeholderValue.trim();
+      if (!text || text === defaultPlaceholder || text === 'N/A' || text === 'None') {
+        const slide = document.getElementById(slideId);
+        if (slide) {
+          slide.removeAttribute('data-slide');
+          slide.style.display = 'none';
+          slide.parentNode.removeChild(slide);
+        }
+      }
     }
 
-    // Assign dynamic indices to the remaining slides
+    // Check code slide
+    const codeBlock = document.getElementById('code-block');
+    removeIfEmpty('code-slide', codeBlock.textContent, '// No code');
+    
+    // Check new dynamic slides for backward compatibility
+    removeIfEmpty('real-world-slide', document.getElementById('real-world-text').textContent, '{{REAL_WORLD_USECASE}}');
+    removeIfEmpty('edge-cases-slide', document.getElementById('edge-cases-text').textContent, '{{COMMON_EDGE_CASES}}');
+    removeIfEmpty('interview-slide', document.getElementById('interview-text').textContent, '{{INTERVIEW_QUESTION}}');
+
+    // Assign dynamic indices and numbering to the remaining slides
     const slides = document.querySelectorAll('.slide[data-slide="true"]');
     slides.forEach((el, index) => {
       el.id = 'slide-' + index;
+      
+      // Dynamically update slide number badges to ensure sequential numbering if any slides were removed
+      if (index > 0) {
+        const badge = el.querySelector('.slide-number');
+        if (badge) {
+          badge.textContent = String(index + 1).padStart(2, '0');
+        }
+      }
     });
 
     window.getTotalSlides = function() {

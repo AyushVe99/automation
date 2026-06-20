@@ -83,6 +83,18 @@ async function initializeDb(db: Database): Promise<void> {
   } catch (e) {}
 
   try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN real_world_usecase TEXT;`);
+  } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN common_edge_cases TEXT;`);
+  } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN interview_question TEXT;`);
+  } catch (e) {}
+
+  try {
     await db.exec(`ALTER TABLE posts ADD COLUMN brute_time TEXT;`);
     await db.exec(`ALTER TABLE posts ADD COLUMN brute_space TEXT;`);
     await db.exec(`ALTER TABLE posts ADD COLUMN optimal_time TEXT;`);

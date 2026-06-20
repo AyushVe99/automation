@@ -77,6 +77,9 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{HOOK_TEXT}}/g, escapeHtml(post.hook_text || ''));
     html = html.replace(/{{EXPLANATION_1}}/g, post.explanation_1 || ''); // Allow HTML in explanations for bold tags
     html = html.replace(/{{EXPLANATION_2}}/g, post.explanation_2 || '');
+    html = html.replace(/{{REAL_WORLD_USECASE}}/g, escapeHtml(post.real_world_usecase || ''));
+    html = html.replace(/{{COMMON_EDGE_CASES}}/g, escapeHtml(post.common_edge_cases || ''));
+    html = html.replace(/{{INTERVIEW_QUESTION}}/g, escapeHtml(post.interview_question || ''));
     html = html.replace(/{{PRO_TIP}}/g, escapeHtml(post.pro_tip || 'Keep coding!'));
   }
 
