@@ -9,7 +9,20 @@ import { logger } from '../src/utils/logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+const apiKeys = [env.GEMINI_API_KEY, env.GEMINI_API_KEY_2].filter(Boolean) as string[];
+if (apiKeys.length === 0) {
+  logger.error('No GEMINI_API_KEY provided in environment variables.');
+  process.exit(1);
+}
+
+let currentKeyIndex = 0;
+let ai = new GoogleGenAI({ apiKey: apiKeys[currentKeyIndex] });
+
+function rotateApiKey() {
+  currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+  logger.info(`Switching to API key index ${currentKeyIndex}`);
+  ai = new GoogleGenAI({ apiKey: apiKeys[currentKeyIndex] });
+}
 
 // The 28 Module Curriculum
 const modules = [
@@ -206,7 +219,7 @@ const modules = [
   }
 ];
 
-async function generateTopicContent(moduleName: string, topic: string) {
+async function generateTopicContent(moduleName: string, topic: string, retries = 0): Promise<any> {
   const prompt = `
 You are an expert JavaScript architect creating a masterclass carousel post.
 Topic: ${topic}
@@ -230,13 +243,19 @@ Respond ONLY with valid JSON. Do not use markdown code blocks (\`\`\`json) aroun
     });
     
     let text = response.text?.trim() || '{}';
-    if (text.startsWith('\`\`\`json')) {
-      text = text.replace(/^\`\`\`json\n/, '').replace(/\n\`\`\`$/, '');
+    if (text.startsWith('```json')) {
+      text = text.replace(/^```json\n/, '').replace(/\n```$/, '');
     }
     
-    return JSON.parse(text);
-  } catch (err) {
-    logger.error(`Failed to generate content for ${topic}:`);
+    const parsed = JSON.parse(text);
+    return parsed;
+  } catch (err: any) {
+    logger.error(`Failed to generate content for ${topic} with key index ${currentKeyIndex}:`, err.message);
+    if (retries < apiKeys.length - 1) {
+      logger.info('Rotating API key and retrying...');
+      rotateApiKey();
+      return generateTopicContent(moduleName, topic, retries + 1);
+    }
     return null;
   }
 }

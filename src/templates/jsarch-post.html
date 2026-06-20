@@ -511,13 +511,22 @@
         // Auto-scale font size for code blocks if they overflow the body height (1350px)
         const codeBlocks = target.querySelectorAll('pre');
         if (codeBlocks.length > 0) {
-          let fontSize = 32; // Default starting size
+          let fontSize = 42; // Default starting size for small code
           codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
           
-          // Reduce font size until it fits, but don't go below 12px
-          while (document.body.scrollHeight > 1350 && fontSize > 12) {
+          const mainContainer = document.querySelector('.main-container');
+          let lastHeight = mainContainer.scrollHeight;
+          
+          // Reduce font size until it fits, but don't go below 16px
+          while (mainContainer.scrollHeight > 1350 && fontSize > 16) {
             fontSize--;
             codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+            
+            // If shrinking the font didn't reduce the height at all, something else is overflowing, break early
+            if (mainContainer.scrollHeight === lastHeight) {
+              break;
+            }
+            lastHeight = mainContainer.scrollHeight;
           }
         }
       }
