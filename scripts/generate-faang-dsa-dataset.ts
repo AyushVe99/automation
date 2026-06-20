@@ -358,14 +358,14 @@ Generate a JSON object with exactly these fields:
 }
 
 Requirements:
-1. hook_text: 1-2 sentence engaging hook on why this matters in FAANG interviews.
-2. code: Modern, clean JavaScript. If a concept, provide the Blueprint Template. If a problem, provide the optimal solution. Max 15 lines. No markdown around it.
-3. explanation_1: The Intuition. Break down the logic simply. Avoid jargon.
-4. explanation_2: The Step-by-Step Mechanics. How does the code actually execute?
-5. real_world_usecase: Where does Facebook, Google, or Amazon actually use this pattern in their systems?
-6. common_edge_cases: What normally breaks this code?
-7. interview_question: A quick theoretical follow-up question an interviewer might ask.
-8. pro_tip: A secret trick for recognizing this pattern during an interview.
+1. hook_text: 1 short sentence engaging hook on why this matters in FAANG.
+2. code: Modern, clean JavaScript. If a concept, provide the Blueprint Template. If a problem, provide optimal solution. Max 15 lines. No markdown around it.
+3. explanation_1: The Intuition. Break down the logic simply. STRICTLY max 2 short sentences.
+4. explanation_2: The Step-by-Step Mechanics. How does it execute? STRICTLY max 2 short sentences.
+5. real_world_usecase: Where does FAANG use this? STRICTLY max 2 short sentences.
+6. common_edge_cases: What breaks this code? STRICTLY 1-2 bullet points max.
+7. interview_question: A quick theoretical follow-up question.
+8. pro_tip: A secret trick for recognizing this pattern. STRICTLY max 1 short sentence.
 9. difficulty: "Beginner", "Intermediate", or "Advanced".
 
 Respond ONLY with valid raw JSON. Do not include markdown blocks like \`\`\`json.

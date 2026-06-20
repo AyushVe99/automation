@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>FAANG DSA Post</title>
-  <!-- Prism.js Light Theme -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+  <!-- Prism.js Dark Theme for the code block -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -153,7 +153,7 @@
     }
 
     .content-box {
-      font-size: 38px;
+      font-size: 34px;
       line-height: 1.5;
       color: #334155;
       background: rgba(255, 255, 255, 0.7);
@@ -172,11 +172,11 @@
     }
 
     .code-container {
-      background: #ffffff;
+      background: #0f172a;
       border-radius: 24px;
       padding: 40px;
       border: 1px solid rgba(15, 23, 42, 0.1);
-      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.2);
       width: 100%;
       position: relative;
       overflow: hidden;
@@ -212,6 +212,13 @@
       font-size: 32px !important;
       line-height: 1.6 !important;
       font-family: 'JetBrains Mono', monospace !important;
+      text-shadow: none !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+
+    code[class*="language-"], pre[class*="language-"] {
+      color: #f8fafc !important;
       text-shadow: none !important;
       white-space: pre-wrap !important;
       word-break: break-word !important;
@@ -262,6 +269,7 @@
       font-weight: 800;
       color: #fff;
     }
+    .diff-Beginner { background: #38bdf8; }
     .diff-Easy { background: #22c55e; }
     .diff-Intermediate { background: #eab308; }
     .diff-Advanced { background: #ef4444; }
