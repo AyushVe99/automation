@@ -353,6 +353,46 @@
       border-radius: 100px;
       box-shadow: 0 20px 40px rgba(56, 189, 248, 0.3);
     }
+    /* DSA Visuals */
+    .dsa-visual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px 0 30px 0;
+      gap: 15px;
+      background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(236,72,153,0.1));
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid rgba(15,23,42,0.05);
+    }
+
+    .dsa-array { display: flex; gap: 10px; }
+
+    .dsa-cell {
+      width: 90px; height: 90px;
+      background: #ffffff; border: 3px solid #cbd5e1; border-radius: 16px;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 40px; font-weight: 800; color: #0f172a;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.05); position: relative;
+    }
+
+    .dsa-cell.active { border-color: #ec4899; background: rgba(236, 72, 153, 0.15); color: #be185d; }
+    .dsa-cell.target { border-color: #38bdf8; background: rgba(56, 189, 248, 0.15); color: #0369a1; }
+
+    .dsa-pointers {
+      display: flex; position: relative; height: 50px; justify-content: center; gap: 10px;
+    }
+
+    .dsa-pointer {
+      position: absolute; display: flex; flex-direction: column; align-items: center;
+      font-size: 28px; font-weight: 800; color: #ec4899; width: 90px;
+    }
+    
+    .dsa-pointer.blue { color: #38bdf8; }
+
+    .dsa-pointer::before {
+      content: '↑'; font-size: 40px; margin-top: -15px; line-height: 1;
+    }
   </style>
 </head>
 <body>
@@ -369,7 +409,7 @@
     </div>
 
     <!-- Slide 1: Question -->
-    <div id="slide-0" class="slide active">
+    <div class="slide active" data-slide="true">
       <div class="slide-title">Question</div>
       <h1 class="main-title">{{TITLE}}</h1>
       {{COMPANIES_HTML}}
@@ -381,18 +421,10 @@
       </div>
     </div>
 
-    <!-- Slide 2: Approach Explanation -->
-    <div id="slide-1" class="slide">
-      <div class="slide-title">Approach</div>
-      <h1 class="main-title">{{TITLE}}</h1>
-      <div class="question-text" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
-        <h2 style="color: #34d399; margin-bottom: 20px; font-size: 40px;">💡 Core Idea</h2>
-        <div style="font-size: 36px; line-height: 1.6;">{{APPROACH_EXPLANATION}}</div>
-      </div>
-    </div>
+    {{APPROACH_SLIDES_HTML}}
 
-    <!-- Slide 3: Brute Force -->
-    <div id="slide-2" class="slide">
+    <!-- Brute Force Code -->
+    <div class="slide" data-slide="true">
       <div class="slide-title">Approach 1: Brute Force</div>
       <h1 class="main-title">{{TITLE}}</h1>
       <div class="code-container">
@@ -415,8 +447,8 @@
       </div>
     </div>
 
-    <!-- Slide 4: Optimal Solution -->
-    <div id="slide-3" class="slide">
+    <!-- Optimal Code -->
+    <div class="slide" data-slide="true">
       <div class="slide-title">Approach 2: Optimal Solution</div>
       <h1 class="main-title">{{TITLE}}</h1>
       <div class="code-container">
@@ -439,8 +471,8 @@
       </div>
     </div>
 
-    <!-- Slide 5: Follow -->
-    <div id="slide-4" class="slide follow-slide">
+    <!-- Follow -->
+    <div class="slide follow-slide" data-slide="true">
       <div class="profile-pic">🚀</div>
       <div class="follow-title">Save & Share</div>
       <div class="follow-subtitle">if you found this helpful!</div>
@@ -461,12 +493,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
   <script>
     function getTotalSlides() {
-      return 5;
+      return document.querySelectorAll('.slide[data-slide="true"]').length;
     }
 
     function showSlide(index) {
-      document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
-      const activeSlide = document.getElementById('slide-' + index);
+      const slides = document.querySelectorAll('.slide[data-slide="true"]');
+      slides.forEach(el => el.classList.remove('active'));
+      const activeSlide = slides[index];
       activeSlide.classList.add('active');
       
       // Auto-scale font size for code blocks if they overflow the body height (1350px)
@@ -483,7 +516,7 @@
       }
       
       // Hide footer on last slide if needed
-      if(index === 4) {
+      if(index === slides.length - 1) {
         document.querySelector('.footer').style.display = 'none';
       } else {
         document.querySelector('.footer').style.display = 'flex';

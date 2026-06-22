@@ -64,7 +64,70 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{OPTIMAL}}/g, escapeHtml(post.optimal_code || '// No optimal code provided'));
     html = html.replace(/{{INPUT}}/g, escapeHtml(post.example_input || 'N/A'));
     html = html.replace(/{{OUTPUT}}/g, escapeHtml(post.example_output || 'N/A'));
-    html = html.replace(/{{APPROACH_EXPLANATION}}/g, escapeHtml(post.explanation || 'Think about how to solve this step by step.'));
+    
+    let approachSlidesHtml = '';
+    
+    // Core Idea Slide
+    approachSlidesHtml += `
+    <div class="slide" data-slide="true">
+      <div class="slide-title">Approach (1/2)</div>
+      <h1 class="main-title">{{TITLE}}</h1>
+      <div class="question-text" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
+        <h2 style="color: #34d399; margin-bottom: 20px; font-size: 40px;">💡 Core Idea</h2>
+        <div style="font-size: 32px; line-height: 1.6;">${post.explanation_1 || escapeHtml(post.explanation || '')}</div>
+      </div>
+    </div>
+    `;
+
+    // Mechanics / Diagram Slide(s)
+    let steps: string[] = [];
+    let diagramHtml = '';
+    try {
+      const parsed = JSON.parse(post.explanation_2 || '{}');
+      if (Array.isArray(parsed)) {
+          steps = parsed;
+      } else if (parsed && typeof parsed === 'object') {
+          steps = Array.isArray(parsed.steps) ? parsed.steps : [];
+          diagramHtml = parsed.diagram_html || '';
+      } else {
+          steps = [post.explanation_2 || ''];
+      }
+    } catch {
+      steps = [post.explanation_2 || ''];
+    }
+
+    if (steps.length > 0 && steps[0] !== '') {
+      const chunks = [];
+      const chunkSize = diagramHtml ? 2 : 3;
+      if (steps.length === 1 && !(post.explanation_2 || '').trim().startsWith('[')) {
+          chunks.push(steps);
+      } else {
+          for (let i = 0; i < steps.length; i += chunkSize) {
+            chunks.push(steps.slice(i, i + chunkSize));
+          }
+      }
+
+      chunks.forEach((chunk, index) => {
+         const items = chunk.length === 1 && chunk[0].includes('<') ? chunk[0] : 
+            `<ul style="margin-left: 30px; font-size: 30px; padding-right: 10px; color: #e2e8f0;">` + 
+            chunk.map(step => `<li style="margin-bottom: 12px;">${step}</li>`).join('') + 
+            `</ul>`;
+         
+         approachSlidesHtml += `
+          <div class="slide" data-slide="true">
+            <div class="slide-title">Approach (2/2) ${chunks.length > 1 ? `(${index + 1}/${chunks.length})` : ''}</div>
+            <h1 class="main-title">{{TITLE}}</h1>
+            <div class="question-text" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
+              <h2 style="color: #34d399; margin-bottom: 20px; font-size: 40px;">⚙️ Mechanics</h2>
+              ${diagramHtml ? diagramHtml : ''}
+              ${items}
+            </div>
+          </div>
+         `;
+      });
+    }
+
+    html = html.replace(/{{APPROACH_SLIDES_HTML}}/g, approachSlidesHtml);
     
     // Complexities
     html = html.replace(/{{BRUTE_TIME}}/g, escapeHtml(post.brute_time || 'O(n)'));

@@ -41,26 +41,27 @@ ${q.optimalCode}
 Generate a JSON object with exactly these fields:
 {
   "explanation_1": string,
-  "explanation_2": string
+  "explanation_2": {
+    "diagram_html": "string",
+    "steps": ["string"]
+  }
 }
 
 Requirements:
 1. explanation_1 (The Intuition & Problem Breakdown)
 - Explain the core problem and why the brute force approach is slow or naive.
 - Focus on the intuition behind the optimal solution.
-- Keep it highly engaging and easy to understand for beginners.
+- Format as HTML bullet points (<ul><li>...</li></ul>). Max 3 short bullets. Use <strong> for emphasis.
 
 2. explanation_2 (The Optimal Mechanics)
-- Explain exactly how the optimal solution improves over the brute force solution.
-- Break down the step-by-step mechanics of the optimal code.
-- This is the "deep explanation" that connects the intuition to the code.
+- Provide a JSON object with:
+  - "diagram_html": (Optional) If the topic involves arrays, pointers, or sliding windows, provide a visual diagram using these exact CSS classes: <div class="dsa-visual"><div class="dsa-array"><div class="dsa-cell">1</div><div class="dsa-cell active">4</div><div class="dsa-cell target">11</div></div><div class="dsa-pointers" style="width: calc(NUM_CELLS * 100px - 10px); left: 0;"><div class="dsa-pointer" style="left: 0px;">L</div><div class="dsa-pointer blue" style="left: 200px;">R</div></div></div> (Use inline styles for pointer left positions: index * 100px. Return empty string if not applicable).
+  - "steps": Array of strings (3 to 6 steps). Break down the exact execution mechanics. Max 1 sentence per step.
 
 Rules:
-- Make the explanations very thorough and deep so the user can understand the problem as well as the solution properly.
+- Make the explanations very thorough and deep.
 - Use plain English and simple analogies where possible.
-- Respond ONLY with valid raw JSON.
-- Do not include markdown, code fences, comments, or additional text.
-`;
+- Respond ONLY with valid raw JSON. Do not include markdown, code fences, comments, or additional text.`;
 
   try {
     const response = await ai.models.generateContent({
@@ -1430,7 +1431,7 @@ async function run() {
         (q as any).optimal_time || 'O(n)',
         (q as any).optimal_space || 'O(1)',
         enhanced.explanation_1 || '',
-        enhanced.explanation_2 || ''
+        enhanced.explanation_2 ? JSON.stringify(enhanced.explanation_2) : '[]'
       ]);
       logger.info(`Successfully saved enhanced Day ${i + 1} to DB.`);
     }
