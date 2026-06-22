@@ -349,7 +349,10 @@ Generate a JSON object with exactly these fields:
   "hook_text": string,
   "code": string,
   "explanation_1": string,
-  "explanation_2": array of strings,
+  "explanation_2": {
+    "diagram_html": "string",
+    "steps": ["string"]
+  },
   "real_world_usecase": string,
   "common_edge_cases": string,
   "interview_question": string,
@@ -361,7 +364,9 @@ Requirements:
 1. hook_text: 1 short sentence engaging hook on why this matters in FAANG.
 2. code: Modern, clean JavaScript. If a concept, provide the Blueprint Template. If a problem, provide optimal solution. Max 15 lines. No markdown around it.
 3. explanation_1: The Intuition. Break down the logic simply. Format as HTML bullet points (<ul><li>...</li></ul>). Max 3 short bullets. Use <strong> for emphasis.
-4. explanation_2: The Step-by-Step Mechanics. How does it execute? Provide a JSON array of strings. Each string is ONE specific execution step. Provide 3 to 6 steps. Max 1 sentence per step.
+4. explanation_2: The Step-by-Step Mechanics. Provide a JSON object with:
+   - "diagram_html": (Optional) If the topic involves arrays, pointers, or sliding windows, provide a visual diagram using these exact CSS classes: <div class="dsa-visual"><div class="dsa-array"><div class="dsa-cell">1</div><div class="dsa-cell active">4</div><div class="dsa-cell target">11</div></div><div class="dsa-pointers" style="width: calc(NUM_CELLS * 100px - 10px); left: 0;"><div class="dsa-pointer" style="left: 0px;">L</div><div class="dsa-pointer blue" style="left: 200px;">R</div></div></div> (Use inline styles for pointer left positions: index * 100px. Return empty string if not applicable).
+   - "steps": Array of strings (3 to 6 steps). Each string is ONE execution step. Max 1 sentence per step.
 5. real_world_usecase: Where does FAANG use this? STRICTLY max 2 short sentences.
 6. common_edge_cases: What breaks this code? Format as HTML bullet points (<ul><li>...</li></ul>). Max 2 bullets.
 7. interview_question: A quick theoretical follow-up question.

@@ -92,20 +92,29 @@ export async function generateImage(post: Post): Promise<string[]> {
     
     let mechanicsSlidesHtml = '';
     let steps: string[] = [];
+    let diagramHtml = '';
     try {
-      steps = JSON.parse(post.explanation_2 || '[]');
-      if (!Array.isArray(steps)) steps = [post.explanation_2 || ''];
+      const parsed = JSON.parse(post.explanation_2 || '{}');
+      if (Array.isArray(parsed)) {
+          steps = parsed;
+      } else if (parsed && typeof parsed === 'object') {
+          steps = Array.isArray(parsed.steps) ? parsed.steps : [];
+          diagramHtml = parsed.diagram_html || '';
+      } else {
+          steps = [post.explanation_2 || ''];
+      }
     } catch {
       steps = [post.explanation_2 || ''];
     }
 
     if (steps.length > 0 && steps[0] !== '') {
       const chunks = [];
+      const chunkSize = diagramHtml ? 2 : 3;
       if (steps.length === 1 && !(post.explanation_2 || '').trim().startsWith('[')) {
           chunks.push(steps);
       } else {
-          for (let i = 0; i < steps.length; i+=3) {
-            chunks.push(steps.slice(i, i+3));
+          for (let i = 0; i < steps.length; i += chunkSize) {
+            chunks.push(steps.slice(i, i + chunkSize));
           }
       }
 
@@ -121,6 +130,7 @@ export async function generateImage(post: Post): Promise<string[]> {
             <h1 class="main-title">{{TITLE}}</h1>
             <div class="content-box">
               <h2>⚙️ Mechanics</h2>
+              ${diagramHtml ? diagramHtml : ''}
               ${items}
             </div>
           </div>
