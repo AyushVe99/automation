@@ -100,4 +100,8 @@ async function initializeDb(db: Database): Promise<void> {
     await db.exec(`ALTER TABLE posts ADD COLUMN optimal_time TEXT;`);
     await db.exec(`ALTER TABLE posts ADD COLUMN optimal_space TEXT;`);
   } catch (e) {}
+
+  try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN questions_json TEXT;`);
+  } catch (e) {}
 }

@@ -56,6 +56,99 @@ export async function generateImage(post: Post): Promise<string[]> {
   html = html.replace(/{{TITLE}}/g, escapeHtml(post.title));
   html = html.replace(/{{CODE}}/g, escapeHtml(post.code || ''));
   html = html.replace(/{{DIFFICULTY}}/g, escapeHtml(post.difficulty));
+  if (!isDSA && !isJsArch && !isFaangDsa) {
+    let slidesHtml = '';
+    try {
+      const questions = JSON.parse((post as any).questions_json || '[]');
+      if (Array.isArray(questions) && questions.length > 0) {
+        questions.forEach((q, index) => {
+          slidesHtml += `
+            <div class="slide" data-slide="true">
+              <div class="header">
+                <div class="series-badge">100 Days of ${post.series.charAt(0).toUpperCase() + post.series.slice(1)}</div>
+                <div class="day-badge">Day ${post.day}</div>
+              </div>
+              
+              <div class="content">
+                <h1 class="question-title"><span style="color: #a855f7; margin-right: 15px;">Q${index + 1}:</span>${escapeHtml(q.question || q.title)}</h1>
+                
+                <div class="code-container">
+                  <div class="mac-buttons">
+                    <div class="mac-btn mac-close"></div>
+                    <div class="mac-btn mac-min"></div>
+                    <div class="mac-btn mac-max"></div>
+                  </div>
+                  <pre><code class="language-javascript">${escapeHtml(q.code || '')}</code></pre>
+                </div>
+                
+                <div class="answer-box" style="margin-top: 30px;">
+                  <h2 style="color: #10b981; margin-bottom: 15px; font-size: 32px; display: flex; align-items: center; gap: 10px;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Answer
+                  </h2>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; color: #f8fafc; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: inline-block;">
+                    ${escapeHtml(q.answer || '')}
+                  </div>
+                </div>
+
+                <div class="explanation-box" style="margin-top: 30px;">
+                  <h3 style="color: #60a5fa; margin-bottom: 15px; font-size: 28px;">📝 Explanation:</h3>
+                  <div style="font-size: 24px; line-height: 1.6;">${escapeHtml(q.explanation || '')}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        // Fallback to original single slide if no array found
+        slidesHtml = `
+          <div class="slide" data-slide="true">
+            <div class="header">
+              <div class="series-badge">100 Days of ${post.series.charAt(0).toUpperCase() + post.series.slice(1)}</div>
+              <div class="day-badge">Day ${post.day}</div>
+            </div>
+            
+            <div class="content">
+              <h1 class="question-title"><span style="color: #a855f7; margin-right: 15px;">Q:</span>${escapeHtml(post.question || post.title)}</h1>
+              
+              <div class="code-container">
+                <div class="mac-buttons">
+                  <div class="mac-btn mac-close"></div>
+                  <div class="mac-btn mac-min"></div>
+                  <div class="mac-btn mac-max"></div>
+                </div>
+                <pre><code class="language-javascript">${escapeHtml(post.code || '')}</code></pre>
+              </div>
+              
+              <div class="answer-box" style="margin-top: 30px;">
+                <h2 style="color: #10b981; margin-bottom: 15px; font-size: 32px; display: flex; align-items: center; gap: 10px;">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Answer
+                </h2>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; color: #f8fafc; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: inline-block;">
+                  ${escapeHtml(post.answer || '')}
+                </div>
+              </div>
+
+              <div class="explanation-box" style="margin-top: 30px;">
+                <h3 style="color: #60a5fa; margin-bottom: 15px; font-size: 28px;">📝 Explanation:</h3>
+                <div style="font-size: 24px; line-height: 1.6;">${escapeHtml(post.explanation || '')}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    } catch {
+      // Fallback
+      slidesHtml = `<div>Error parsing questions.</div>`;
+    }
+    
+    html = html.replace(/{{SLIDES_HTML}}/g, slidesHtml);
+  }
   
   if (isDSA) {
     html = html.replace(/{{COMPANIES_HTML}}/g, getCompanyBadgesHTML(post.title));
@@ -230,35 +323,32 @@ export async function generateImage(post: Post): Promise<string[]> {
     const outputDir = path.resolve(__dirname, '../../generated/posts');
     await fs.mkdir(outputDir, { recursive: true });
     
-    if (isDSA || isJsArch || isFaangDsa) {
-      const paths: string[] = [];
-      
-      // Determine how many slides we have
-      let totalSlides = await page.evaluate(() => {
-        return typeof (window as any).getTotalSlides === 'function' 
-          ? (window as any).getTotalSlides() 
-          : 4; // fallback
-      });
+    const paths: string[] = [];
+    
+    // Determine how many slides we have
+    let totalSlides = await page.evaluate(() => {
+      return typeof (window as any).getTotalSlides === 'function' 
+        ? (window as any).getTotalSlides() 
+        : 1; // fallback to 1 if no slides found
+    });
 
-      for (let i = 0; i < totalSlides; i++) {
-        // Evaluate script to show slide i
-        await page.evaluate((index) => {
+    for (let i = 0; i < totalSlides; i++) {
+      // Evaluate script to show slide i
+      await page.evaluate((index) => {
+        if (typeof (window as any).showSlide === 'function') {
           (window as any).showSlide(index);
-        }, i);
-        
-        // Wait a bit for syntax highlighting or rendering if needed
-        await new Promise(r => setTimeout(r, 100));
-
-        const outputPath = path.join(outputDir, `${post.series}-day-${post.day}-slide-${i + 1}.png`);
-        await page.screenshot({ path: outputPath, type: 'png' });
-        paths.push(outputPath);
-      }
-      return paths;
-    } else {
-      const outputPath = path.join(outputDir, `${post.series}-day-${post.day}.png`);
-      await page.screenshot({ path: outputPath, type: 'png' });
-      return [outputPath];
+        }
+      }, i);
+      
+      // Wait a bit for syntax highlighting or rendering if needed
+      await new Promise(r => setTimeout(r, 100));
+      
+      const outPath = path.resolve(outputDir, `day-${post.day}-slide-${i + 1}.png`);
+      await page.screenshot({ path: outPath, type: 'png' });
+      paths.push(outPath);
     }
+
+    return paths;
   } catch (err) {
     logger.error(err, 'Error generating image:');
     throw err;

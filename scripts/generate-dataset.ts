@@ -116,53 +116,65 @@ const questions = [
   { title: "structuredClone", difficulty: "Advanced", code: "let obj = {a: [1]};\nlet copy = structuredClone(obj);\nconsole.log(obj.a === copy.a);", answer: "false", explanation: "structuredClone performs a deep copy, so nested references are different." }
 ];
 
-// Fill the remaining to reach exactly 100 questions.
-// To keep it simple, we will duplicate and slightly mutate the advanced ones for the remaining 30 days.
+// We have exactly 116 unique questions in the base array.
 let totalQuestions: any[] = [...questions];
-
-while(totalQuestions.length < 100) {
-  let template = questions[Math.floor(Math.random() * questions.length)];
-  let newQ: any = { ...template, title: template.title + " (Variation)", day: totalQuestions.length + 1 };
-  
-  if (totalQuestions.length < 30) newQ.difficulty = "Easy";
-  else if (totalQuestions.length < 70) newQ.difficulty = "Medium";
-  else newQ.difficulty = "Advanced";
-
-  totalQuestions.push(newQ);
-}
-
-// Re-assign days properly
-totalQuestions = totalQuestions.map((q, index) => {
-  return {
-    ...q,
-    day: index + 1
-  };
-});
+const QUESTIONS_PER_DAY = 3;
 
 async function run() {
   const db = await getDb();
   
-  // Write to JSON file
-  const outPath = path.resolve(__dirname, '../data/javascript-100.json');
-  fs.writeFileSync(outPath, JSON.stringify(totalQuestions, null, 2));
-  logger.info('Saved data/javascript-100.json with 100 questions.');
+  // Find how many single-question days were already published
+  const publishedCountResult = await db.get("SELECT COUNT(*) as count FROM posts WHERE series='javascript' AND published=1");
+  const skipCount = publishedCountResult.count; // e.g. 13
 
-  // Also insert into database
-  for (const q of totalQuestions) {
+  // We skip the first `skipCount` questions because they were already published in Days 1-13.
+  const remainingQuestions = totalQuestions.slice(skipCount);
+
+  // Group the remaining questions into chunks of 3
+  let newGroupedDays: any[] = [];
+  for (let i = 0; i < remainingQuestions.length; i += QUESTIONS_PER_DAY) {
+    newGroupedDays.push(remainingQuestions.slice(i, i + QUESTIONS_PER_DAY));
+  }
+  
+  // Write to JSON file
+  const outPath = path.resolve(__dirname, '../data/javascript-grouped.json');
+  fs.writeFileSync(outPath, JSON.stringify(newGroupedDays, null, 2));
+  logger.info(`Saved data/javascript-grouped.json with ${newGroupedDays.length} days of content starting from Day ${skipCount + 1}.`);
+
+  // Insert/Update database starting from day = skipCount + 1
+  for (let i = 0; i < newGroupedDays.length; i++) {
+    const dayQuestions = newGroupedDays[i];
+    const day = skipCount + i + 1; // e.g. Day 14, 15, 16...
+    const title = `Day ${day} - 3 JS Interview Questions`;
+    const difficulty = dayQuestions[0].difficulty; // Inherit difficulty from the first question
+    const questionsJson = JSON.stringify(dayQuestions);
     const hashtags = JSON.stringify(['javascript', '100daysofcode', 'webdev', 'js', 'frontend']);
+    
     try {
       await db.run(
-        'INSERT INTO posts (series, day, title, difficulty, code, question, answer, explanation, hashtags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        ['javascript', q.day, q.title, q.difficulty, q.code, q.title, q.answer, q.explanation, hashtags]
+        'INSERT INTO posts (series, day, title, difficulty, code, question, answer, explanation, hashtags, questions_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        ['javascript', day, title, difficulty, '', '', '', '', hashtags, questionsJson]
       );
     } catch (err: any) {
       if (!err.message.includes('UNIQUE constraint failed')) {
         logger.error('Error inserting row', err);
+      } else {
+        // If it exists, update it to use the new questions_json format only if NOT published
+        await db.run(
+          'UPDATE posts SET title = ?, questions_json = ? WHERE series = ? AND day = ? AND (published = 0 OR published IS NULL)',
+          [title, questionsJson, 'javascript', day]
+        );
       }
     }
   }
 
-  logger.info('Database seeded with 100 questions.');
+  // Clear out questions_json for days 1 to skipCount to ensure they aren't accidentally multi-slide
+  await db.run(
+    'UPDATE posts SET questions_json = NULL WHERE series = ? AND day <= ?',
+    ['javascript', skipCount]
+  );
+
+  logger.info(`Database seeded with ${newGroupedDays.length} days of multi-question posts starting at Day ${skipCount + 1}.`);
 }
 
 run().catch((err) => logger.error(err));
