@@ -335,7 +335,7 @@ const modules = [
 ];
 
 async function generateTopicContent(moduleName: string, topic: string): Promise<any> {
-  const prompt = `
+    const prompt = `
 You are a top-tier FAANG Staff Engineer creating content for a highly respected DSA Interview Prep Course.
 
 Module: ${moduleName}
@@ -349,7 +349,7 @@ Generate a JSON object with exactly these fields:
   "hook_text": string,
   "code": string,
   "explanation_1": string,
-  "explanation_2": string,
+  "explanation_2": array of strings,
   "real_world_usecase": string,
   "common_edge_cases": string,
   "interview_question": string,
@@ -360,10 +360,10 @@ Generate a JSON object with exactly these fields:
 Requirements:
 1. hook_text: 1 short sentence engaging hook on why this matters in FAANG.
 2. code: Modern, clean JavaScript. If a concept, provide the Blueprint Template. If a problem, provide optimal solution. Max 15 lines. No markdown around it.
-3. explanation_1: The Intuition. Break down the logic simply. STRICTLY max 2 short sentences.
-4. explanation_2: The Step-by-Step Mechanics. How does it execute? STRICTLY max 2 short sentences.
+3. explanation_1: The Intuition. Break down the logic simply. Format as HTML bullet points (<ul><li>...</li></ul>). Max 3 short bullets. Use <strong> for emphasis.
+4. explanation_2: The Step-by-Step Mechanics. How does it execute? Provide a JSON array of strings. Each string is ONE specific execution step. Provide 3 to 6 steps. Max 1 sentence per step.
 5. real_world_usecase: Where does FAANG use this? STRICTLY max 2 short sentences.
-6. common_edge_cases: What breaks this code? STRICTLY 1-2 bullet points max.
+6. common_edge_cases: What breaks this code? Format as HTML bullet points (<ul><li>...</li></ul>). Max 2 bullets.
 7. interview_question: A quick theoretical follow-up question.
 8. pro_tip: A secret trick for recognizing this pattern. STRICTLY max 1 short sentence.
 9. difficulty: "Beginner", "Intermediate", or "Advanced".
@@ -448,7 +448,7 @@ async function run() {
           '', // explanation unused
           content.hook_text || '',
           content.explanation_1 || '',
-          content.explanation_2 || '',
+          content.explanation_2 ? JSON.stringify(content.explanation_2) : '[]',
           content.pro_tip || '',
           mod.name,
           content.real_world_usecase || '',

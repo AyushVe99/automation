@@ -360,7 +360,7 @@
     </div>
 
     <!-- Slide 1: Hook -->
-    <div id="slide-0" class="slide active">
+    <div class="slide active" data-slide="true">
       <div class="slide-title">FAANG Pattern Blueprint</div>
       <h1 class="main-title">{{TITLE}}</h1>
       {{COMPANIES_HTML}}
@@ -370,17 +370,17 @@
     </div>
 
     <!-- Slide 2: Intuition -->
-    <div id="slide-1" class="slide">
+    <div class="slide" data-slide="true">
       <div class="slide-title">1. The Intuition</div>
       <h1 class="main-title">{{TITLE}}</h1>
       <div class="content-box">
         <h2>💡 Core Idea</h2>
-        <div>{{EXPLANATION_1}}</div>
+        <div style="font-size: 30px; line-height: 1.6;">{{EXPLANATION_1}}</div>
       </div>
     </div>
 
     <!-- Slide 3: Code & Pro Tip -->
-    <div id="slide-2" class="slide">
+    <div class="slide" data-slide="true">
       <div class="slide-title">2. The Blueprint Code</div>
       <h1 class="main-title" style="margin-bottom: 20px;">{{TITLE}}</h1>
       <div class="code-container">
@@ -397,39 +397,32 @@
       </div>
     </div>
 
-    <!-- Slide 4: Mechanics -->
-    <div id="slide-3" class="slide">
-      <div class="slide-title">3. Under the Hood</div>
-      <h1 class="main-title">{{TITLE}}</h1>
-      <div class="content-box">
-        <h2>⚙️ Mechanics</h2>
-        <div>{{EXPLANATION_2}}</div>
-      </div>
-    </div>
+    <!-- Mechanics Slides -->
+    {{MECHANICS_SLIDES_HTML}}
 
     <!-- Slide 5: FAANG Context -->
-    <div id="slide-4" class="slide">
+    <div class="slide" data-slide="true">
       <div class="slide-title">4. FAANG Context</div>
       <h1 class="main-title">{{TITLE}}</h1>
       <div class="content-box" style="margin-bottom: 30px;">
         <h2>🏢 Real World Usecase</h2>
-        <div>{{REAL_WORLD_USECASE}}</div>
+        <div style="font-size: 30px; line-height: 1.6;">{{REAL_WORLD_USECASE}}</div>
       </div>
       <div class="content-box">
         <h2>⚠️ Common Edge Cases</h2>
-        <div>{{COMMON_EDGE_CASES}}</div>
+        <div style="font-size: 30px; line-height: 1.6;">{{COMMON_EDGE_CASES}}</div>
       </div>
     </div>
 
     <!-- Slide 6: Follow -->
-    <div id="slide-5" class="slide follow-slide">
+    <div class="slide follow-slide" data-slide="true">
       <div class="profile-pic">🚀</div>
       <div class="follow-title">Save & Share</div>
       <div class="follow-subtitle">if you found this helpful!</div>
       <div class="follow-btn">Follow @debugwithayush</div>
     </div>
 
-    <div class="footer">
+    <div class="footer" id="main-footer">
       <div class="difficulty">
         Level: <span class="diff-badge diff-{{DIFFICULTY}}">{{DIFFICULTY}}</span>
       </div>
@@ -442,34 +435,42 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
   <script>
-    function getTotalSlides() {
-      return 6;
-    }
+    // Assign dynamic indices and numbering to slides
+    const slides = document.querySelectorAll('.slide[data-slide="true"]');
+    slides.forEach((el, index) => {
+      el.id = 'slide-' + index;
+    });
 
-    function showSlide(index) {
+    window.getTotalSlides = function() {
+      return slides.length;
+    };
+
+    window.showSlide = function(index) {
       document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
-      const activeSlide = document.getElementById('slide-' + index);
-      activeSlide.classList.add('active');
-      
-      // Auto-scale font size for code blocks if they overflow
-      const codeBlocks = activeSlide.querySelectorAll('pre');
-      if (codeBlocks.length > 0) {
-        let fontSize = 32;
-        codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+      const target = document.getElementById('slide-' + index);
+      if(target) {
+        target.classList.add('active');
         
-        while (document.body.scrollHeight > 1350 && fontSize > 12) {
-          fontSize--;
+        // Auto-scale font size for code blocks if they overflow
+        const codeBlocks = target.querySelectorAll('pre');
+        if (codeBlocks.length > 0) {
+          let fontSize = 32;
           codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+          
+          while (document.body.scrollHeight > 1350 && fontSize > 12) {
+            fontSize--;
+            codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+          }
         }
       }
       
       // Hide footer on last slide if needed
-      if(index === 5) {
-        document.querySelector('.footer').style.display = 'none';
+      if(index === slides.length - 1) {
+        document.getElementById('main-footer').style.display = 'none';
       } else {
-        document.querySelector('.footer').style.display = 'flex';
+        document.getElementById('main-footer').style.display = 'flex';
       }
-    }
+    };
   </script>
 </body>
 </html>

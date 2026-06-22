@@ -77,7 +77,10 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{MODULE_NAME}}/g, escapeHtml(post.module_name || 'JavaScript Masterclass'));
     html = html.replace(/{{HOOK_TEXT}}/g, escapeHtml(post.hook_text || ''));
     html = html.replace(/{{EXPLANATION_1}}/g, post.explanation_1 || ''); // Allow HTML in explanations for bold tags
+    
+    // For js-arch, it still uses {{EXPLANATION_2}}. We just replace it directly.
     html = html.replace(/{{EXPLANATION_2}}/g, post.explanation_2 || '');
+    
     html = html.replace(/{{REAL_WORLD_USECASE}}/g, escapeHtml(post.real_world_usecase || ''));
     html = html.replace(/{{COMMON_EDGE_CASES}}/g, escapeHtml(post.common_edge_cases || ''));
     html = html.replace(/{{INTERVIEW_QUESTION}}/g, escapeHtml(post.interview_question || ''));
@@ -86,6 +89,59 @@ export async function generateImage(post: Post): Promise<string[]> {
   
   if (isFaangDsa) {
     html = html.replace(/{{COMPANIES_HTML}}/g, getCompanyBadgesHTML(post.title));
+    
+    let mechanicsSlidesHtml = '';
+    let steps: string[] = [];
+    try {
+      steps = JSON.parse(post.explanation_2 || '[]');
+      if (!Array.isArray(steps)) steps = [post.explanation_2 || ''];
+    } catch {
+      steps = [post.explanation_2 || ''];
+    }
+
+    if (steps.length > 0 && steps[0] !== '') {
+      const chunks = [];
+      if (steps.length === 1 && !(post.explanation_2 || '').trim().startsWith('[')) {
+          chunks.push(steps);
+      } else {
+          for (let i = 0; i < steps.length; i+=3) {
+            chunks.push(steps.slice(i, i+3));
+          }
+      }
+
+      chunks.forEach((chunk, index) => {
+         const items = chunk.length === 1 && chunk[0].includes('<') ? chunk[0] : 
+            `<ul style="margin-left: 30px; font-size: 30px; padding-right: 10px;">` + 
+            chunk.map(step => `<li style="margin-bottom: 12px;">${step}</li>`).join('') + 
+            `</ul>`;
+         
+         mechanicsSlidesHtml += `
+          <div class="slide mechanics-slide" data-slide="true">
+            <div class="slide-title">3. Under the Hood ${chunks.length > 1 ? `(${index + 1}/${chunks.length})` : ''}</div>
+            <h1 class="main-title">{{TITLE}}</h1>
+            <div class="content-box">
+              <h2>⚙️ Mechanics</h2>
+              ${items}
+            </div>
+          </div>
+         `;
+      });
+    } else {
+      mechanicsSlidesHtml = `
+          <div class="slide mechanics-slide" data-slide="true">
+            <div class="slide-title">3. Under the Hood</div>
+            <h1 class="main-title">{{TITLE}}</h1>
+            <div class="content-box">
+              <h2>⚙️ Mechanics</h2>
+              <div></div>
+            </div>
+          </div>
+      `;
+    }
+
+    html = html.replace(/{{MECHANICS_SLIDES_HTML}}/g, mechanicsSlidesHtml);
+    // Remove the unused fallback if any
+    html = html.replace(/{{TITLE}}/g, escapeHtml(post.title)); // We added {{TITLE}} in the dynamic slides above
   }
 
   const browser = await puppeteer.launch({
