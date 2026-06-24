@@ -68,6 +68,7 @@ Requirements:
 - Include 10-15 relevant hashtags for ${post.series.toUpperCase()} and coding
 - Keep it structured and easy to read using emojis
 - Do not repeat the exact code, focus on the concept
+- CRITICAL INSTAGRAM LIMIT: Your entire caption MUST be under 2000 characters. If the explanation is very long, summarize it concisely so it fits easily within the limit.
 
 Return ONLY the caption text.
       `;
@@ -82,7 +83,14 @@ Return ONLY the caption text.
       throw new Error('No text returned from Gemini API');
     }
 
-    return response.text.trim();
+    let finalCaption = response.text.trim();
+    if (finalCaption.length > 2150) {
+      // Instagram's hard limit is 2200. If we somehow exceeded it, forcefully slice it.
+      logger.warn(`Caption length ${finalCaption.length} exceeds limits, forcefully truncating.`);
+      finalCaption = finalCaption.substring(0, 2150) + '...';
+    }
+
+    return finalCaption;
   } catch (err: any) {
     logger.error('Error generating caption with Gemini, falling back to local:', err.message);
     const fallbackHashtags = post.series === 'dsa' 
