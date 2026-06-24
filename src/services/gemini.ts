@@ -55,14 +55,18 @@ Generate a highly engaging Instagram caption for the following ${post.series.toU
 Day: ${post.day}
 Topic: ${post.title}
 Difficulty: ${post.difficulty}
-Explanation: ${post.explanation}
+Question: ${post.question || ''}
+Answer: ${post.answer || ''}
+Explanation: ${post.explanation || ''}
+${(post as any).questions_json ? `Multiple Questions Data: ${(post as any).questions_json}` : ''}
 
 Requirements:
 - Start the caption with exactly: "Day ${post.day} of 100 Days of ${post.series.toUpperCase()} 🚀"
 - Educational and beginner friendly
-- Include an engagement hook (e.g., "Comment your answer before checking the explanation 👇")
+- EXPLICITLY state the Answer(s) and the Explanation(s) in the caption clearly! This is where the users will read the solution since it is NOT on the image slide.
+- Include an engagement hook (e.g., "Did you guess correctly before checking the caption? Let me know! 👇")
 - Include 10-15 relevant hashtags for ${post.series.toUpperCase()} and coding
-- Keep it concise but valuable
+- Keep it structured and easy to read using emojis
 - Do not repeat the exact code, focus on the concept
 
 Return ONLY the caption text.

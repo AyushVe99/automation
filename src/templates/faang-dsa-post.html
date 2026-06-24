@@ -441,17 +441,23 @@
     <!-- Mechanics Slides -->
     {{MECHANICS_SLIDES_HTML}}
 
-    <!-- Slide 5: FAANG Context -->
+    <!-- Slide 5: FAANG Context (Real World) -->
     <div class="slide" data-slide="true">
-      <div class="slide-title">4. FAANG Context</div>
+      <div class="slide-title">4. FAANG Context (1/2)</div>
       <h1 class="main-title">{{TITLE}}</h1>
-      <div class="content-box" style="margin-bottom: 30px;">
+      <div class="content-box">
         <h2>🏢 Real World Usecase</h2>
-        <div style="font-size: 30px; line-height: 1.6;">{{REAL_WORLD_USECASE}}</div>
+        <div style="font-size: 32px; line-height: 1.6;">{{REAL_WORLD_USECASE}}</div>
       </div>
+    </div>
+
+    <!-- Slide 6: FAANG Context (Edge Cases) -->
+    <div class="slide" data-slide="true">
+      <div class="slide-title">4. FAANG Context (2/2)</div>
+      <h1 class="main-title">{{TITLE}}</h1>
       <div class="content-box">
         <h2>⚠️ Common Edge Cases</h2>
-        <div style="font-size: 30px; line-height: 1.6;">{{COMMON_EDGE_CASES}}</div>
+        <div style="font-size: 32px; line-height: 1.6;">{{COMMON_EDGE_CASES}}</div>
       </div>
     </div>
 
@@ -498,9 +504,36 @@
           let fontSize = 32;
           codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
           
+          let lastHeight = document.body.scrollHeight;
           while (document.body.scrollHeight > 1350 && fontSize > 12) {
             fontSize--;
             codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+            if (document.body.scrollHeight === lastHeight) break;
+            lastHeight = document.body.scrollHeight;
+          }
+        }
+
+        // Auto-scale text content if it overflows
+        const textElements = target.querySelectorAll('.content-box, .content-box div, .content-box ul, .content-box p, .content-box li');
+        if (textElements.length > 0 && document.body.scrollHeight > 1350) {
+          let textFontSize = 34; 
+          let lastHeight = document.body.scrollHeight;
+          
+          const innerDiv = target.querySelector('.content-box div');
+          if (innerDiv && innerDiv.style.fontSize) {
+              textFontSize = parseInt(innerDiv.style.fontSize);
+          }
+          
+          while (document.body.scrollHeight > 1350 && textFontSize > 16) {
+            textFontSize--;
+            textElements.forEach(el => {
+               if(el.tagName !== 'H2' && el.tagName !== 'H3') {
+                  el.style.setProperty('font-size', textFontSize + 'px', 'important');
+                  el.style.setProperty('line-height', '1.4', 'important');
+               }
+            });
+            if (document.body.scrollHeight === lastHeight) break;
+            lastHeight = document.body.scrollHeight;
           }
         }
       }

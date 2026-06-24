@@ -393,6 +393,82 @@
     .dsa-pointer::before {
       content: '↑'; font-size: 40px; margin-top: -15px; line-height: 1;
     }
+
+    /* Visual Appeal for Approach Slides */
+    .idea-card {
+      background: linear-gradient(145deg, rgba(16,185,129,0.1), rgba(0,0,0,0.6));
+      border: 1px solid rgba(52,211,153,0.3);
+      border-top: 2px solid rgba(52,211,153,0.6);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 40px rgba(16,185,129,0.05);
+      border-radius: 32px;
+      padding: 50px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .idea-card::before {
+      content: '💡';
+      position: absolute;
+      right: -20px;
+      bottom: -40px;
+      font-size: 250px;
+      opacity: 0.05;
+      filter: blur(4px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .idea-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .mechanics-card {
+      background: linear-gradient(145deg, rgba(56,189,248,0.1), rgba(0,0,0,0.6));
+      border: 1px solid rgba(56,189,248,0.3);
+      border-top: 2px solid rgba(56,189,248,0.6);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 40px rgba(56,189,248,0.05);
+      border-radius: 32px;
+      padding: 50px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .mechanics-card::before {
+      content: '⚙️';
+      position: absolute;
+      right: -20px;
+      bottom: -40px;
+      font-size: 250px;
+      opacity: 0.05;
+      filter: blur(4px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .mechanics-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .mechanics-card ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    .mechanics-card li {
+      margin-bottom: 25px;
+      position: relative;
+      padding-left: 50px;
+      color: #f8fafc;
+      font-size: 32px;
+      line-height: 1.5;
+    }
+    .mechanics-card li::before {
+      content: '👉';
+      position: absolute;
+      left: 0;
+      top: 2px;
+      font-size: 34px;
+    }
   </style>
 </head>
 <body>
@@ -508,10 +584,39 @@
         let fontSize = 32; // Default starting size
         codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
         
+        let lastHeight = document.body.scrollHeight;
         // Reduce font size until it fits, but don't go below 12px
         while (document.body.scrollHeight > 1350 && fontSize > 12) {
           fontSize--;
           codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
+          if (document.body.scrollHeight === lastHeight) break;
+          lastHeight = document.body.scrollHeight;
+        }
+      }
+
+      // Auto-scale text content if it overflows
+      const textElements = activeSlide.querySelectorAll('.question-text, .question-text div, .question-text ul, .question-text p, .question-text li, .idea-card .card-content, .mechanics-card .card-content, .mechanics-card li');
+      if (textElements.length > 0 && document.body.scrollHeight > 1350) {
+        let textFontSize = 38; 
+        let lastHeight = document.body.scrollHeight;
+        
+        // Start by finding current max font size if possible
+        const innerDiv = activeSlide.querySelector('.question-text div, .idea-card .card-content, .mechanics-card .card-content');
+        if (innerDiv && innerDiv.style.fontSize) {
+            textFontSize = parseInt(innerDiv.style.fontSize);
+        }
+        
+        while (document.body.scrollHeight > 1350 && textFontSize > 16) {
+          textFontSize--;
+          textElements.forEach(el => {
+             // Ensure we don't accidentally shrink the titles (h2, h3)
+             if(el.tagName !== 'H2' && el.tagName !== 'H3') {
+                el.style.setProperty('font-size', textFontSize + 'px', 'important');
+                el.style.setProperty('line-height', '1.4', 'important');
+             }
+          });
+          if (document.body.scrollHeight === lastHeight) break;
+          lastHeight = document.body.scrollHeight;
         }
       }
       

@@ -571,6 +571,30 @@
             lastHeight = mainContainer.scrollHeight;
           }
         }
+
+        // Auto-scale text content if it overflows
+        const textElements = target.querySelectorAll('.concept-box, .hook-text, .concept-box p, .concept-box ul, .concept-box li');
+        const mainContainer = document.querySelector('.main-container');
+        if (textElements.length > 0 && mainContainer.scrollHeight > 1350) {
+          let textFontSize = 38; 
+          let lastHeight = mainContainer.scrollHeight;
+          
+          // Try to grab current inline font-size if available
+          const firstBox = target.querySelector('.concept-box, .hook-text');
+          if (firstBox && firstBox.style.fontSize) {
+              textFontSize = parseInt(firstBox.style.fontSize);
+          }
+          
+          while (mainContainer.scrollHeight > 1350 && textFontSize > 16) {
+            textFontSize--;
+            textElements.forEach(el => {
+               el.style.setProperty('font-size', textFontSize + 'px', 'important');
+               el.style.setProperty('line-height', '1.4', 'important');
+            });
+            if (mainContainer.scrollHeight === lastHeight) break;
+            lastHeight = mainContainer.scrollHeight;
+          }
+        }
       }
       
       // Hide footer on last slide

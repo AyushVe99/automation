@@ -213,9 +213,31 @@
       if (codeBlock) {
         let fontSize = 36;
         codeBlock.style.setProperty('font-size', fontSize + 'px', 'important');
+        let lastHeight = document.body.scrollHeight;
         while (document.body.scrollHeight > 1350 && fontSize > 16) {
           fontSize--;
           codeBlock.style.setProperty('font-size', fontSize + 'px', 'important');
+          if (document.body.scrollHeight === lastHeight) break;
+          lastHeight = document.body.scrollHeight;
+        }
+      }
+
+      // Auto-scale text content if it overflows
+      const textElements = activeSlide.querySelectorAll('.answer-box div, .explanation-box div, .explanation-box p, .explanation-box li');
+      if (textElements.length > 0 && document.body.scrollHeight > 1350) {
+        let textFontSize = 28; 
+        let lastHeight = document.body.scrollHeight;
+        
+        while (document.body.scrollHeight > 1350 && textFontSize > 12) {
+          textFontSize--;
+          textElements.forEach(el => {
+             if(el.tagName !== 'H2' && el.tagName !== 'H3' && el.tagName !== 'H1') {
+                el.style.setProperty('font-size', textFontSize + 'px', 'important');
+                el.style.setProperty('line-height', '1.4', 'important');
+             }
+          });
+          if (document.body.scrollHeight === lastHeight) break;
+          lastHeight = document.body.scrollHeight;
         }
       }
 

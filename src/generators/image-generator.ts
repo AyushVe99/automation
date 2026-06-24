@@ -17,6 +17,30 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, "&#039;");
 }
 
+function formatText(text: string): string {
+    if (!text) return '';
+    let formatted = escapeHtml(text);
+    
+    // Multi-line code blocks
+    formatted = formatted.replace(/```(?:\w+)?\n([\s\S]*?)```/g, (match, p1) => {
+        return `</p><div class="code-container" style="padding: 20px; margin: 20px 0; border-radius: 16px;"><pre><code class="language-javascript">${p1.trim()}</code></pre></div><p style="margin-bottom: 15px;">`;
+    });
+    
+    // Inline code
+    formatted = formatted.replace(/`([^`]+)`/g, '<code style="background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 8px; font-family: \'JetBrains Mono\', monospace; color: #fde047; font-size: 0.9em; border: 1px solid rgba(255,255,255,0.1);">$1</code>');
+    
+    // Bold text
+    formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong style="color: #38bdf8;">$1</strong>');
+    
+    // Line breaks to paragraphs
+    formatted = '<p style="margin-bottom: 15px;">' + formatted.replace(/\n\n+/g, '</p><p style="margin-bottom: 15px;">') + '</p>';
+    
+    // Cleanup empty paragraphs created by regex
+    formatted = formatted.replace(/<p[^>]*>\s*<\/p>/g, '');
+    
+    return formatted;
+}
+
 function getCompanyBadgesHTML(title: string): string {
   const t = title.toLowerCase();
   const companies = [];
@@ -81,21 +105,10 @@ export async function generateImage(post: Post): Promise<string[]> {
                   <pre><code class="language-javascript">${escapeHtml(q.code || '')}</code></pre>
                 </div>
                 
-                <div class="answer-box" style="margin-top: 30px;">
-                  <h2 style="color: #10b981; margin-bottom: 15px; font-size: 32px; display: flex; align-items: center; gap: 10px;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    Answer
-                  </h2>
-                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; color: #f8fafc; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: inline-block;">
-                    ${escapeHtml(q.answer || '')}
+                <div class="caption-cta" style="margin-top: 50px; text-align: center;">
+                  <div style="background: rgba(168, 85, 247, 0.15); border: 2px solid rgba(168, 85, 247, 0.4); padding: 20px 40px; border-radius: 50px; font-size: 32px; font-weight: 800; color: #d8b4fe; display: inline-flex; align-items: center; gap: 15px; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.1);">
+                    <span style="font-size: 40px;">👇</span> Check caption for the answer & explanation!
                   </div>
-                </div>
-
-                <div class="explanation-box" style="margin-top: 30px;">
-                  <h3 style="color: #60a5fa; margin-bottom: 15px; font-size: 28px;">📝 Explanation:</h3>
-                  <div style="font-size: 24px; line-height: 1.6;">${escapeHtml(q.explanation || '')}</div>
                 </div>
               </div>
             </div>
@@ -122,21 +135,10 @@ export async function generateImage(post: Post): Promise<string[]> {
                 <pre><code class="language-javascript">${escapeHtml(post.code || '')}</code></pre>
               </div>
               
-              <div class="answer-box" style="margin-top: 30px;">
-                <h2 style="color: #10b981; margin-bottom: 15px; font-size: 32px; display: flex; align-items: center; gap: 10px;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  Answer
-                </h2>
-                <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; color: #f8fafc; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: inline-block;">
-                  ${escapeHtml(post.answer || '')}
+              <div class="caption-cta" style="margin-top: 50px; text-align: center;">
+                <div style="background: rgba(168, 85, 247, 0.15); border: 2px solid rgba(168, 85, 247, 0.4); padding: 20px 40px; border-radius: 50px; font-size: 32px; font-weight: 800; color: #d8b4fe; display: inline-flex; align-items: center; gap: 15px; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.1);">
+                  <span style="font-size: 40px;">👇</span> Check caption for the answer & explanation!
                 </div>
-              </div>
-
-              <div class="explanation-box" style="margin-top: 30px;">
-                <h3 style="color: #60a5fa; margin-bottom: 15px; font-size: 28px;">📝 Explanation:</h3>
-                <div style="font-size: 24px; line-height: 1.6;">${escapeHtml(post.explanation || '')}</div>
               </div>
             </div>
           </div>
@@ -165,9 +167,14 @@ export async function generateImage(post: Post): Promise<string[]> {
     <div class="slide" data-slide="true">
       <div class="slide-title">Approach (1/2)</div>
       <h1 class="main-title">{{TITLE}}</h1>
-      <div class="question-text" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
-        <h2 style="color: #34d399; margin-bottom: 20px; font-size: 40px;">💡 Core Idea</h2>
-        <div style="font-size: 32px; line-height: 1.6;">${post.explanation_1 || escapeHtml(post.explanation || '')}</div>
+      <div class="idea-card">
+        <div class="card-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+           <div style="background: rgba(52,211,153,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(52,211,153,0.4);"><span style="font-size: 40px;">💡</span></div>
+           <h2 style="color: #34d399; font-size: 48px; margin: 0; font-weight: 800; letter-spacing: 1px;">Core Idea</h2>
+        </div>
+        <div class="card-content" style="font-size: 34px; line-height: 1.6; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 500;">
+           ${formatText(post.explanation_1 || post.explanation || '')}
+        </div>
       </div>
     </div>
     `;
@@ -202,18 +209,23 @@ export async function generateImage(post: Post): Promise<string[]> {
 
       chunks.forEach((chunk, index) => {
          const items = chunk.length === 1 && chunk[0].includes('<') ? chunk[0] : 
-            `<ul style="margin-left: 30px; font-size: 30px; padding-right: 10px; color: #e2e8f0;">` + 
-            chunk.map(step => `<li style="margin-bottom: 12px;">${step}</li>`).join('') + 
+            `<ul>` + 
+            chunk.map(step => `<li>${formatText(step)}</li>`).join('') + 
             `</ul>`;
          
          approachSlidesHtml += `
           <div class="slide" data-slide="true">
             <div class="slide-title">Approach (2/2) ${chunks.length > 1 ? `(${index + 1}/${chunks.length})` : ''}</div>
             <h1 class="main-title">{{TITLE}}</h1>
-            <div class="question-text" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
-              <h2 style="color: #34d399; margin-bottom: 20px; font-size: 40px;">⚙️ Mechanics</h2>
-              ${diagramHtml ? diagramHtml : ''}
-              ${items}
+            <div class="mechanics-card">
+              <div class="card-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+                 <div style="background: rgba(56,189,248,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(56,189,248,0.4);"><span style="font-size: 40px;">⚙️</span></div>
+                 <h2 style="color: #38bdf8; font-size: 48px; margin: 0; font-weight: 800; letter-spacing: 1px;">Mechanics</h2>
+              </div>
+              <div class="card-content" style="font-size: 34px; line-height: 1.6; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 500;">
+                 ${diagramHtml ? diagramHtml : ''}
+                 ${items}
+              </div>
             </div>
           </div>
          `;
@@ -232,14 +244,14 @@ export async function generateImage(post: Post): Promise<string[]> {
   if (isJsArch || isFaangDsa) {
     html = html.replace(/{{MODULE_NAME}}/g, escapeHtml(post.module_name || 'JavaScript Masterclass'));
     html = html.replace(/{{HOOK_TEXT}}/g, escapeHtml(post.hook_text || ''));
-    html = html.replace(/{{EXPLANATION_1}}/g, post.explanation_1 || ''); // Allow HTML in explanations for bold tags
+    html = html.replace(/{{EXPLANATION_1}}/g, formatText(post.explanation_1 || ''));
     
     // For js-arch, it still uses {{EXPLANATION_2}}. We just replace it directly.
-    html = html.replace(/{{EXPLANATION_2}}/g, post.explanation_2 || '');
+    html = html.replace(/{{EXPLANATION_2}}/g, formatText(post.explanation_2 || ''));
     
-    html = html.replace(/{{REAL_WORLD_USECASE}}/g, escapeHtml(post.real_world_usecase || ''));
-    html = html.replace(/{{COMMON_EDGE_CASES}}/g, escapeHtml(post.common_edge_cases || ''));
-    html = html.replace(/{{INTERVIEW_QUESTION}}/g, escapeHtml(post.interview_question || ''));
+    html = html.replace(/{{REAL_WORLD_USECASE}}/g, formatText(post.real_world_usecase || ''));
+    html = html.replace(/{{COMMON_EDGE_CASES}}/g, formatText(post.common_edge_cases || ''));
+    html = html.replace(/{{INTERVIEW_QUESTION}}/g, formatText(post.interview_question || ''));
     html = html.replace(/{{PRO_TIP}}/g, escapeHtml(post.pro_tip || 'Keep coding!'));
   }
   
@@ -277,7 +289,7 @@ export async function generateImage(post: Post): Promise<string[]> {
       chunks.forEach((chunk, index) => {
          const items = chunk.length === 1 && chunk[0].includes('<') ? chunk[0] : 
             `<ul style="margin-left: 30px; font-size: 30px; padding-right: 10px;">` + 
-            chunk.map(step => `<li style="margin-bottom: 12px;">${step}</li>`).join('') + 
+            chunk.map(step => `<li style="margin-bottom: 12px;">${formatText(step)}</li>`).join('') + 
             `</ul>`;
          
          mechanicsSlidesHtml += `
