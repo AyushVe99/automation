@@ -233,6 +233,7 @@ Generate a JSON object with exactly these fields:
 "code": string,
 "explanation_1": string,
 "explanation_2": string,
+"diagram_nodes": string[],
 "real_world_usecase": string,
 "common_edge_cases": string,
 "interview_question": string,
@@ -243,61 +244,52 @@ Generate a JSON object with exactly these fields:
 Requirements:
 
 1. hook_text
-* Write an engaging 1-2 sentence hook explaining why this topic matters in real-world JavaScript development.
-* Keep it concise, practical, and beginner-friendly.
-* Avoid hype, clickbait, or exaggerated claims.
+* CRITICAL: Write an aggressive, curiosity-inducing 1-2 sentence hook (Max 15 words).
+* Challenge conventional wisdom (e.g., "90% of devs misuse X" or "Stop doing Y").
+* Avoid hype, just state a hard truth.
 
 2. code
-* Provide a concise, modern JavaScript example demonstrating the core concept.
-* Use ES6+ syntax whenever appropriate.
-* Use realistic variable names.
-* Keep the example under 8 lines.
+* Provide a concise, modern JavaScript example (Max 8 lines).
+* Use ES6+ syntax. Show a before/after (Beginner vs Senior) if applicable.
 
-3. explanation_1
-* Explain what the concept is and how developers use it.
-* Focus on understanding rather than syntax.
-* Keep it to 3-4 sentences.
-* Prioritize clarity over implementation details.
+3. explanation_1 (Concept)
+* CRITICAL: STRICT MAXIMUM OF 35 WORDS.
+* Explain the core concept punchily. No fluff. 
+* Do NOT start with "This is..." or "X allows you to...". Get straight to the point.
 
-4. explanation_2
-* Explain important behavior, caveats, limitations, or common mistakes developers should know.
-* Keep it to 3-4 sentences.
-* Avoid unnecessary engine internals unless the topic specifically concerns JavaScript internals.
+4. explanation_2 (Under the Hood)
+* CRITICAL: STRICT MAXIMUM OF 35 WORDS.
+* Explain the engine mechanics or deeper behavior (e.g., Call Stack, Event Loop, Memory).
+
+4.5. diagram_nodes
+* Provide an array of exactly 3 short strings (max 3 words each) representing a flowchart of this topic's mechanics.
+* Example: ["Call Stack", "Condition Met", "Early Return"] or ["Code", "V8 Engine", "Execution"].
 
 5. real_world_usecase
-* Explain a realistic, production-level scenario or architecture where this concept is actively used.
-* Keep it to 3-4 sentences.
+* CRITICAL: STRICT MAXIMUM OF 35 WORDS.
+* Name-drop where this is used in production (e.g., "React uses this for...", "Next.js middleware relies on...").
 
 6. common_edge_cases
-* Explain a specific hidden gotcha, edge case, or silent bug that happens when developers misuse this concept.
-* Keep it to 3-4 sentences.
+* CRITICAL: STRICT MAXIMUM OF 35 WORDS.
+* Highlight a silent bug, memory leak, or weird JS quirk related to the topic.
 
 7. interview_question
-* Provide a high-level technical interview question (and brief answer) that tests true understanding of this topic.
-* Format it nicely in 3-4 sentences.
+* CRITICAL: STRICT MAXIMUM OF 35 WORDS.
+* A tricky Senior-level interview question and a one-sentence answer.
 
 8. pro_tip
-* Provide a modern best practice or practical recommendation used in professional codebases.
-* Avoid outdated micro-optimizations.
-* Avoid absolute statements such as "always" or "never" unless universally true.
+* CRITICAL: STRICT MAXIMUM OF 25 WORDS.
+* A single, highly-actionable modern best practice.
 
 9. difficulty
-* Must be exactly one of:
-  * "Beginner"
-  * "Intermediate"
-  * "Advanced"
+* Must be exactly: "Beginner", "Intermediate", or "Advanced".
 
 General Rules:
-* PROGRESSIVE DISCLOSURE: This content must be a 10/10 for BOTH beginners and intermediate developers.
-* Start Simple (hook, code, explanation_1): Use plain English, simple analogies, and basic code examples (e.g., simple strings/variables, not complex objects or APIs) so absolute beginners instantly understand.
-* End Deep (real_world, edge_cases, interview): Provide advanced, high-value insights, deep mechanics, and production-level architecture so intermediate developers learn something new.
-* Explain jargon: If you must use advanced terms (like 'interpolation' or 'lexical scope'), explain them briefly.
-* Prioritize technical accuracy over sounding advanced.
-* Avoid unverified performance claims.
-* Avoid mentioning memory usage, CPU optimizations, or engine internals unless directly relevant to the topic.
-* Use a consistent professional tone.
-* Content should be suitable for a JavaScript learning platform.
-* Explanations must be timeless and aligned with modern JavaScript best practices.
+* APPLE/LINEAR AESTHETIC: Write like a minimalist Senior Staff Engineer. 
+* ZERO FLUFF: Every word must earn its place. Cut filler words completely.
+* SHORT SENTENCES: People are reading this on mobile Instagram. Short. Punchy. Direct.
+* NO PARAGRAPHS: If a field exceeds 40 words, you have failed.
+* DO NOT use markdown formatting in the output strings (except inside the code block).
 
 Respond ONLY with valid raw JSON.
 Do not include markdown, code fences, comments, or additional text.

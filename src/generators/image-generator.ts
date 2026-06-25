@@ -249,6 +249,32 @@ export async function generateImage(post: Post): Promise<string[]> {
     // For js-arch, it still uses {{EXPLANATION_2}}. We just replace it directly.
     html = html.replace(/{{EXPLANATION_2}}/g, formatText(post.explanation_2 || ''));
     
+    // Generate dynamic diagram HTML if diagram_nodes exist
+    let diagramHtml = '';
+    const dNodes = (post as any).diagram_nodes;
+    if (dNodes && Array.isArray(dNodes) && dNodes.length > 0) {
+      diagramHtml = dNodes.map((node, index) => {
+        const isYellow = index === 1 ? ' yellow' : '';
+        const nodeHtml = `<div class="diagram-node${isYellow}">${escapeHtml(node)}</div>`;
+        if (index < dNodes.length - 1) {
+           return nodeHtml + `
+        <svg style="width: 40px; height: 20px;" viewBox="0 0 50 20">
+          <path d="M0,10 L40,10 M30,0 L40,10 L30,20" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+        </svg>`;
+        }
+        return nodeHtml;
+      }).join('');
+    } else {
+      diagramHtml = `
+        <div class="diagram-node">Code</div>
+        <svg style="width: 40px; height: 20px;" viewBox="0 0 50 20"><path d="M0,10 L40,10 M30,0 L40,10 L30,20" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/></svg>
+        <div class="diagram-node yellow">Engine</div>
+        <svg style="width: 40px; height: 20px;" viewBox="0 0 50 20"><path d="M0,10 L40,10 M30,0 L40,10 L30,20" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/></svg>
+        <div class="diagram-node">Execution</div>
+      `;
+    }
+    html = html.replace(/{{DIAGRAM_HTML}}/g, diagramHtml);
+    
     html = html.replace(/{{REAL_WORLD_USECASE}}/g, formatText(post.real_world_usecase || ''));
     html = html.replace(/{{COMMON_EDGE_CASES}}/g, formatText(post.common_edge_cases || ''));
     html = html.replace(/{{INTERVIEW_QUESTION}}/g, formatText(post.interview_question || ''));
