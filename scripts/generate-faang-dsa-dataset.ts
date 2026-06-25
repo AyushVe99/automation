@@ -361,16 +361,16 @@ Generate a JSON object with exactly these fields:
 }
 
 Requirements:
-1. hook_text: 1 short sentence engaging hook on why this matters in FAANG.
-2. code: Modern, clean JavaScript. If a concept, provide the Blueprint Template. If a problem, provide optimal solution. Max 15 lines. No markdown around it.
-3. explanation_1: The Intuition. Break down the logic simply. Format as HTML bullet points (<ul><li>...</li></ul>). Max 3 short bullets. Use <strong> for emphasis.
+1. hook_text: CRITICAL: Max 15 words. Write a punchy, counter-intuitive hook about why this matters in FAANG interviews (e.g. "Why 90% of devs fail Two Sum").
+2. code: Modern, clean JavaScript. If a concept, provide the Blueprint Template. If a problem, provide optimal solution. Max 15 lines. No markdown around it. Include a brief inline comment.
+3. explanation_1: CRITICAL: STRICT MAXIMUM OF 35 WORDS TOTAL. The Mental Model. Break down the logic simply. Format as HTML bullet points (<ul><li>...</li></ul>). Max 3 short bullets. Use <strong> for emphasis. NO PARAGRAPHS.
 4. explanation_2: The Step-by-Step Mechanics. Provide a JSON object with:
    - "diagram_html": (Optional) If the topic involves arrays, pointers, or sliding windows, provide a visual diagram using these exact CSS classes: <div class="dsa-visual"><div class="dsa-array"><div class="dsa-cell">1</div><div class="dsa-cell active">4</div><div class="dsa-cell target">11</div></div><div class="dsa-pointers" style="width: calc(NUM_CELLS * 100px - 10px); left: 0;"><div class="dsa-pointer" style="left: 0px;">L</div><div class="dsa-pointer blue" style="left: 200px;">R</div></div></div> (Use inline styles for pointer left positions: index * 100px. Return empty string if not applicable).
-   - "steps": Array of strings (3 to 6 steps). Each string is ONE execution step. Max 1 sentence per step.
-5. real_world_usecase: Where does FAANG use this? STRICTLY max 2 short sentences.
-6. common_edge_cases: What breaks this code? Format as HTML bullet points (<ul><li>...</li></ul>). Max 2 bullets.
-7. interview_question: A quick theoretical follow-up question.
-8. pro_tip: A secret trick for recognizing this pattern. STRICTLY max 1 short sentence.
+   - "steps": Array of exactly 3 to 4 strings. CRITICAL: Max 10 words per string. Explain ONE execution step per string.
+5. real_world_usecase: CRITICAL: STRICT MAXIMUM OF 35 WORDS. Name-drop where FAANG actually uses this (e.g. "React uses this for...", "Redis relies on...").
+6. common_edge_cases: CRITICAL: STRICT MAXIMUM OF 30 WORDS TOTAL. What breaks this code? Format as HTML bullet points (<ul><li>...</li></ul>). Max 2 short bullets.
+7. interview_question: A quick theoretical follow-up question. Max 15 words.
+8. pro_tip: A secret trick for recognizing this pattern. STRICTLY max 15 words. NO FLUFF.
 9. difficulty: "Beginner", "Intermediate", or "Advanced".
 
 Respond ONLY with valid raw JSON. Do not include markdown blocks like \`\`\`json.

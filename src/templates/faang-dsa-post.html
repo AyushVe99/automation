@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>FAANG DSA Post</title>
-  <!-- Prism.js Dark Theme for the code block -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+  <!-- Prism.js Theme -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
     * {
       box-sizing: border-box;
@@ -15,9 +15,9 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fafafa;
+      color: #09090b;
       width: 1080px;
       height: 1350px;
       display: flex;
@@ -26,59 +26,27 @@
       overflow: hidden;
     }
 
-    /* Abstract background for light mode */
-    .bg-shape {
+    /* Minimal Grid Background */
+    .grid-bg {
       position: absolute;
-      border-radius: 50%;
-      filter: blur(140px);
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
       z-index: 0;
     }
-    .shape-1 {
-      top: -150px;
-      left: -200px;
-      width: 600px;
-      height: 600px;
-      background: rgba(56, 189, 248, 0.4); /* Sky Blue */
-    }
-    .shape-2 {
-      bottom: -150px;
-      right: -100px;
-      width: 700px;
-      height: 700px;
-      background: rgba(236, 72, 153, 0.3); /* Pink */
-    }
-    .shape-3 {
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+
+    /* Subtle Radial Glow */
+    .glow {
+      position: absolute;
+      top: -200px;
+      right: -200px;
       width: 800px;
       height: 800px;
-      background: rgba(139, 92, 246, 0.15); /* Violet */
-    }
-
-    /* Grid Overlay */
-    .grid-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-image: 
-        linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      z-index: 1;
-    }
-
-    /* Watermark */
-    .watermark {
-      position: absolute;
-      top: 50%; right: -20px;
-      transform: translateY(-50%);
-      font-size: 120px;
-      font-weight: 800;
-      color: rgba(15, 23, 42, 0.03);
-      white-space: nowrap;
-      z-index: 2;
-      pointer-events: none;
-      user-select: none;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: 0;
     }
 
     .main-container {
@@ -90,41 +58,41 @@
       height: 100%;
     }
 
+    /* Top Bar */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 50px;
+      margin-bottom: 60px;
     }
 
     .badge-wrapper {
-      background: linear-gradient(90deg, rgba(56,189,248,0.1), rgba(236,72,153,0.1));
-      border: 1px solid rgba(15,23,42,0.1);
-      border-radius: 50px;
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 100px;
       padding: 12px 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
     
     .badge {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #3f3f46;
       text-transform: uppercase;
-      background: linear-gradient(90deg, #0284c7, #db2777);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
     .day-badge {
-      font-size: 34px;
-      font-weight: 800;
-      color: #0f172a;
-      background: #ffffff;
-      padding: 10px 24px;
-      border-radius: 16px;
-      border: 1px solid rgba(15,23,42,0.1);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      font-size: 24px;
+      font-weight: 700;
+      color: #27272a;
+      background: #f4f4f5;
+      padding: 12px 24px;
+      border-radius: 100px;
+      border: 1px solid #e4e4e7;
     }
 
+    /* Slides */
     .slide {
       display: none;
       flex-direction: column;
@@ -136,80 +104,63 @@
     }
 
     .slide-title {
-      font-size: 32px;
-      font-weight: 800;
-      color: #64748b;
-      margin-bottom: 20px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #71717a;
+      margin-bottom: 24px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
     }
 
     .main-title {
-      font-size: 64px;
+      font-size: 72px;
       font-weight: 800;
-      line-height: 1.2;
+      letter-spacing: -2px;
+      line-height: 1.1;
       margin-bottom: 40px;
-      color: #0f172a;
+      color: #09090b;
     }
 
+    /* Cards */
     .content-box {
-      font-size: 34px;
+      font-size: 36px;
       line-height: 1.5;
-      color: #334155;
-      background: rgba(255, 255, 255, 0.7);
-      padding: 40px;
+      color: #3f3f46;
+      background: #ffffff;
+      padding: 48px;
       border-radius: 24px;
-      border: 1px solid rgba(15,23,42,0.05);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
+      border: 1px solid #e4e4e7;
+      box-shadow: 0 12px 40px -12px rgba(0,0,0,0.05);
     }
 
     .content-box h2 {
-      font-size: 44px;
+      font-size: 40px;
       font-weight: 800;
-      color: #0f172a;
-      margin-bottom: 20px;
-    }
-
-    .code-container {
-      background: #0f172a;
-      border-radius: 24px;
-      padding: 40px;
-      border: 1px solid rgba(15, 23, 42, 0.1);
-      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 30px;
-    }
-    
-    .code-container::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 6px;
-      background: linear-gradient(90deg, #38bdf8, #ec4899);
-    }
-
-    .mac-buttons {
+      letter-spacing: -1px;
+      color: #09090b;
+      margin-bottom: 24px;
       display: flex;
-      gap: 12px;
-      margin-bottom: 30px;
+      align-items: center;
+      gap: 16px;
     }
 
-    .mac-btn {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
+    /* Sleek Code Block */
+    .code-container {
+      background: #0a0a0a;
+      border-radius: 20px;
+      padding: 40px;
+      border: 1px solid #27272a;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      margin-bottom: 40px;
+      position: relative;
     }
-    .mac-close { background: #ff5f56; }
-    .mac-min { background: #ffbd2e; }
-    .mac-max { background: #27c93f; }
 
     pre[class*="language-"] {
       background: transparent !important;
       margin: 0 !important;
       padding: 0 !important;
-      font-size: 32px !important;
+      font-size: 30px !important;
       line-height: 1.6 !important;
       font-family: 'JetBrains Mono', monospace !important;
       text-shadow: none !important;
@@ -218,32 +169,45 @@
     }
 
     code[class*="language-"], pre[class*="language-"] {
-      color: #f8fafc !important;
-      text-shadow: none !important;
-      white-space: pre-wrap !important;
-      word-break: break-word !important;
+      color: #f4f4f5 !important;
     }
 
+    /* Companies */
     .companies-container {
       display: flex;
-      gap: 15px;
-      margin-bottom: 30px;
+      gap: 16px;
+      margin-bottom: 40px;
       flex-wrap: wrap;
     }
     .company-badge {
       background: #ffffff;
-      border: 1px solid rgba(15, 23, 42, 0.1);
-      padding: 8px 20px;
-      border-radius: 50px;
-      font-size: 24px;
+      border: 1px solid #e4e4e7;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 26px;
       font-weight: 700;
-      color: #0f172a;
+      color: #27272a;
       display: flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
+    /* Pro Tip */
+    .pro-tip {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 32px;
+      border-radius: 20px;
+      font-size: 32px;
+      color: #166534;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+
+    /* Footer */
     .footer {
       margin-top: auto;
       width: 100%;
@@ -251,148 +215,129 @@
       justify-content: space-between;
       align-items: center;
       padding-top: 40px;
-      border-top: 2px solid rgba(15,23,42,0.05);
+      border-top: 1px solid #e4e4e7;
     }
 
     .difficulty {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 600;
-      color: #64748b;
+      color: #71717a;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
     
     .diff-badge {
       padding: 8px 20px;
-      border-radius: 12px;
-      font-weight: 800;
-      color: #fff;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 24px;
     }
-    .diff-Beginner { background: #38bdf8; }
-    .diff-Easy { background: #22c55e; }
-    .diff-Intermediate { background: #eab308; }
-    .diff-Advanced { background: #ef4444; }
+    .diff-Beginner { background: #dbeafe; color: #1e40af; }
+    .diff-Easy { background: #dcfce7; color: #166534; }
+    .diff-Intermediate { background: #fef9c3; color: #854d0e; }
+    .diff-Advanced { background: #fee2e2; color: #991b1b; }
 
     .brand-tag {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
-      color: #0f172a;
-      background: #ffffff;
-      padding: 12px 24px;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-      border: 1px solid rgba(15,23,42,0.1);
-    }
-    
-    .brand-tag span {
-      background: linear-gradient(90deg, #0284c7, #db2777);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #09090b;
+      letter-spacing: -0.5px;
     }
 
-    /* Follow Slide Styles */
+    /* Follow Slide */
     .follow-slide {
       text-align: center;
       align-items: center;
     }
     .profile-pic {
-      width: 250px;
-      height: 250px;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #38bdf8, #ec4899);
+      background: #09090b;
       margin-bottom: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 100px;
-      box-shadow: 0 20px 50px rgba(236, 72, 153, 0.3);
-      border: 8px solid #ffffff;
+      font-size: 80px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     }
     .follow-title {
       font-size: 72px;
       font-weight: 800;
-      margin-bottom: 20px;
-      color: #0f172a;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      color: #09090b;
     }
     .follow-subtitle {
       font-size: 36px;
-      color: #64748b;
+      color: #71717a;
       margin-bottom: 60px;
     }
     .follow-btn {
-      background: linear-gradient(90deg, #38bdf8, #ec4899);
-      color: #fff;
-      font-size: 40px;
-      font-weight: 800;
+      background: #09090b;
+      color: #ffffff;
+      font-size: 36px;
+      font-weight: 700;
       padding: 24px 64px;
       border-radius: 100px;
-      box-shadow: 0 20px 40px rgba(236, 72, 153, 0.3);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
     }
 
-    .pro-tip {
-      background: linear-gradient(90deg, rgba(56,189,248,0.1), rgba(236,72,153,0.1));
-      border: 1px solid rgba(236,72,153,0.3);
-      padding: 30px;
-      border-radius: 20px;
-      font-size: 32px;
-      color: #0f172a;
-      display: flex;
-      gap: 15px;
-      align-items: flex-start;
+    /* Lists inside content */
+    .content-box ul {
+      margin-left: 40px;
+      margin-top: 20px;
     }
-
-    /* DSA Visuals */
+    .content-box li {
+      margin-bottom: 16px;
+    }
+    
+    /* DSA Visuals (If any) */
     .dsa-visual {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 10px 0 30px 0;
-      gap: 15px;
-      background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(236,72,153,0.1));
-      padding: 30px;
+      margin: 20px 0 40px 0;
+      gap: 20px;
+      background: #fafafa;
+      padding: 40px;
       border-radius: 20px;
-      border: 1px solid rgba(15,23,42,0.05);
+      border: 1px solid #e4e4e7;
     }
 
-    .dsa-array { display: flex; gap: 10px; }
+    .dsa-array { display: flex; gap: 12px; }
 
     .dsa-cell {
-      width: 90px; height: 90px;
-      background: #ffffff; border: 3px solid #cbd5e1; border-radius: 16px;
+      width: 100px; height: 100px;
+      background: #ffffff; border: 2px solid #e4e4e7; border-radius: 16px;
       display: flex; justify-content: center; align-items: center;
-      font-size: 40px; font-weight: 800; color: #0f172a;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.05); position: relative;
+      font-size: 44px; font-weight: 700; color: #09090b;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02); position: relative;
     }
 
-    .dsa-cell.active { border-color: #ec4899; background: rgba(236, 72, 153, 0.15); color: #be185d; }
-    .dsa-cell.target { border-color: #38bdf8; background: rgba(56, 189, 248, 0.15); color: #0369a1; }
+    .dsa-cell.active { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+    .dsa-cell.target { border-color: #10b981; background: #ecfdf5; color: #047857; }
 
     .dsa-pointers {
-      display: flex; position: relative; height: 50px; justify-content: center; gap: 10px;
+      display: flex; position: relative; height: 60px; justify-content: center; gap: 12px;
     }
 
     .dsa-pointer {
       position: absolute; display: flex; flex-direction: column; align-items: center;
-      font-size: 28px; font-weight: 800; color: #ec4899; width: 90px;
+      font-size: 32px; font-weight: 800; color: #3b82f6; width: 100px;
     }
     
-    .dsa-pointer.blue { color: #38bdf8; }
+    .dsa-pointer.blue { color: #10b981; }
 
     .dsa-pointer::before {
-      content: '↑'; font-size: 40px; margin-top: -15px; line-height: 1;
+      content: '↑'; font-size: 48px; margin-top: -15px; line-height: 1;
     }
   </style>
 </head>
 <body>
-  <div class="bg-shape shape-1"></div>
-  <div class="bg-shape shape-2"></div>
-  <div class="bg-shape shape-3"></div>
-  <div class="grid-overlay"></div>
-  <div class="watermark">@debugwithayush</div>
+  <div class="grid-bg"></div>
+  <div class="glow"></div>
   
   <div class="main-container">
     <div class="header">
@@ -405,31 +350,26 @@
       <div class="slide-title">FAANG Pattern Blueprint</div>
       <h1 class="main-title">{{TITLE}}</h1>
       {{COMPANIES_HTML}}
-      <div class="content-box" style="margin-top: 20px; font-size: 44px; font-weight: 600;">
+      <div class="content-box" style="margin-top: 20px; font-size: 46px; font-weight: 600; line-height: 1.4; color: #09090b; border: none; background: transparent; padding: 0; box-shadow: none;">
         {{HOOK_TEXT}}
       </div>
     </div>
 
-    <!-- Slide 2: Intuition -->
+    <!-- Slide 2: Mental Model -->
     <div class="slide" data-slide="true">
-      <div class="slide-title">1. The Intuition</div>
+      <div class="slide-title">1. The Mental Model</div>
       <h1 class="main-title">{{TITLE}}</h1>
       <div class="content-box">
         <h2>💡 Core Idea</h2>
-        <div style="font-size: 30px; line-height: 1.6;">{{EXPLANATION_1}}</div>
+        <div style="font-size: 34px; line-height: 1.6;">{{EXPLANATION_1}}</div>
       </div>
     </div>
 
     <!-- Slide 3: Code & Pro Tip -->
     <div class="slide" data-slide="true">
       <div class="slide-title">2. The Blueprint Code</div>
-      <h1 class="main-title" style="margin-bottom: 20px;">{{TITLE}}</h1>
+      <h1 class="main-title" style="margin-bottom: 24px;">{{TITLE}}</h1>
       <div class="code-container">
-        <div class="mac-buttons">
-          <div class="mac-btn mac-close"></div>
-          <div class="mac-btn mac-min"></div>
-          <div class="mac-btn mac-max"></div>
-        </div>
         <pre><code class="language-javascript">{{CODE}}</code></pre>
       </div>
       <div class="pro-tip">
@@ -438,26 +378,20 @@
       </div>
     </div>
 
-    <!-- Mechanics Slides -->
+    <!-- Slide 4: Mechanics Slides -->
     {{MECHANICS_SLIDES_HTML}}
 
     <!-- Slide 5: FAANG Context (Real World) -->
     <div class="slide" data-slide="true">
-      <div class="slide-title">4. FAANG Context (1/2)</div>
+      <div class="slide-title">4. FAANG Context</div>
       <h1 class="main-title">{{TITLE}}</h1>
       <div class="content-box">
-        <h2>🏢 Real World Usecase</h2>
-        <div style="font-size: 32px; line-height: 1.6;">{{REAL_WORLD_USECASE}}</div>
+        <h2>🏢 Real World Application</h2>
+        <div style="font-size: 34px; line-height: 1.6;">{{REAL_WORLD_USECASE}}</div>
       </div>
-    </div>
-
-    <!-- Slide 6: FAANG Context (Edge Cases) -->
-    <div class="slide" data-slide="true">
-      <div class="slide-title">4. FAANG Context (2/2)</div>
-      <h1 class="main-title">{{TITLE}}</h1>
-      <div class="content-box">
-        <h2>⚠️ Common Edge Cases</h2>
-        <div style="font-size: 32px; line-height: 1.6;">{{COMMON_EDGE_CASES}}</div>
+      <div class="content-box" style="margin-top: 30px;">
+        <h2>⚠️ Common Gotchas</h2>
+        <div style="font-size: 34px; line-height: 1.6;">{{COMMON_EDGE_CASES}}</div>
       </div>
     </div>
 
@@ -474,7 +408,7 @@
         Level: <span class="diff-badge diff-{{DIFFICULTY}}">{{DIFFICULTY}}</span>
       </div>
       <div class="brand-tag">
-        <span>@debugwithayush</span>
+        @debugwithayush
       </div>
     </div>
   </div>
@@ -482,7 +416,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
   <script>
-    // Assign dynamic indices and numbering to slides
+    // Scale slides dynamically if they overflow the 1350px height limit
     const slides = document.querySelectorAll('.slide[data-slide="true"]');
     slides.forEach((el, index) => {
       el.id = 'slide-' + index;
@@ -498,14 +432,14 @@
       if(target) {
         target.classList.add('active');
         
-        // Auto-scale font size for code blocks if they overflow
+        // Auto-scale code blocks
         const codeBlocks = target.querySelectorAll('pre');
         if (codeBlocks.length > 0) {
-          let fontSize = 32;
+          let fontSize = 30;
           codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
           
           let lastHeight = document.body.scrollHeight;
-          while (document.body.scrollHeight > 1350 && fontSize > 12) {
+          while (document.body.scrollHeight > 1350 && fontSize > 14) {
             fontSize--;
             codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
             if (document.body.scrollHeight === lastHeight) break;
@@ -513,32 +447,22 @@
           }
         }
 
-        // Auto-scale text content if it overflows
-        const textElements = target.querySelectorAll('.content-box, .content-box div, .content-box ul, .content-box p, .content-box li');
-        if (textElements.length > 0 && document.body.scrollHeight > 1350) {
-          let textFontSize = 34; 
+        // Auto-scale content boxes
+        const mainContainer = document.querySelector('.main-container');
+        if (document.body.scrollHeight > 1350) {
+          let scale = 1.0;
           let lastHeight = document.body.scrollHeight;
           
-          const innerDiv = target.querySelector('.content-box div');
-          if (innerDiv && innerDiv.style.fontSize) {
-              textFontSize = parseInt(innerDiv.style.fontSize);
-          }
-          
-          while (document.body.scrollHeight > 1350 && textFontSize > 16) {
-            textFontSize--;
-            textElements.forEach(el => {
-               if(el.tagName !== 'H2' && el.tagName !== 'H3') {
-                  el.style.setProperty('font-size', textFontSize + 'px', 'important');
-                  el.style.setProperty('line-height', '1.4', 'important');
-               }
-            });
+          while (document.body.scrollHeight > 1350 && scale > 0.7) {
+            scale -= 0.02;
+            target.style.transform = \`scale(\${scale})\`;
+            target.style.transformOrigin = 'top center';
             if (document.body.scrollHeight === lastHeight) break;
             lastHeight = document.body.scrollHeight;
           }
         }
       }
       
-      // Hide footer on last slide if needed
       if(index === slides.length - 1) {
         document.getElementById('main-footer').style.display = 'none';
       } else {
