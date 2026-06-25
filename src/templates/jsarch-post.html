@@ -5,14 +5,23 @@
   <title>Cracking JS Architecture</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    :root {
+      --bg-main: #09090B;
+      --text-main: #FAFAFA;
+      --text-muted: #A1A1AA;
+      --accent: #FACC15; /* Modern, softer yellow */
+      --border-subtle: rgba(255, 255, 255, 0.1);
+      --card-bg: rgba(255, 255, 255, 0.03);
+    }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Montserrat', sans-serif;
-      background: #0d0d0f;
-      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
       width: 1080px;
       height: 1350px;
       display: flex;
@@ -21,13 +30,11 @@
       overflow: hidden;
     }
 
-    /* Subtle gradient mesh background */
+    /* Linear-style subtle background glow */
     .bg-mesh {
       position: absolute;
       top: -50%; left: -50%; right: -50%; bottom: -50%;
-      background: 
-        radial-gradient(circle at 15% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 85% 30%, rgba(255, 215, 0, 0.02) 0%, transparent 50%);
+      background: radial-gradient(circle at 50% 0%, rgba(250, 204, 21, 0.08) 0%, transparent 60%);
       z-index: 0;
       pointer-events: none;
     }
@@ -41,6 +48,7 @@
       height: 100%;
     }
 
+    /* HEADER */
     .header {
       display: flex;
       justify-content: space-between;
@@ -51,16 +59,17 @@
     .series-logo {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 16px;
     }
 
     .js-box {
-      background: #FFD700;
+      background: var(--accent);
       color: #000;
-      font-weight: 900;
-      font-size: 32px;
-      padding: 10px 14px;
+      font-weight: 800;
+      font-size: 28px;
+      padding: 8px 14px;
       border-radius: 8px;
+      letter-spacing: -1px;
     }
 
     .header-text {
@@ -69,15 +78,15 @@
     }
 
     .header-text .title {
-      font-weight: 800;
+      font-weight: 700;
       font-size: 24px;
-      letter-spacing: 1px;
+      letter-spacing: -0.5px;
     }
 
     .header-text .subtitle {
-      color: #a1a1aa;
+      color: var(--text-muted);
       font-size: 18px;
-      font-weight: 600;
+      font-weight: 500;
     }
 
     .day-stamp {
@@ -87,167 +96,184 @@
     }
 
     .day-stamp .day {
-      font-size: 38px;
-      font-weight: 900;
-      color: #fff;
-      letter-spacing: 1px;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -1px;
+      border: 1px solid var(--border-subtle);
+      padding: 8px 16px;
+      border-radius: 12px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
     }
 
+    /* SLIDES */
     .slide {
       display: none;
       flex-direction: column;
       flex-grow: 1;
       justify-content: flex-start;
       padding-top: 20px;
+      width: 100%;
     }
     .slide.active { display: flex; }
 
     .slide-number {
-      background: #FFD700;
-      color: #000;
-      font-weight: 900;
-      font-size: 24px;
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 20px;
       padding: 6px 16px;
       border-radius: 6px;
+      border: 1px solid var(--accent);
+      background: rgba(250, 204, 21, 0.1);
       display: inline-block;
       margin-bottom: 30px;
       align-self: flex-start;
+      letter-spacing: 1px;
     }
 
-    /* Slide 1 Styles */
+    /* SLIDE 1 (HOOK) */
     .title-slide {
       justify-content: center;
+      align-items: center;
+      text-align: center;
       position: relative;
     }
 
     .main-topic-title {
-      font-size: 110px;
+      font-size: 96px;
       font-weight: 900;
-      color: #FFD700;
+      color: var(--text-main);
       line-height: 1.1;
-      margin-bottom: 40px;
-      text-transform: capitalize;
-      text-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+      margin-bottom: 30px;
+      letter-spacing: -3px;
       z-index: 2;
     }
 
     .hook-text {
       font-size: 42px;
-      line-height: 1.5;
-      color: #e4e4e7;
-      font-weight: 600;
-      max-width: 80%;
+      line-height: 1.4;
+      color: var(--text-muted);
+      font-weight: 500;
+      max-width: 90%;
       z-index: 2;
+      letter-spacing: -1px;
     }
 
-    /* Fake 3D JS Icon */
+    /* Sleek JS Badge instead of bulky 3D */
     .floating-js {
       position: absolute;
-      right: -20px;
-      bottom: 100px;
-      background: linear-gradient(135deg, #FFD700, #F59E0B);
-      color: #000;
-      font-size: 140px;
+      right: 0px;
+      bottom: 80px;
+      background: rgba(250, 204, 21, 0.1);
+      border: 1px solid rgba(250, 204, 21, 0.3);
+      backdrop-filter: blur(12px);
+      color: var(--accent);
+      font-size: 80px;
       font-weight: 900;
-      padding: 40px 60px;
-      border-radius: 30px;
-      transform: perspective(1000px) rotateY(-20deg) rotateX(10deg) rotateZ(-10deg);
-      box-shadow: 
-        -20px 20px 0px #b45309,
-        -40px 40px 50px rgba(0,0,0,0.8),
-        0 0 100px rgba(255, 215, 0, 0.3);
+      padding: 30px 40px;
+      border-radius: 24px;
+      transform: rotate(-10deg);
       z-index: 1;
+      box-shadow: 0 20px 40px rgba(250, 204, 21, 0.15);
     }
 
-    /* Slide Titles */
+    /* SUB-SLIDES */
     .sub-slide-title {
       font-size: 64px;
-      font-weight: 900;
+      font-weight: 800;
       margin-bottom: 40px;
       display: flex;
       align-items: center;
       gap: 20px;
+      letter-spacing: -2px;
     }
-    .sub-slide-title span.highlight { color: #FFD700; }
+    .sub-slide-title span.highlight { color: var(--accent); }
 
-    /* Concept & Internals */
+    /* GLASSMORPHISM CONCEPT BOX */
     .concept-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 50px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 48px;
       font-size: 38px;
-      line-height: 1.6;
+      line-height: 1.5;
       color: #e4e4e7;
       margin-bottom: 40px;
       position: relative;
+      font-weight: 500;
+      letter-spacing: -0.5px;
     }
+    .concept-box strong { color: var(--accent); font-weight: 700; }
 
-    .concept-box strong { color: #FFD700; }
-
-    /* Diagram Nodes */
+    /* LINEAR STYLE DIAGRAM */
     .diagram {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 40px;
-      margin-top: 60px;
+      gap: 30px;
+      margin-top: 50px;
       position: relative;
     }
 
     .diagram-node {
-      background: rgba(139, 92, 246, 0.1);
-      border: 2px solid #8b5cf6;
+      background: var(--bg-main);
+      border: 1px solid var(--border-subtle);
       padding: 20px 40px;
       border-radius: 12px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 32px;
-      color: #ddd6fe;
+      font-size: 28px;
+      color: var(--text-muted);
       text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     
     .diagram-node.yellow {
-      background: rgba(255, 215, 0, 0.1);
-      border-color: #FFD700;
-      color: #FFD700;
+      border-color: rgba(250, 204, 21, 0.4);
+      background: rgba(250, 204, 21, 0.05);
+      color: var(--accent);
     }
 
-    /* Code Window */
-    .mac-window {
-      background: #18181b;
-      border: 1px solid #3f3f46;
+    /* MODERN CODE WINDOW (LINEAR/VERCEL VIBE) */
+    .linear-window {
+      background: #000;
+      border: 1px solid var(--border-subtle);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 80px rgba(250, 204, 21, 0.05);
       position: relative;
+      width: 100%;
     }
 
-    .mac-header {
-      background: #27272a;
+    .linear-header {
+      background: #0A0A0A;
       padding: 16px 24px;
       display: flex;
       align-items: center;
-      border-bottom: 1px solid #3f3f46;
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    .mac-dots {
-      display: flex;
-      gap: 8px;
-    }
-    .mac-dot { width: 14px; height: 14px; border-radius: 50%; }
-    .mac-dot.r { background: #ef4444; }
-    .mac-dot.y { background: #eab308; }
-    .mac-dot.g { background: #22c55e; }
-
-    .mac-title {
-      flex-grow: 1;
-      text-align: center;
+    .linear-title {
       font-family: 'JetBrains Mono', monospace;
       font-size: 18px;
-      color: #a1a1aa;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .mac-body {
+    /* Code icon */
+    .linear-title::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      background: var(--accent);
+    }
+
+    .linear-body {
       padding: 40px;
     }
 
@@ -265,7 +291,7 @@
       word-break: break-word !important;
     }
 
-    /* Pro Tip Slide */
+    /* PRO TIP & CTA SLIDE */
     .pro-tip-container {
       flex-grow: 1;
       display: flex;
@@ -276,100 +302,79 @@
     .pro-tip-title {
       font-size: 72px;
       font-weight: 900;
-      color: #FFD700;
+      color: var(--accent);
       margin-bottom: 40px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
+      letter-spacing: -2px;
     }
 
     .pro-tip-text {
       font-size: 46px;
-      line-height: 1.5;
+      line-height: 1.4;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-main);
+      letter-spacing: -1px;
     }
 
-    .follow-card {
-      margin-top: 100px;
-      background: rgba(255, 215, 0, 0.05);
-      border: 1px solid rgba(255, 215, 0, 0.2);
-      border-radius: 20px;
-      padding: 40px;
-      display: flex;
-      align-items: center;
-      gap: 40px;
+    /* Sleek CTA Card */
+    .cta-card {
+      margin-top: 80px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 48px;
+      text-align: center;
+      backdrop-filter: blur(12px);
     }
 
-    .avatar {
-      width: 150px;
-      height: 150px;
-      background: #FFD700;
-      border-radius: 50%;
-      border: 4px solid #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 80px;
-    }
-
-    .follow-text h3 {
-      font-size: 38px;
+    .cta-card h3 {
+      font-size: 42px;
       font-weight: 800;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
     }
-    .follow-text p {
+    .cta-card p {
       font-size: 28px;
-      color: #FFD700;
-      font-weight: 600;
+      color: var(--text-muted);
+      font-weight: 500;
     }
+    .cta-highlight { color: var(--accent); }
 
-    /* Footer */
+    /* FOOTER */
     .footer {
       margin-top: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-top: 40px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid var(--border-subtle);
     }
 
     .author {
       font-family: 'JetBrains Mono', monospace;
       font-size: 24px;
-      color: #a1a1aa;
+      color: var(--text-muted);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+    }
+
+    .author-avatar {
+      width: 40px; height: 40px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #000; font-weight: bold; font-size: 20px;
     }
 
     .swipe-text {
       font-size: 24px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
-
-    /* Hand drawn arrow SVG */
-    .arrow-svg {
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      z-index: 20;
-    }
-
-    .arrow-text {
-      position: absolute;
-      font-family: 'Kalam', cursive; /* Optional: standard sans-serif fallback if Kalam not available */
-      font-size: 32px;
-      color: #FFD700;
-      transform: rotate(-10deg);
-    }
-
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="bg-mesh"></div>
@@ -384,7 +389,7 @@
         </div>
       </div>
       <div class="day-stamp">
-        <span class="day">LESSON {{DAY}}</span>
+        <span class="day">Day {{DAY}}</span>
       </div>
     </div>
 
@@ -402,22 +407,17 @@
       <div class="concept-box">
         {{EXPLANATION_1}}
       </div>
-      
-
     </div>
 
     <!-- Slide 3: Code (Conditional via JS) -->
     <div class="slide" id="code-slide" data-slide="true">
       <div class="slide-number">03</div>
       <h2 class="sub-slide-title">Let's see in <span class="highlight">code ⚡</span></h2>
-      <div class="mac-window">
-        <div class="mac-header">
-          <div class="mac-dots">
-            <div class="mac-dot r"></div><div class="mac-dot y"></div><div class="mac-dot g"></div>
-          </div>
-          <div class="mac-title">main.js</div>
+      <div class="linear-window">
+        <div class="linear-header">
+          <div class="linear-title">example.js</div>
         </div>
-        <div class="mac-body">
+        <div class="linear-body">
           <pre><code class="language-javascript" id="code-block">{{CODE}}</code></pre>
         </div>
       </div>
@@ -426,19 +426,19 @@
     <!-- Slide 4: Internals -->
     <div class="slide" data-slide="true">
       <div class="slide-number" id="internals-num">04</div>
-      <h2 class="sub-slide-title">How it works <span class="highlight">internally?</span> 🧠</h2>
+      <h2 class="sub-slide-title">Under the <span class="highlight">Hood</span> 🧠</h2>
       <div class="concept-box" style="font-size: 34px;">
         {{EXPLANATION_2}}
       </div>
       
       <div class="diagram">
         <div class="diagram-node">Code</div>
-        <svg style="width: 50px; height: 20px;" viewBox="0 0 50 20">
-          <path d="M0,10 L40,10 M30,0 L40,10 L30,20" fill="none" stroke="#a1a1aa" stroke-width="3"/>
+        <svg style="width: 40px; height: 20px;" viewBox="0 0 50 20">
+          <path d="M0,10 L40,10 M30,0 L40,10 L30,20" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
         </svg>
         <div class="diagram-node yellow">Engine</div>
-        <svg style="width: 50px; height: 20px;" viewBox="0 0 50 20">
-          <path d="M0,10 L40,10 M30,0 L40,10 L30,20" fill="none" stroke="#a1a1aa" stroke-width="3"/>
+        <svg style="width: 40px; height: 20px;" viewBox="0 0 50 20">
+          <path d="M0,10 L40,10 M30,0 L40,10 L30,20" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
         </svg>
         <div class="diagram-node">Execution</div>
       </div>
@@ -447,7 +447,7 @@
     <!-- Slide 5: Real World -->
     <div class="slide" id="real-world-slide" data-slide="true">
       <div class="slide-number">05</div>
-      <h2 class="sub-slide-title">Real-World <span class="highlight">Architecture</span> 🏗️</h2>
+      <h2 class="sub-slide-title">Used in <span class="highlight">Production</span> 🏗️</h2>
       <div class="concept-box" style="font-size: 34px;" id="real-world-text">
         {{REAL_WORLD_USECASE}}
       </div>
@@ -480,19 +480,16 @@
           {{PRO_TIP}}
         </div>
         
-        <div class="follow-card">
-          <div class="avatar">👨‍💻</div>
-          <div class="follow-text">
-            <h3>Follow @debugwithayush</h3>
-            <p>for daily JS content 🚀</p>
-          </div>
+        <div class="cta-card">
+          <h3>📌 Save this for your next interview</h3>
+          <p>Share with a friend learning <span class="cta-highlight">JavaScript</span></p>
         </div>
       </div>
     </div>
 
     <div class="footer" id="main-footer">
       <div class="author">
-        <svg style="width: 24px; height: 24px; margin-right: 5px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <div class="author-avatar">A</div>
         @debugwithayush
       </div>
       <div class="swipe-text">
@@ -550,46 +547,45 @@
       if(target) {
         target.classList.add('active');
         
-        // Auto-scale font size for code blocks if they overflow the body height (1350px)
+        // --- AUTO-SCALING LOGIC TO FIT INSTAGRAM (1080x1350) ---
+        const mainContainer = document.querySelector('.main-container');
+        const MAX_HEIGHT = 1350 - 60; // Leave some padding
+        
+        // 1. Scale Code Blocks First
         const codeBlocks = target.querySelectorAll('pre');
         if (codeBlocks.length > 0) {
-          let fontSize = 42; // Default starting size for small code
+          let fontSize = 32; 
           codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
           
-          const mainContainer = document.querySelector('.main-container');
           let lastHeight = mainContainer.scrollHeight;
-          
-          // Reduce font size until it fits, but don't go below 16px
-          while (mainContainer.scrollHeight > 1350 && fontSize > 16) {
-            fontSize--;
+          while (mainContainer.scrollHeight > MAX_HEIGHT && fontSize > 14) {
+            fontSize -= 1.5;
             codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
-            
-            // If shrinking the font didn't reduce the height at all, something else is overflowing, break early
-            if (mainContainer.scrollHeight === lastHeight) {
-              break;
-            }
+            if (mainContainer.scrollHeight === lastHeight) break; // avoid infinite loop if height doesn't change
             lastHeight = mainContainer.scrollHeight;
           }
         }
 
-        // Auto-scale text content if it overflows
-        const textElements = target.querySelectorAll('.concept-box, .hook-text, .concept-box p, .concept-box ul, .concept-box li');
-        const mainContainer = document.querySelector('.main-container');
-        if (textElements.length > 0 && mainContainer.scrollHeight > 1350) {
-          let textFontSize = 38; 
+        // 2. Scale Text Content (if it still overflows)
+        const textElements = target.querySelectorAll('.concept-box, .hook-text, .main-topic-title, .sub-slide-title, .pro-tip-text');
+        if (textElements.length > 0 && mainContainer.scrollHeight > MAX_HEIGHT) {
+          let scaleFactor = 1.0;
           let lastHeight = mainContainer.scrollHeight;
           
-          // Try to grab current inline font-size if available
-          const firstBox = target.querySelector('.concept-box, .hook-text');
-          if (firstBox && firstBox.style.fontSize) {
-              textFontSize = parseInt(firstBox.style.fontSize);
-          }
+          // Store original sizes on elements if not already there
+          textElements.forEach(el => {
+            if(!el.dataset.origSize) {
+               const style = window.getComputedStyle(el, null).getPropertyValue('font-size');
+               el.dataset.origSize = parseFloat(style);
+            }
+          });
           
-          while (mainContainer.scrollHeight > 1350 && textFontSize > 16) {
-            textFontSize--;
+          while (mainContainer.scrollHeight > MAX_HEIGHT && scaleFactor > 0.5) {
+            scaleFactor -= 0.05;
             textElements.forEach(el => {
-               el.style.setProperty('font-size', textFontSize + 'px', 'important');
-               el.style.setProperty('line-height', '1.4', 'important');
+               const origSize = parseFloat(el.dataset.origSize);
+               el.style.setProperty('font-size', (origSize * scaleFactor) + 'px', 'important');
+               el.style.setProperty('line-height', '1.3', 'important');
             });
             if (mainContainer.scrollHeight === lastHeight) break;
             lastHeight = mainContainer.scrollHeight;
