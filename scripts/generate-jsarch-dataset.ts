@@ -289,7 +289,7 @@ Requirements:
 
 General Rules:
 * PROGRESSIVE DISCLOSURE: This content must be a 10/10 for BOTH beginners and intermediate developers.
-* Start Simple (hook, code, explanation_1): Use plain English, simple analogies, and basic code examples (e.g., simple strings/variables, not complex objects or APIs) so absolute beginners instantly understand.
+* Start Simple (hook, code, explanation_1): Explain it so clearly that a 1st-year college student (beginner) can understand immediately. Use plain English, simple analogies, and short sentences. Avoid dense academic jargon. Keep paragraphs extremely short (max 3 sentences).
 * End Deep (real_world, edge_cases, interview): Provide advanced, high-value insights, deep mechanics, and production-level architecture so intermediate developers learn something new.
 * Explain jargon: If you must use advanced terms (like 'interpolation' or 'lexical scope'), explain them briefly.
 * Prioritize technical accuracy over sounding advanced.

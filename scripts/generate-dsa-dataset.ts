@@ -59,7 +59,9 @@ Requirements:
   - "steps": Array of strings (3 to 6 steps). Break down the exact execution mechanics. Max 1 sentence per step.
 
 Rules:
-- Make the explanations very thorough and deep.
+- Target Audience: Explain it so clearly that a 1st-year college student (beginner) can understand immediately.
+- Use very simple, short sentences. Avoid dense academic jargon.
+- Keep paragraphs extremely short. Maximum 3 sentences per paragraph.
 - Use plain English and simple analogies where possible.
 - Respond ONLY with valid raw JSON. Do not include markdown, code fences, comments, or additional text.`;
 

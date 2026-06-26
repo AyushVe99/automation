@@ -166,7 +166,7 @@ export async function generateImage(post: Post): Promise<string[]> {
     approachSlidesHtml += `
     <div class="slide" data-slide="true">
       <div class="slide-title">Approach (1/2)</div>
-      <h1 class="main-title">{{TITLE}}</h1>
+      <h1 class="main-title">${escapeHtml(post.title)}</h1>
       <div class="idea-card">
         <div class="card-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
            <div style="background: rgba(52,211,153,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(52,211,153,0.4);"><span style="font-size: 40px;">💡</span></div>
@@ -216,7 +216,7 @@ export async function generateImage(post: Post): Promise<string[]> {
          approachSlidesHtml += `
           <div class="slide" data-slide="true">
             <div class="slide-title">Approach (2/2) ${chunks.length > 1 ? `(${index + 1}/${chunks.length})` : ''}</div>
-            <h1 class="main-title">{{TITLE}}</h1>
+            <h1 class="main-title">${escapeHtml(post.title)}</h1>
             <div class="mechanics-card">
               <div class="card-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
                  <div style="background: rgba(56,189,248,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(56,189,248,0.4);"><span style="font-size: 40px;">⚙️</span></div>
@@ -295,7 +295,7 @@ export async function generateImage(post: Post): Promise<string[]> {
          mechanicsSlidesHtml += `
           <div class="slide mechanics-slide" data-slide="true">
             <div class="slide-title">3. Under the Hood ${chunks.length > 1 ? `(${index + 1}/${chunks.length})` : ''}</div>
-            <h1 class="main-title">{{TITLE}}</h1>
+            <h1 class="main-title">${escapeHtml(post.title)}</h1>
             <div class="content-box">
               <h2>⚙️ Mechanics</h2>
               ${diagramHtml ? diagramHtml : ''}
@@ -308,7 +308,7 @@ export async function generateImage(post: Post): Promise<string[]> {
       mechanicsSlidesHtml = `
           <div class="slide mechanics-slide" data-slide="true">
             <div class="slide-title">3. Under the Hood</div>
-            <h1 class="main-title">{{TITLE}}</h1>
+            <h1 class="main-title">${escapeHtml(post.title)}</h1>
             <div class="content-box">
               <h2>⚙️ Mechanics</h2>
               <div></div>

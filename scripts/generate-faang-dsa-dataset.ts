@@ -373,6 +373,12 @@ Requirements:
 8. pro_tip: A secret trick for recognizing this pattern. STRICTLY max 1 short sentence.
 9. difficulty: "Beginner", "Intermediate", or "Advanced".
 
+General Rules:
+- Target Audience: Explain it so clearly that a 1st-year college student (beginner) can understand immediately.
+- Use very simple, short sentences. Avoid dense academic jargon.
+- Keep paragraphs extremely short. Maximum 3 sentences per paragraph.
+- Use plain English and simple analogies where possible.
+
 Respond ONLY with valid raw JSON. Do not include markdown blocks like \`\`\`json.
 `;
 
