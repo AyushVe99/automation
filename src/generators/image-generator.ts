@@ -162,6 +162,28 @@ export async function generateImage(post: Post): Promise<string[]> {
     
     let approachSlidesHtml = '';
     
+    // Real World
+    if (post.real_world_usecase) {
+       html = html.replace(/{{REAL_WORLD_HTML}}/g, `<div class="real-world-pill"><span>🌍</span> ${escapeHtml(post.real_world_usecase)}</div>`);
+    } else {
+       html = html.replace(/{{REAL_WORLD_HTML}}/g, '');
+    }
+
+    // Hint
+    if (post.hint) {
+      html = html.replace(/{{HINT_SLIDE_HTML}}/g, `
+        <div class="slide" data-slide="true">
+          <div class="slide-title">Pause & Think</div>
+          <h1 class="main-title">${escapeHtml(post.title)}</h1>
+          <div class="hint-slide-content">
+             <div>${escapeHtml(post.hint)}</div>
+          </div>
+        </div>
+      `);
+    } else {
+      html = html.replace(/{{HINT_SLIDE_HTML}}/g, '');
+    }
+    
     // Core Idea Slide
     approachSlidesHtml += `
     <div class="slide" data-slide="true">
@@ -189,6 +211,9 @@ export async function generateImage(post: Post): Promise<string[]> {
       } else if (parsed && typeof parsed === 'object') {
           steps = Array.isArray(parsed.steps) ? parsed.steps : [];
           diagramHtml = parsed.diagram_html || '';
+          if (parsed.mermaid_diagram) {
+             diagramHtml = `<div style="display:flex; justify-content:center; margin-bottom: 20px;"><div class="mermaid">${escapeHtml(parsed.mermaid_diagram)}</div></div>`;
+          }
       } else {
           steps = [post.explanation_2 || ''];
       }
@@ -235,6 +260,20 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{APPROACH_SLIDES_HTML}}/g, approachSlidesHtml);
     
     // Complexities
+    const getCompClass = (comp: string) => {
+       const str = comp.toLowerCase().replace(/[^a-z0-9]/g, '');
+       if (str === 'o1' || str.includes('ologn')) return 'comp-O-1';
+       if (str === 'on') return 'comp-O-n';
+       if (str === 'onlogn') return 'comp-O-nlogn';
+       if (str === 'on2' || str === 'o2n' || str === 'on3') return 'comp-O-n2';
+       return 'comp-O-n';
+    };
+    
+    html = html.replace(/{{BRUTE_TIME_CLASS}}/g, getCompClass(post.brute_time || 'O(n)'));
+    html = html.replace(/{{BRUTE_SPACE_CLASS}}/g, getCompClass(post.brute_space || 'O(1)'));
+    html = html.replace(/{{OPTIMAL_TIME_CLASS}}/g, getCompClass(post.optimal_time || 'O(n)'));
+    html = html.replace(/{{OPTIMAL_SPACE_CLASS}}/g, getCompClass(post.optimal_space || 'O(1)'));
+
     html = html.replace(/{{BRUTE_TIME}}/g, escapeHtml(post.brute_time || 'O(n)'));
     html = html.replace(/{{BRUTE_SPACE}}/g, escapeHtml(post.brute_space || 'O(1)'));
     html = html.replace(/{{OPTIMAL_TIME}}/g, escapeHtml(post.optimal_time || 'O(n)'));
@@ -275,6 +314,20 @@ export async function generateImage(post: Post): Promise<string[]> {
   if (isFaangDsa) {
     html = html.replace(/{{COMPANIES_HTML}}/g, getCompanyBadgesHTML(post.title));
     
+    if (post.hint) {
+      html = html.replace(/{{HINT_SLIDE_HTML}}/g, `
+        <div class="slide" data-slide="true">
+          <div class="slide-title">Pause & Think</div>
+          <h1 class="main-title">${escapeHtml(post.title)}</h1>
+          <div class="hint-slide-content">
+             <div>${escapeHtml(post.hint)}</div>
+          </div>
+        </div>
+      `);
+    } else {
+      html = html.replace(/{{HINT_SLIDE_HTML}}/g, '');
+    }
+    
     let mechanicsSlidesHtml = '';
     let steps: string[] = [];
     let diagramHtml = '';
@@ -285,6 +338,9 @@ export async function generateImage(post: Post): Promise<string[]> {
       } else if (parsed && typeof parsed === 'object') {
           steps = Array.isArray(parsed.steps) ? parsed.steps : [];
           diagramHtml = parsed.diagram_html || '';
+          if (parsed.mermaid_diagram) {
+             diagramHtml = `<div style="display:flex; justify-content:center; margin-bottom: 20px;"><div class="mermaid">${escapeHtml(parsed.mermaid_diagram)}</div></div>`;
+          }
       } else {
           steps = [post.explanation_2 || ''];
       }

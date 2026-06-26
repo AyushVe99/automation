@@ -31,6 +31,7 @@ export interface Post {
   brute_space?: string;
   optimal_time?: string;
   optimal_space?: string;
+  hint?: string;
 }
 
 export class PostRepository {

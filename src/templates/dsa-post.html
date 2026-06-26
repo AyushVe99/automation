@@ -469,6 +469,71 @@
       top: 2px;
       font-size: 34px;
     }
+
+    .complexity-badge {
+      padding: 15px 30px; 
+      border-radius: 16px; 
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.05); 
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .comp-O-1, .comp-O-logn { background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.4); color: #4ade80; }
+    .comp-O-n { background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.4); color: #fde047; }
+    .comp-O-nlogn { background: rgba(249, 115, 22, 0.15); border-color: rgba(249, 115, 22, 0.4); color: #fdba74; }
+    .comp-O-n2, .comp-O-2n, .comp-O-n3 { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #f87171; }
+    
+    .real-world-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 22px;
+      font-weight: 500;
+      color: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 30px;
+    }
+    
+    .hint-slide-content {
+      background: linear-gradient(145deg, rgba(234, 179, 8, 0.1), rgba(0,0,0,0.6));
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      border-top: 2px solid rgba(234, 179, 8, 0.6);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 40px rgba(234, 179, 8, 0.05);
+      border-radius: 32px;
+      padding: 50px;
+      position: relative;
+      overflow: hidden;
+      font-size: 42px;
+      font-weight: 600;
+      line-height: 1.5;
+      text-align: center;
+      color: #fef08a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+    }
+    .hint-slide-content::before {
+      content: '🛑';
+      position: absolute;
+      left: -20px;
+      bottom: -40px;
+      font-size: 250px;
+      opacity: 0.05;
+      filter: blur(4px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hint-slide-content > * {
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
@@ -488,6 +553,7 @@
     <div class="slide active" data-slide="true">
       <div class="slide-title">Question</div>
       <h1 class="main-title">{{TITLE}}</h1>
+      {{REAL_WORLD_HTML}}
       {{COMPANIES_HTML}}
       <div class="question-text" style="margin-bottom: 20px;">{{QUESTION}}</div>
       <div class="example-container" style="background: rgba(255,255,255,0.03); border-radius: 24px; padding: 30px; border: 1px solid rgba(255,255,255,0.05);">
@@ -498,6 +564,8 @@
     </div>
 
     {{APPROACH_SLIDES_HTML}}
+
+    {{HINT_SLIDE_HTML}}
 
     <!-- Brute Force Code -->
     <div class="slide" data-slide="true">
@@ -512,13 +580,13 @@
         <pre><code class="language-javascript">{{BRUTE_FORCE}}</code></pre>
       </div>
       <div class="complexity-container" style="display: flex; gap: 20px; margin-top: 25px;">
-        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 16px; font-size: 28px;">
-          <span style="color: #94a3b8; margin-right: 10px;">⏱️ Time Complexity:</span>
-          <strong style="color: #f8fafc;">{{BRUTE_TIME}}</strong>
+        <div class="complexity-badge {{BRUTE_TIME_CLASS}}">
+          <span style="color: #94a3b8;">⏱️ Time Complexity:</span>
+          <strong>{{BRUTE_TIME}}</strong>
         </div>
-        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 16px; font-size: 28px;">
-          <span style="color: #94a3b8; margin-right: 10px;">💾 Space Complexity:</span>
-          <strong style="color: #f8fafc;">{{BRUTE_SPACE}}</strong>
+        <div class="complexity-badge {{BRUTE_SPACE_CLASS}}">
+          <span style="color: #94a3b8;">💾 Space Complexity:</span>
+          <strong>{{BRUTE_SPACE}}</strong>
         </div>
       </div>
     </div>
@@ -536,13 +604,13 @@
         <pre><code class="language-javascript">{{OPTIMAL}}</code></pre>
       </div>
       <div class="complexity-container" style="display: flex; gap: 20px; margin-top: 25px;">
-        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 16px; font-size: 28px;">
-          <span style="color: #94a3b8; margin-right: 10px;">⏱️ Time Complexity:</span>
-          <strong style="color: #f8fafc;">{{OPTIMAL_TIME}}</strong>
+        <div class="complexity-badge {{OPTIMAL_TIME_CLASS}}">
+          <span style="color: #94a3b8;">⏱️ Time Complexity:</span>
+          <strong>{{OPTIMAL_TIME}}</strong>
         </div>
-        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 16px; font-size: 28px;">
-          <span style="color: #94a3b8; margin-right: 10px;">💾 Space Complexity:</span>
-          <strong style="color: #f8fafc;">{{OPTIMAL_SPACE}}</strong>
+        <div class="complexity-badge {{OPTIMAL_SPACE_CLASS}}">
+          <span style="color: #94a3b8;">💾 Space Complexity:</span>
+          <strong>{{OPTIMAL_SPACE}}</strong>
         </div>
       </div>
     </div>
@@ -567,6 +635,17 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+    window.renderMermaid = async function() {
+       try {
+         await mermaid.run();
+       } catch (err) {
+         console.error('Mermaid render error', err);
+       }
+    };
+  </script>
   <script>
     function getTotalSlides() {
       return document.querySelectorAll('.slide[data-slide="true"]').length;

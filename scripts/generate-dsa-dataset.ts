@@ -26,37 +26,35 @@ function rotateApiKey() {
 
 async function generateEnhancedDSAContent(q: any, retries = 0): Promise<any> {
   const prompt = `
-You are a world-class Data Structures and Algorithms educator creating content for a professional learning platform.
+Analyze this Data Structure / Algorithm problem and generate educational content.
 
 Topic: ${q.title}
 Difficulty: ${q.difficulty}
 Question: ${q.question}
 
-Brute Force Code:
-${q.bruteForceCode}
-
-Optimal Code:
-${q.optimalCode}
-
 Generate a JSON object with exactly these fields:
 {
-  "explanation_1": string,
+  "real_world_usecase": "string",
+  "hint": "string",
+  "explanation_1": "string",
   "explanation_2": {
     "diagram_html": "string",
+    "mermaid_diagram": "string",
     "steps": ["string"]
   }
 }
 
 Requirements:
-1. explanation_1 (The Intuition & Problem Breakdown)
+1. real_world_usecase: A 1-sentence real-world application of this algorithm (e.g., "LRU Cache is used in browser history").
+2. hint: A guiding question or hint to help students solve the problem without giving the answer away (e.g., "Hint: Can you solve this without nested loops?").
+3. explanation_1 (The Intuition & Problem Breakdown)
 - Explain the core problem and why the brute force approach is slow or naive.
 - Focus on the intuition behind the optimal solution.
 - Format as HTML bullet points (<ul><li>...</li></ul>). Max 3 short bullets. Use <strong> for emphasis.
-
-2. explanation_2 (The Optimal Mechanics)
-- Provide a JSON object with:
-  - "diagram_html": (Optional) If the topic involves arrays, pointers, or sliding windows, provide a visual diagram using these exact CSS classes: <div class="dsa-visual"><div class="dsa-array"><div class="dsa-cell">1</div><div class="dsa-cell active">4</div><div class="dsa-cell target">11</div></div><div class="dsa-pointers" style="width: calc(NUM_CELLS * 100px - 10px); left: 0;"><div class="dsa-pointer" style="left: 0px;">L</div><div class="dsa-pointer blue" style="left: 200px;">R</div></div></div> (Use inline styles for pointer left positions: index * 100px. Return empty string if not applicable).
-  - "steps": Array of strings (3 to 6 steps). Break down the exact execution mechanics. Max 1 sentence per step.
+4. explanation_2 (The Step-by-Step Mechanics)
+- "diagram_html": (Optional) If the topic involves arrays, pointers, or sliding windows, provide a visual diagram using these exact CSS classes: <div class="dsa-visual"><div class="dsa-array"><div class="dsa-cell">1</div><div class="dsa-cell active">4</div><div class="dsa-cell target">11</div></div><div class="dsa-pointers" style="width: calc(NUM_CELLS * 100px - 10px); left: 0;"><div class="dsa-pointer" style="left: 0px;">L</div><div class="dsa-pointer blue" style="left: 200px;">R</div></div></div> (Use inline styles for pointer left positions: index * 100px. Return empty string if not applicable).
+- "mermaid_diagram": (Optional) Provide a valid Mermaid.js diagram definition (e.g., flowchart TD, sequenceDiagram) that visually explains the concept (great for Trees, Graphs, Linked Lists). Use simple shapes. Do not use markdown fences inside the string. Return empty string if not applicable.
+- "steps": Array of strings (3 to 6 steps). Break down the exact execution mechanics. Max 1 sentence per step.
 
 Rules:
 - Target Audience: Explain it so clearly that a 1st-year college student (beginner) can understand immediately.
@@ -1396,8 +1394,8 @@ async function run() {
     if (enhanced) {
       await db.run(`
         INSERT INTO posts 
-        (series, day, title, difficulty, code, question, answer, explanation, brute_force_code, optimal_code, example_input, example_output, brute_time, brute_space, optimal_time, optimal_space, explanation_1, explanation_2)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (series, day, title, difficulty, code, question, answer, explanation, brute_force_code, optimal_code, example_input, example_output, brute_time, brute_space, optimal_time, optimal_space, explanation_1, explanation_2, hint, real_world_usecase)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(series, day) DO UPDATE SET
           title = excluded.title,
           difficulty = excluded.difficulty,
@@ -1414,7 +1412,9 @@ async function run() {
           optimal_time = excluded.optimal_time,
           optimal_space = excluded.optimal_space,
           explanation_1 = excluded.explanation_1,
-          explanation_2 = excluded.explanation_2
+          explanation_2 = excluded.explanation_2,
+          hint = excluded.hint,
+          real_world_usecase = excluded.real_world_usecase
       `, [
         'dsa',
         i + 1,
@@ -1433,7 +1433,9 @@ async function run() {
         (q as any).optimal_time || 'O(n)',
         (q as any).optimal_space || 'O(1)',
         enhanced.explanation_1 || '',
-        enhanced.explanation_2 ? JSON.stringify(enhanced.explanation_2) : '[]'
+        enhanced.explanation_2 ? JSON.stringify(enhanced.explanation_2) : '[]',
+        enhanced.hint || '',
+        enhanced.real_world_usecase || ''
       ]);
       logger.info(`Successfully saved enhanced Day ${i + 1} to DB.`);
     }

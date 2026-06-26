@@ -102,6 +102,10 @@ async function initializeDb(db: Database): Promise<void> {
   } catch (e) {}
 
   try {
+    await db.exec(`ALTER TABLE posts ADD COLUMN hint TEXT;`);
+  } catch (e) {}
+
+  try {
     await db.exec(`ALTER TABLE posts ADD COLUMN questions_json TEXT;`);
   } catch (e) {}
 }
