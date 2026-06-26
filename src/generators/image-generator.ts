@@ -374,8 +374,8 @@ export async function generateImage(post: Post): Promise<string[]> {
       
       // Render mermaid if function exists
       await page.evaluate(async () => {
-         if (window.renderMermaid) {
-            await window.renderMermaid();
+         if ((window as any).renderMermaid) {
+            await (window as any).renderMermaid();
          }
       });
       await new Promise(r => setTimeout(r, 100));
