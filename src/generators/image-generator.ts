@@ -246,8 +246,25 @@ export async function generateImage(post: Post): Promise<string[]> {
     html = html.replace(/{{HOOK_TEXT}}/g, escapeHtml(post.hook_text || ''));
     html = html.replace(/{{EXPLANATION_1}}/g, formatText(post.explanation_1 || ''));
     
-    // For js-arch, it still uses {{EXPLANATION_2}}. We just replace it directly.
-    html = html.replace(/{{EXPLANATION_2}}/g, formatText(post.explanation_2 || ''));
+    // For js-arch, explanation_2 might be a JSON object with a mermaid_diagram now.
+    let explanation2Text = post.explanation_2 || '';
+    let mermaidDiagram = '';
+    try {
+      const parsed = JSON.parse(post.explanation_2 || '{}');
+      if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+        explanation2Text = parsed.text || '';
+        mermaidDiagram = parsed.mermaid_diagram || '';
+      }
+    } catch {
+      // it's just text
+    }
+
+    html = html.replace(/{{EXPLANATION_2}}/g, formatText(explanation2Text || ''));
+    if (mermaidDiagram) {
+      html = html.replace(/{{MERMAID_DIAGRAM_HTML}}/g, `<div style="display:flex; justify-content:center; margin-top:30px;"><div class="mermaid">${escapeHtml(mermaidDiagram)}</div></div>`);
+    } else {
+      html = html.replace(/{{MERMAID_DIAGRAM_HTML}}/g, '');
+    }
     
     html = html.replace(/{{REAL_WORLD_USECASE}}/g, formatText(post.real_world_usecase || ''));
     html = html.replace(/{{COMMON_EDGE_CASES}}/g, formatText(post.common_edge_cases || ''));
@@ -353,6 +370,14 @@ export async function generateImage(post: Post): Promise<string[]> {
       }, i);
       
       // Wait a bit for syntax highlighting or rendering if needed
+      await new Promise(r => setTimeout(r, 100));
+      
+      // Render mermaid if function exists
+      await page.evaluate(async () => {
+         if (window.renderMermaid) {
+            await window.renderMermaid();
+         }
+      });
       await new Promise(r => setTimeout(r, 100));
       
       const outPath = path.resolve(outputDir, `day-${post.day}-slide-${i + 1}.png`);

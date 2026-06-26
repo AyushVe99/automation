@@ -232,7 +232,10 @@ Generate a JSON object with exactly these fields:
 "hook_text": string,
 "code": string,
 "explanation_1": string,
-"explanation_2": string,
+"explanation_2": {
+  "text": string,
+  "mermaid_diagram": string
+},
 "real_world_usecase": string,
 "common_edge_cases": string,
 "interview_question": string,
@@ -260,9 +263,8 @@ Requirements:
 * Prioritize clarity over implementation details.
 
 4. explanation_2
-* Explain important behavior, caveats, limitations, or common mistakes developers should know.
-* Keep it to 3-4 sentences.
-* Avoid unnecessary engine internals unless the topic specifically concerns JavaScript internals.
+* "text": Explain important behavior, caveats, limitations, or common mistakes developers should know. Keep it to 3-4 sentences.
+* "mermaid_diagram": (Optional) Provide a valid Mermaid.js diagram definition (e.g., flowchart TD, sequenceDiagram, etc.) that visually explains the concept or architecture. Use simple, clean shapes. Do not use markdown fences (like \`\`\`mermaid) inside the string. Return an empty string if a diagram isn't helpful.
 
 5. real_world_usecase
 * Explain a realistic, production-level scenario or architecture where this concept is actively used.
@@ -360,7 +362,7 @@ async function seedDatabase() {
             '', // explanation
             content.hook_text || '',
             content.explanation_1 || '',
-            content.explanation_2 || '',
+            content.explanation_2 ? (typeof content.explanation_2 === 'string' ? content.explanation_2 : JSON.stringify(content.explanation_2)) : '',
             content.pro_tip || '',
             mod.name,
             content.real_world_usecase || '',
