@@ -366,11 +366,11 @@ Requirements:
 1. hook_text: 1 short sentence engaging hook on why this matters in FAANG.
 2. code: Modern, clean JavaScript. If a concept, provide the Blueprint Template. If a problem, provide optimal solution. Max 15 lines. Add a "// 💡 KEY INSIGHT: " comment to the single most important line of logic. No markdown around it.
 3. hint: A guiding question or hint to help students solve the problem without giving the answer away (e.g., "Hint: Can you solve this without nested loops?").
-4. explanation_1: The Intuition. Break down the logic simply. Format as HTML bullet points (<ul><li>...</li></ul>). Max 3 short bullets. Use <strong> for emphasis.
+4. explanation_1: The Intuition. Break down the logic simply. Format as HTML bullet points (<ul><li>...</li></ul>). Max 5-6 short bullets. Each bullet MUST NOT contain more than 15 words. Use <strong> for emphasis.
 5. explanation_2: The Step-by-Step Mechanics. Provide a JSON object with:
    - "diagram_html": (Optional) If the topic involves arrays, pointers, or sliding windows, provide a visual diagram using these exact CSS classes: <div class="dsa-visual"><div class="dsa-array"><div class="dsa-cell">1</div><div class="dsa-cell active">4</div><div class="dsa-cell target">11</div></div><div class="dsa-pointers" style="width: calc(NUM_CELLS * 100px - 10px); left: 0;"><div class="dsa-pointer" style="left: 0px;">L</div><div class="dsa-pointer blue" style="left: 200px;">R</div></div></div> (Use inline styles for pointer left positions: index * 100px. Return empty string if not applicable).
    - "mermaid_diagram": (Optional) Provide a valid Mermaid.js diagram definition (e.g., flowchart TD, sequenceDiagram) that visually explains the concept (great for Trees, Graphs, Linked Lists). Use simple shapes. Do not use markdown fences inside the string. Return empty string if not applicable.
-   - "steps": Array of strings (3 to 6 steps). Each string is ONE execution step. Max 1 sentence per step.
+   - "steps": Array of strings (3 to 6 steps). Each string is ONE execution step. Max 1 sentence per step, and MUST NOT contain more than 15 words.
 6. real_world_usecase: Where does FAANG use this? STRICTLY max 2 short sentences.
 7. common_edge_cases: What breaks this code? Format as HTML bullet points (<ul><li>...</li></ul>). Max 2 bullets.
 8. interview_question: A quick theoretical follow-up question.

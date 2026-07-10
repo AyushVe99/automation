@@ -32,6 +32,14 @@ function formatText(text: string): string {
     // Bold text
     formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong style="color: #38bdf8;">$1</strong>');
     
+    // Un-escape basic HTML lists and formatting that the AI might generate
+    formatted = formatted.replace(/&lt;ul&gt;/gi, '<ul style="margin-left: 30px; margin-bottom: 15px;">')
+                         .replace(/&lt;\/ul&gt;/gi, '</ul>')
+                         .replace(/&lt;li&gt;/gi, '<li style="margin-bottom: 10px;">')
+                         .replace(/&lt;\/li&gt;/gi, '</li>')
+                         .replace(/&lt;strong&gt;/gi, '<strong style="color: #38bdf8;">')
+                         .replace(/&lt;\/strong&gt;/gi, '</strong>');
+
     // Line breaks to paragraphs
     formatted = '<p style="margin-bottom: 15px;">' + formatted.replace(/\n\n+/g, '</p><p style="margin-bottom: 15px;">') + '</p>';
     
@@ -194,7 +202,7 @@ export async function generateImage(post: Post): Promise<string[]> {
            <div style="background: rgba(52,211,153,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(52,211,153,0.4);"><span style="font-size: 40px;">💡</span></div>
            <h2 style="color: #34d399; font-size: 48px; margin: 0; font-weight: 800; letter-spacing: 1px;">Core Idea</h2>
         </div>
-        <div class="card-content" style="font-size: 34px; line-height: 1.6; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 500;">
+        <div class="card-content" style="font-size: 26px; line-height: 1.6; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 500;">
            ${formatText(post.explanation_1 || post.explanation || '')}
         </div>
       </div>
@@ -234,8 +242,8 @@ export async function generateImage(post: Post): Promise<string[]> {
 
       chunks.forEach((chunk, index) => {
          const items = chunk.length === 1 && chunk[0].includes('<') ? chunk[0] : 
-            `<ul>` + 
-            chunk.map(step => `<li>${formatText(step)}</li>`).join('') + 
+            `<ul style="margin-left: 30px;">` + 
+            chunk.map(step => `<li style="margin-bottom: 10px;">${formatText(step)}</li>`).join('') + 
             `</ul>`;
          
          approachSlidesHtml += `
@@ -247,7 +255,7 @@ export async function generateImage(post: Post): Promise<string[]> {
                  <div style="background: rgba(56,189,248,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(56,189,248,0.4);"><span style="font-size: 40px;">⚙️</span></div>
                  <h2 style="color: #38bdf8; font-size: 48px; margin: 0; font-weight: 800; letter-spacing: 1px;">Mechanics</h2>
               </div>
-              <div class="card-content" style="font-size: 34px; line-height: 1.6; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 500;">
+              <div class="card-content" style="font-size: 26px; line-height: 1.6; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 500;">
                  ${diagramHtml ? diagramHtml : ''}
                  ${items}
               </div>
@@ -361,8 +369,8 @@ export async function generateImage(post: Post): Promise<string[]> {
 
       chunks.forEach((chunk, index) => {
          const items = chunk.length === 1 && chunk[0].includes('<') ? chunk[0] : 
-            `<ul style="margin-left: 30px; font-size: 30px; padding-right: 10px;">` + 
-            chunk.map(step => `<li style="margin-bottom: 12px;">${formatText(step)}</li>`).join('') + 
+            `<ul style="margin-left: 30px; font-size: 24px; padding-right: 10px;">` + 
+            chunk.map(step => `<li style="margin-bottom: 10px;">${formatText(step)}</li>`).join('') + 
             `</ul>`;
          
          mechanicsSlidesHtml += `

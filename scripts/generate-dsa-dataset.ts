@@ -50,11 +50,11 @@ Requirements:
 3. explanation_1 (The Intuition & Problem Breakdown)
 - Explain the core problem and why the brute force approach is slow or naive.
 - Focus on the intuition behind the optimal solution.
-- Format as HTML bullet points (<ul><li>...</li></ul>). Max 3 short bullets. Use <strong> for emphasis.
+- Format as HTML bullet points (<ul><li>...</li></ul>). Max 5-6 short bullets. Each bullet MUST NOT contain more than 15 words. Use <strong> for emphasis.
 4. explanation_2 (The Step-by-Step Mechanics)
 - "diagram_html": (Optional) If the topic involves arrays, pointers, or sliding windows, provide a visual diagram using these exact CSS classes: <div class="dsa-visual"><div class="dsa-array"><div class="dsa-cell">1</div><div class="dsa-cell active">4</div><div class="dsa-cell target">11</div></div><div class="dsa-pointers" style="width: calc(NUM_CELLS * 100px - 10px); left: 0;"><div class="dsa-pointer" style="left: 0px;">L</div><div class="dsa-pointer blue" style="left: 200px;">R</div></div></div> (Use inline styles for pointer left positions: index * 100px. Return empty string if not applicable).
 - "mermaid_diagram": (Optional) Provide a valid Mermaid.js diagram definition (e.g., flowchart TD, sequenceDiagram) that visually explains the concept (great for Trees, Graphs, Linked Lists). Use simple shapes. Do not use markdown fences inside the string. Return empty string if not applicable.
-- "steps": Array of strings (3 to 6 steps). Break down the exact execution mechanics. Max 1 sentence per step.
+- "steps": Array of strings (3 to 6 steps). Break down the exact execution mechanics. Max 1 sentence per step, and MUST NOT contain more than 15 words.
 
 Rules:
 - Target Audience: Explain it so clearly that a 1st-year college student (beginner) can understand immediately.

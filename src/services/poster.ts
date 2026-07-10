@@ -13,13 +13,28 @@ import { logger } from '../utils/logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function uploadToTmpFiles(filePath: string): Promise<string> {
-  const form = new FormData();
-  form.append('file', fs.createReadStream(filePath));
-  const res = await axios.post('https://tmpfiles.org/api/v1/upload', form, {
-    headers: form.getHeaders()
-  });
-  return res.data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+async function uploadImage(filePath: string): Promise<string> {
+  try {
+    const form = new FormData();
+    form.append('reqtype', 'fileupload');
+    form.append('fileToUpload', fs.createReadStream(filePath));
+    const res = await axios.post('https://catbox.moe/user/api.php', form, {
+      headers: form.getHeaders()
+    });
+    return res.data;
+  } catch (err: any) {
+    logger.warn(`Catbox upload failed, falling back to tmpfiles.org: ${err.message}`);
+    const form = new FormData();
+    form.append('file', fs.createReadStream(filePath));
+    const res = await axios.post('https://tmpfiles.org/api/v1/upload', form, {
+      headers: form.getHeaders()
+    });
+    const viewUrl = res.data.data.url;
+    const dlPageUrl = viewUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+    const htmlRes = await axios.get(dlPageUrl);
+    const match = htmlRes.data.match(/href="([^"]+)">Download/i) || htmlRes.data.match(/class="btn btn-primary"[^>]*href="([^"]+)"/);
+    return match ? match[1] : viewUrl;
+  }
 }
 
 export async function processNextPost(seriesName: string = env.SERIES): Promise<Post | undefined> {
@@ -39,7 +54,7 @@ export async function processNextPost(seriesName: string = env.SERIES): Promise<
     logger.info('Uploading images to temporary hosting for Instagram...');
     const publicImageUrls: string[] = [];
     for (const p of imagePaths) {
-      const url = await uploadToTmpFiles(p);
+      const url = await uploadImage(p);
       publicImageUrls.push(url);
     }
     logger.info(`Temporary public URLs: ${publicImageUrls.join(', ')}`);
