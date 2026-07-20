@@ -22,6 +22,16 @@ cron.schedule('0 12 * * *', async () => {
   }
 });
 
+// ✅ ACTIVE — Node.js Mastery series @ 3:00 PM daily
+cron.schedule('0 15 * * *', async () => {
+  logger.info('Cron triggered: Starting daily Node Mastery post job');
+  try {
+    await processNextPost('node-mastery');
+  } catch (err) {
+    logger.error(err, 'Cron job failed for Node Mastery:');
+  }
+});
+
 // ✅ ACTIVE — JS Architecture series @ 6:00 PM daily
 cron.schedule('0 18 * * *', async () => {
   logger.info('Cron triggered: Starting daily JS-Arch post job');

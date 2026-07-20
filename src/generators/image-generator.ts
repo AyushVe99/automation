@@ -154,8 +154,10 @@ export async function generateImage(post: Post): Promise<string[]> {
   const isJsArch      = post.series === 'js-arch';
   const isFaangDsa    = post.series === 'faang-dsa';
   const isReactMastery = post.series === 'react-mastery';
+  const isNodeMastery  = post.series === 'node-mastery';
 
   const templateName = isReactMastery ? 'react-mastery-post.html'
+    : isNodeMastery ? 'node-mastery-post.html'
     : isJsArch    ? 'jsarch-post.html'
     : isFaangDsa  ? 'faang-dsa-post.html'
     : isDSA       ? 'dsa-post.html'
@@ -165,9 +167,11 @@ export async function generateImage(post: Post): Promise<string[]> {
   let html = await fs.readFile(templatePath, 'utf8');
 
   // ============================================================
-  // REACT MASTERY — 6-slide format
+  // REACT / NODE MASTERY — 6-slide format
   // ============================================================
-  if (isReactMastery) {
+  if (isReactMastery || isNodeMastery) {
+    const accentColor = isNodeMastery ? '#68A063' : '#61DAFB';
+    
     // Parse code field (JSON object with before/after)
     let codeBeforeLabel = 'Without';
     let codeBefore      = '';
@@ -186,7 +190,7 @@ export async function generateImage(post: Post): Promise<string[]> {
     // Parse bullets (explanation_1 = JSON array)
     const bulletsHtml = (() => {
       const bulletEmojis = ['🧠', '⚡', '📉', '🎯'];
-      const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#61DAFB;">$1</strong>');
+      const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${accentColor};">$1</strong>`);
       try {
         const parsed = JSON.parse(post.explanation_1 || '[]');
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -230,7 +234,9 @@ export async function generateImage(post: Post): Promise<string[]> {
       .replace(/{{GOTCHA}}/g,            boldifyHtml(post.common_edge_cases  || ''))
       .replace(/{{INTERVIEW_Q}}/g,       escapeHtml(post.interview_question  || ''))
       .replace(/{{PRO_TIP}}/g,           escapeHtml(post.pro_tip || '').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>'))
-      .replace(/{{NEXT_TOPIC}}/g,        escapeHtml(post.question || 'Next Topic'));
+      .replace(/{{NEXT_TOPIC}}/g,        escapeHtml(post.question || 'Next Topic'))
+      .replace(/{{MODULE_NAME}}/g,       escapeHtml(post.module_name || 'Advanced Concept'))
+      .replace(/{{DIFFICULTY}}/g,        escapeHtml(post.difficulty || 'Intermediate'));
 
     // Fall through to the Puppeteer rendering block below
   } else {
