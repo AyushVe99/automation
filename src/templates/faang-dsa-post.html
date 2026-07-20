@@ -554,7 +554,7 @@
           codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
           
           let lastHeight = document.body.scrollHeight;
-          while (document.body.scrollHeight > 1350 && fontSize > 12) {
+          while (document.body.scrollHeight > 1350 && fontSize > 18) {
             fontSize--;
             codeBlocks.forEach(block => block.style.setProperty('font-size', fontSize + 'px', 'important'));
             if (document.body.scrollHeight === lastHeight) break;
@@ -573,7 +573,7 @@
               textFontSize = parseInt(innerDiv.style.fontSize);
           }
           
-          while (document.body.scrollHeight > 1350 && textFontSize > 16) {
+          while (document.body.scrollHeight > 1350 && textFontSize > 22) {
             textFontSize--;
             textElements.forEach(el => {
                if(el.tagName !== 'H2' && el.tagName !== 'H3') {

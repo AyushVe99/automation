@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import { processNextPost } from '../services/poster.js';
 import { logger } from '../utils/logger.js';
 
-// Run every day at 9:00 AM for JavaScript series
+// ✅ ACTIVE — JavaScript series @ 9:00 AM daily
 cron.schedule('0 9 * * *', async () => {
   logger.info('Cron triggered: Starting daily JS post job');
   try {
@@ -12,24 +12,45 @@ cron.schedule('0 9 * * *', async () => {
   }
 });
 
-// Run every day at 3:00 PM for DSA series
-cron.schedule('0 15 * * *', async () => {
-  logger.info('Cron triggered: Starting daily DSA post job');
+// ✅ ACTIVE — React Mastery series @ 12:00 PM daily
+cron.schedule('0 12 * * *', async () => {
+  logger.info('Cron triggered: Starting daily React Mastery post job');
   try {
-    await processNextPost('dsa');
+    await processNextPost('react-mastery');
   } catch (err) {
-    logger.error(err, 'Cron job failed for DSA:');
+    logger.error(err, 'Cron job failed for React Mastery:');
   }
 });
 
-// Run every day at 9:30 AM for FAANG DSA series
-cron.schedule('30 9 * * *', async () => {
-  logger.info('Cron triggered: Starting daily FAANG DSA post job');
+// ✅ ACTIVE — JS Architecture series @ 6:00 PM daily
+cron.schedule('0 18 * * *', async () => {
+  logger.info('Cron triggered: Starting daily JS-Arch post job');
   try {
-    await processNextPost('faang-dsa');
+    await processNextPost('js-arch');
   } catch (err) {
-    logger.error(err, 'Cron job failed for FAANG DSA:');
+    logger.error(err, 'Cron job failed for JS-Arch:');
   }
 });
 
-logger.info('Scheduler started. JS @ 9:00 AM | FAANG DSA @ 9:30 AM | DSA @ 3:00 PM.');
+// ⛔ PAUSED — DSA series (data is safe, posting stopped)
+// cron.schedule('0 15 * * *', async () => {
+//   logger.info('Cron triggered: Starting daily DSA post job');
+//   try {
+//     await processNextPost('dsa');
+//   } catch (err) {
+//     logger.error(err, 'Cron job failed for DSA:');
+//   }
+// });
+
+// ⛔ PAUSED — FAANG-DSA series (data is safe, posting stopped)
+// cron.schedule('30 9 * * *', async () => {
+//   logger.info('Cron triggered: Starting daily FAANG DSA post job');
+//   try {
+//     await processNextPost('faang-dsa');
+//   } catch (err) {
+//     logger.error(err, 'Cron job failed for FAANG DSA:');
+//   }
+// });
+
+logger.info('Scheduler started. JS @ 9:00 AM | JS-Arch @ 6:00 PM | DSA & FAANG-DSA: PAUSED');
+

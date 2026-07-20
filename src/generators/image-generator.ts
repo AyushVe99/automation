@@ -49,6 +49,81 @@ function formatText(text: string): string {
     return formatted;
 }
 
+// Renders explanation_1 as big readable emoji bullets (new format: JSON array)
+// Falls back to formatText() for old posts stored as HTML/plain text
+function renderBulletList(text: string): string {
+  const bulletEmojis = ['🎯', '🐢', '💡', '🔁', '⚡', '🧩'];
+  const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#38bdf8;">$1</strong>');
+
+  try {
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      const items = parsed.slice(0, 4).map((b: string, i: number) => `
+        <li style="display:flex; align-items:flex-start; gap:24px; margin-bottom:28px;">
+          <span style="font-size:36px; flex-shrink:0; margin-top:2px;">${bulletEmojis[i] || '👉'}</span>
+          <span style="font-size:34px; line-height:1.45; color:#f8fafc; font-weight:500;">${boldify(b)}</span>
+        </li>
+      `).join('');
+      return `<ul style="list-style:none; padding:0; margin:0;">${items}</ul>`;
+    }
+  } catch {
+    // Not a JSON array — old post format, fall back to formatText
+  }
+
+  // Fallback for legacy HTML/plain-text explanation_1
+  return `<div style="font-size:28px; line-height:1.6; color:#f8fafc; font-weight:500;">${formatText(text)}</div>`;
+}
+
+// Renders explanation_2.steps as a vertical timeline for the React Mastery template
+function renderTimeline(steps: string[]): string {
+  const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#61DAFB;">$1</strong>');
+
+  const rows = steps.map((step, i) => {
+    const isLast = i === steps.length - 1;
+
+    // Detect a Yes/No branch pattern: "Changed? Yes → X. No → Y."
+    const branchMatch = step.match(/^(.+?)\?\s*Yes\s*[→:–-]+\s*(.+?)\s*\.\s*No\s*[→:–-]+\s*(.+?)\s*\.?$/i);
+    if (branchMatch) {
+      return `
+        <div class="t-row">
+          <div class="t-left">
+            <div class="t-circle">${i + 1}</div>
+            ${!isLast ? '<div class="t-vline"></div>' : ''}
+          </div>
+          <div class="t-body">
+            <div class="t-title">${boldify(escapeHtml(branchMatch[1].trim()))}?</div>
+          </div>
+        </div>
+        <div class="t-branch">
+          <div class="b-box b-yes"><div class="b-lbl">YES</div>${boldify(escapeHtml(branchMatch[2].trim()))}</div>
+          <div class="b-box b-no"><div class="b-lbl">NO</div>${boldify(escapeHtml(branchMatch[3].trim()))}</div>
+        </div>
+      `;
+    }
+
+    // Split on " — " to get title + description
+    const parts = step.split(/\s*[—–]\s*/);
+    const title = boldify(escapeHtml(parts[0].trim()));
+    const desc  = parts.length > 1 ? `<div class="t-desc">${boldify(escapeHtml(parts.slice(1).join(' — ').trim()))}</div>` : '';
+
+    return `
+      <div class="t-row">
+        <div class="t-left">
+          <div class="t-circle">${i + 1}</div>
+          ${!isLast ? '<div class="t-vline"></div>' : ''}
+        </div>
+        <div class="t-body">
+          <div class="t-title">${title}</div>
+          ${desc}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `<div class="timeline">${rows}</div>`;
+}
+
+
 function getCompanyBadgesHTML(title: string): string {
   const t = title.toLowerCase();
   const companies = [];
@@ -75,20 +150,91 @@ function getCompanyBadgesHTML(title: string): string {
 }
 
 export async function generateImage(post: Post): Promise<string[]> {
-  const isDSA = post.series === 'dsa';
-  const isJsArch = post.series === 'js-arch';
-  const isFaangDsa = post.series === 'faang-dsa';
-  const templateName = isJsArch ? 'jsarch-post.html' : isFaangDsa ? 'faang-dsa-post.html' : isDSA ? 'dsa-post.html' : 'post.html';
+  const isDSA         = post.series === 'dsa';
+  const isJsArch      = post.series === 'js-arch';
+  const isFaangDsa    = post.series === 'faang-dsa';
+  const isReactMastery = post.series === 'react-mastery';
+
+  const templateName = isReactMastery ? 'react-mastery-post.html'
+    : isJsArch    ? 'jsarch-post.html'
+    : isFaangDsa  ? 'faang-dsa-post.html'
+    : isDSA       ? 'dsa-post.html'
+    : 'post.html';
+
   const templatePath = path.resolve(__dirname, `../templates/${templateName}`);
   let html = await fs.readFile(templatePath, 'utf8');
 
-  // Replace placeholders
-  html = html.replace(/{{SERIES}}/g, post.series.charAt(0).toUpperCase() + post.series.slice(1));
-  html = html.replace(/{{DAY}}/g, post.day.toString());
-  html = html.replace(/{{TITLE}}/g, escapeHtml(post.title));
-  html = html.replace(/{{CODE}}/g, escapeHtml(post.code || ''));
-  html = html.replace(/{{DIFFICULTY}}/g, escapeHtml(post.difficulty));
-  if (!isDSA && !isJsArch && !isFaangDsa) {
+  // ============================================================
+  // REACT MASTERY — 6-slide format
+  // ============================================================
+  if (isReactMastery) {
+    // Parse code field (JSON object with before/after)
+    let codeBeforeLabel = 'Without';
+    let codeBefore      = '';
+    let codeAfterLabel  = 'With';
+    let codeAfter       = '';
+    try {
+      const codeData = JSON.parse(post.code || '{}');
+      codeBeforeLabel = codeData.before_label || 'Without';
+      codeBefore      = codeData.before       || '';
+      codeAfterLabel  = codeData.after_label  || 'With';
+      codeAfter       = codeData.after        || '';
+    } catch {
+      codeBefore = post.code || '';
+    }
+
+    // Parse bullets (explanation_1 = JSON array)
+    const bulletsHtml = (() => {
+      const bulletEmojis = ['🧠', '⚡', '📉', '🎯'];
+      const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#61DAFB;">$1</strong>');
+      try {
+        const parsed = JSON.parse(post.explanation_1 || '[]');
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const items = parsed.slice(0, 4).map((b: string, i: number) =>
+            `<li class="bullet-list-item" style="display:flex;align-items:center;gap:24px;font-size:35px;font-weight:500;color:#E2E8F0;line-height:1.3;">
+              <span class="bi" style="font-size:38px;flex-shrink:0;width:50px;text-align:center;">${bulletEmojis[i] || '👉'}</span>
+              <span>${boldify(escapeHtml(b))}</span>
+            </li>`
+          ).join('');
+          return `<ul class="bullet-list" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:28px;flex:1;justify-content:center;">${items}</ul>`;
+        }
+      } catch { /* fallback */ }
+      return `<ul class="bullet-list" style="list-style:none;padding:0;margin:0;"><li style="font-size:28px;color:#94A3B8;">${escapeHtml(post.explanation_1 || '')}</li></ul>`;
+    })();
+
+    // Parse timeline (explanation_2.steps)
+    const timelineHtml = (() => {
+      try {
+        const e2 = JSON.parse(post.explanation_2 || '{}');
+        const steps: string[] = Array.isArray(e2) ? e2 : (e2.steps || []);
+        if (steps.length > 0) return renderTimeline(steps);
+      } catch { /* fallback */ }
+      return renderTimeline([post.explanation_2 || '']);
+    })();
+
+    // Boldify helper for real-world/gotcha text
+    const boldifyHtml = (s: string) =>
+      escapeHtml(s).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+    html = html
+      .replace(/{{DAY}}/g,               escapeHtml(post.day.toString()))
+      .replace(/{{TITLE}}/g,             escapeHtml(post.title))
+      .replace(/{{HOOK_TEXT}}/g,         escapeHtml(post.hook_text || '').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>'))
+      .replace(/{{BULLETS_HTML}}/g,      bulletsHtml)
+      .replace(/{{CODE_BEFORE_LABEL}}/g, escapeHtml(codeBeforeLabel))
+      .replace(/{{CODE_BEFORE}}/g,       escapeHtml(codeBefore))
+      .replace(/{{CODE_AFTER_LABEL}}/g,  escapeHtml(codeAfterLabel))
+      .replace(/{{CODE_AFTER}}/g,        escapeHtml(codeAfter))
+      .replace(/{{TIMELINE_HTML}}/g,     timelineHtml)
+      .replace(/{{REAL_WORLD}}/g,        boldifyHtml(post.real_world_usecase || ''))
+      .replace(/{{GOTCHA}}/g,            boldifyHtml(post.common_edge_cases  || ''))
+      .replace(/{{INTERVIEW_Q}}/g,       escapeHtml(post.interview_question  || ''))
+      .replace(/{{PRO_TIP}}/g,           escapeHtml(post.pro_tip || '').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>'))
+      .replace(/{{NEXT_TOPIC}}/g,        escapeHtml(post.question || 'Next Topic'));
+
+    // Fall through to the Puppeteer rendering block below
+  } else {
+
     let slidesHtml = '';
     try {
       const questions = JSON.parse((post as any).questions_json || '[]');
@@ -202,9 +348,7 @@ export async function generateImage(post: Post): Promise<string[]> {
            <div style="background: rgba(52,211,153,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(52,211,153,0.4);"><span style="font-size: 40px;">💡</span></div>
            <h2 style="color: #34d399; font-size: 48px; margin: 0; font-weight: 800; letter-spacing: 1px;">Core Idea</h2>
         </div>
-        <div class="card-content" style="font-size: 26px; line-height: 1.6; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 500;">
-           ${formatText(post.explanation_1 || post.explanation || '')}
-        </div>
+        ${renderBulletList(post.explanation_1 || post.explanation || '')}
       </div>
     </div>
     `;
@@ -231,7 +375,7 @@ export async function generateImage(post: Post): Promise<string[]> {
 
     if (steps.length > 0 && steps[0] !== '') {
       const chunks = [];
-      const chunkSize = diagramHtml ? 2 : 3;
+      const chunkSize = diagramHtml ? 1 : 2; // max 2 steps per slide for readability
       if (steps.length === 1 && !(post.explanation_2 || '').trim().startsWith('[')) {
           chunks.push(steps);
       } else {
@@ -241,11 +385,20 @@ export async function generateImage(post: Post): Promise<string[]> {
       }
 
       chunks.forEach((chunk, index) => {
-         const items = chunk.length === 1 && chunk[0].includes('<') ? chunk[0] : 
-            `<ul style="margin-left: 30px;">` + 
-            chunk.map(step => `<li style="margin-bottom: 10px;">${formatText(step)}</li>`).join('') + 
+         const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#fde047;">$1</strong>');
+
+         // Numbered step items with big readable font
+         const items = chunk.length === 1 && chunk[0].includes('<') ? chunk[0] :
+            `<ul style="list-style:none; padding:0; margin:0;">` +
+            chunk.map((step, stepIdx) => {
+              const globalNum = index * chunkSize + stepIdx + 1;
+              return `<li style="display:flex; align-items:flex-start; gap:22px; margin-bottom:30px;">
+                <div style="background:linear-gradient(135deg,#38bdf8,#818cf8); color:#fff; min-width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; flex-shrink:0;">${globalNum}</div>
+                <span style="font-size:34px; line-height:1.45; color:#f8fafc; font-weight:500;">${boldify(formatText(step))}</span>
+              </li>`;
+            }).join('') +
             `</ul>`;
-         
+
          approachSlidesHtml += `
           <div class="slide" data-slide="true">
             <div class="slide-title">Approach (2/2) ${chunks.length > 1 ? `(${index + 1}/${chunks.length})` : ''}</div>
@@ -255,10 +408,8 @@ export async function generateImage(post: Post): Promise<string[]> {
                  <div style="background: rgba(56,189,248,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(56,189,248,0.4);"><span style="font-size: 40px;">⚙️</span></div>
                  <h2 style="color: #38bdf8; font-size: 48px; margin: 0; font-weight: 800; letter-spacing: 1px;">Mechanics</h2>
               </div>
-              <div class="card-content" style="font-size: 26px; line-height: 1.6; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 500;">
-                 ${diagramHtml ? diagramHtml : ''}
-                 ${items}
-              </div>
+              ${diagramHtml ? `<div style="margin-bottom:20px;">${diagramHtml}</div>` : ''}
+              ${items}
             </div>
           </div>
          `;

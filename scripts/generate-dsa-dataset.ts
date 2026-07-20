@@ -48,9 +48,9 @@ Requirements:
 1. real_world_usecase: A 1-sentence real-world application of this algorithm (e.g., "LRU Cache is used in browser history").
 2. hint: A guiding question or hint to help students solve the problem without giving the answer away (e.g., "Hint: Can you solve this without nested loops?").
 3. explanation_1 (The Intuition & Problem Breakdown)
-- Explain the core problem and why the brute force approach is slow or naive.
-- Focus on the intuition behind the optimal solution.
-- Format as HTML bullet points (<ul><li>...</li></ul>). Max 5-6 short bullets. Each bullet MUST NOT contain more than 15 words. Use <strong> for emphasis.
+- Return as a **JSON array of exactly 4 short strings**. Each string is one bullet point.
+- Max 10 words per bullet. Keep it simple, use plain English. Use **word** syntax for emphasis.
+- Example: ["Brute force checks every pair — **too slow** O(n²)", "Key insight: store what we've **already seen**", "A **Hash Map** gives O(1) lookup instantly", "One pass through array → O(n) time, O(n) space"]
 4. explanation_2 (The Step-by-Step Mechanics)
 - "diagram_html": (Optional) If the topic involves arrays, pointers, or sliding windows, provide a visual diagram using these exact CSS classes: <div class="dsa-visual"><div class="dsa-array"><div class="dsa-cell">1</div><div class="dsa-cell active">4</div><div class="dsa-cell target">11</div></div><div class="dsa-pointers" style="width: calc(NUM_CELLS * 100px - 10px); left: 0;"><div class="dsa-pointer" style="left: 0px;">L</div><div class="dsa-pointer blue" style="left: 200px;">R</div></div></div> (Use inline styles for pointer left positions: index * 100px. Return empty string if not applicable).
 - "mermaid_diagram": (Optional) Provide a valid Mermaid.js diagram definition (e.g., flowchart TD, sequenceDiagram) that visually explains the concept (great for Trees, Graphs, Linked Lists). Use simple shapes. Do not use markdown fences inside the string. Return empty string if not applicable.
