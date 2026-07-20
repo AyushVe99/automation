@@ -427,13 +427,15 @@ async function seedDatabase() {
           ]
         );
         logger.info(`✅ Saved React Mastery Day ${day}: ${topic}`);
+        
+        // STOP AFTER ONE GENERATION for the daily cron workflow
+        logger.info(`Done generating today's post. Exiting so the cron can publish it.`);
+        return;
       } else {
         logger.warn(`⚠️  Skipped Day ${day}: ${topic} (generation failed)`);
       }
 
       day++;
-      // Respect rate limits
-      await new Promise(r => setTimeout(r, 2500));
     }
   }
 
