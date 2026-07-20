@@ -1,0 +1,51 @@
+name: MongoDB Mastery Content Automation
+
+on:
+  schedule:
+    # Runs at 15:30 UTC (9:00 PM IST)
+    - cron: '30 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  post-content:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Generate MongoDB Mastery Dataset
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
+        GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
+      run: npx tsx scripts/generate-mongo-dataset.ts
+
+    - name: Post MongoDB Mastery Content
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
+        GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
+        IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        USE_GEMINI: 'true'
+        DRY_RUN: 'false'
+      run: npm run post:mongo-mastery
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add database.sqlite
+        git commit -m "chore: update mongo-mastery db after post" || echo "No changes to commit"
+        git push

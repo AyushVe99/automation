@@ -155,9 +155,11 @@ export async function generateImage(post: Post): Promise<string[]> {
   const isFaangDsa    = post.series === 'faang-dsa';
   const isReactMastery = post.series === 'react-mastery';
   const isNodeMastery  = post.series === 'node-mastery';
+  const isMongoMastery = post.series === 'mongo-mastery';
 
   const templateName = isReactMastery ? 'react-mastery-post.html'
     : isNodeMastery ? 'node-mastery-post.html'
+    : isMongoMastery ? 'mongo-mastery-post.html'
     : isJsArch    ? 'jsarch-post.html'
     : isFaangDsa  ? 'faang-dsa-post.html'
     : isDSA       ? 'dsa-post.html'
@@ -167,10 +169,10 @@ export async function generateImage(post: Post): Promise<string[]> {
   let html = await fs.readFile(templatePath, 'utf8');
 
   // ============================================================
-  // REACT / NODE MASTERY — 6-slide format
+  // REACT / NODE / MONGO MASTERY — 6-slide format
   // ============================================================
-  if (isReactMastery || isNodeMastery) {
-    const accentColor = isNodeMastery ? '#68A063' : '#61DAFB';
+  if (isReactMastery || isNodeMastery || isMongoMastery) {
+    const accentColor = isMongoMastery ? '#47A248' : isNodeMastery ? '#68A063' : '#61DAFB';
     
     // Parse code field (JSON object with before/after)
     let codeBeforeLabel = 'Without';

@@ -42,6 +42,16 @@ cron.schedule('0 18 * * *', async () => {
   }
 });
 
+// ✅ ACTIVE — MongoDB Mastery series @ 9:00 PM daily
+cron.schedule('0 21 * * *', async () => {
+  logger.info('Cron triggered: Starting daily MongoDB Mastery post job');
+  try {
+    await processNextPost('mongo-mastery');
+  } catch (err) {
+    logger.error(err, 'Cron job failed for MongoDB Mastery:');
+  }
+});
+
 // ⛔ PAUSED — DSA series (data is safe, posting stopped)
 // cron.schedule('0 15 * * *', async () => {
 //   logger.info('Cron triggered: Starting daily DSA post job');
