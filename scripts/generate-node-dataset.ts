@@ -310,50 +310,47 @@ REQUIREMENTS:
 
 1. hook_text
    - ONE sentence. Max 15 words.
-   - Explain WHY this topic matters in plain English.
+   - Must hook with stakes or a consequence. Don't just state the topic. Every claim must be paid off later. No dangling promises.
    - Use **word** syntax to bold 1-2 key terms.
-   - Example: "Stop **blocking the event loop** with heavy calculations."
+   - Example: "If you don't use this, your app will **freeze** on every keystroke."
 
 2. explanation_1 (WHAT & WHY bullets)
    - Return a JSON ARRAY of exactly 4 strings.
-   - Each string = one bullet. Max 10 words per bullet.
+   - Provide REAL depth. Do not just restate the dictionary definition. Explain the actual mechanism (who sets it, how it flows, what's happening underneath).
+   - Cut generic filler bullets — every line must teach something a beginner didn't already know.
+   - Each string = one bullet. Max 12 words per bullet.
    - Use **word** for emphasis. No HTML tags.
-   - Example: ["A **single-threaded** non-blocking engine", "Handles **concurrent connections** easily", "Built on **Google V8 engine**", "Perfect for **I/O intensive tasks**"]
 
 3. code (Before/After comparison)
    - Return a JSON OBJECT with 4 fields:
-     - "before_label": short label like "Blocking Code"
-     - "before": max 4 lines of code showing the WRONG/naive approach
-     - "after_label": short label like "Non-Blocking Code"
+     - "before_label": short label like "Naive Approach"
+     - "before": max 4 lines of code showing the WRONG approach
+     - "after_label": short label like "Optimized"
      - "after": max 6 lines of code showing the CORRECT approach
-   - Use realistic variable names. Highlight the key improvement.
-   - NO comments unless truly necessary. Code should be self-explanatory.
+   - Code must be realistic. NO comments unless truly necessary.
 
-4. explanation_2 (How it Works — Timeline)
+4. explanation_2 (Under the Hood — Timeline)
    - Return a JSON OBJECT with one field:
-     - "steps": array of 3-4 short strings describing what happens step-by-step
+     - "steps": array of 3-4 short strings describing the step-by-step mechanism.
      - Each step: max 12 words. Plain English. No bullet points inside strings.
-   - Example: {"steps": ["Incoming request hits the Event Loop", "Node passes heavy I/O to libuv thread pool", "Main thread continues processing other requests", "Callback fires when I/O completes"]}
-   - Last step CAN include a Yes/No branch like: "Is it I/O? Yes → libuv. No → Event Loop."
+   - Example: {"steps": ["Component renders — hook is called.", "React checks the dependency array [items]", "Changed? Yes → Recalculate. No → Return cached value."]}
 
 5. real_world_usecase
    - 2-3 SHORT sentences. Max 40 words total.
    - Describe a real production scenario where this concept saves time or prevents bugs.
-   - Keep sentences short. Use **word** for emphasis.
 
-6. common_edge_cases (Gotcha)
+6. common_edge_cases (Honest Caveat / Limitation)
    - 2-3 SHORT sentences. Max 40 words total.
-   - Describe the #1 mistake developers make with this concept.
-   - Start with a clear warning. Use **word** for emphasis.
+   - Add one honest caveat or limitation if one exists — don't oversell the solution as 100% safe/complete if it isn't.
+   - Example: "⚠️ It doesn't prevent all re-renders, only those caused by prop changes."
 
 7. interview_question
-   - ONE question (string). Should test deep understanding, not just syntax.
-   - Format: "What exactly happens when you call ${topic}?" or similar probing question.
-   - Max 20 words.
+   - ONE question with a brief answer OR explicitly turn it into a hook (e.g. "Drop your answer in the comments! 👇"). Never leave it dangling without direction.
+   - Format: "When should you NOT use ${topic}? (Answer: when the calculation is cheaper than the hook overhead)"
+   - Max 25 words.
 
 8. pro_tip
-   - ONE crisp sentence. Max 20 words. A professional best practice.
-   - Use **word** for emphasis.
+   - ONE crisp sentence. Max 20 words. A professional best practice. Cut filler.
 
 9. difficulty
    - Must be exactly one of: "Beginner", "Intermediate", "Advanced"
@@ -361,7 +358,6 @@ REQUIREMENTS:
 GOLDEN RULES:
 - Every field must be beginner-friendly. No jargon without explanation.
 - Short sentences win over long sentences.
-- Code must be realistic — show actual patterns developers use daily.
 - Avoid generic advice. Give specific, actionable insights.
 
 Respond ONLY with valid raw JSON.
