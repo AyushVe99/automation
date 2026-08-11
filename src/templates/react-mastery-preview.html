@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>React Mastery - Redesign</title>
+  <title>React Mastery - Preview</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@700;800;900&display=swap');
@@ -39,13 +39,6 @@
       color: var(--text);
     }
 
-    /* Production mode via Puppeteer script */
-    body.puppeteer-mode {
-      gap: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-
     .slide {
       width: 1080px;
       height: 1350px;
@@ -56,10 +49,6 @@
       overflow: hidden;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
-
-    /* Hide non-active slides in Puppeteer mode */
-    body.puppeteer-mode .slide { display: none; }
-    body.puppeteer-mode .slide.active { display: flex; }
 
     /* =========================================
        SIGNATURE ELEMENT: THE IDE GUTTER
@@ -195,7 +184,7 @@
     .editor-body { padding: 30px; }
     
     pre[class*="language-"] {
-      background: rgba(0,0,0,0.2) !important; margin: 0 !important; padding: 15px !important; border-radius: 8px !important;
+      background: transparent !important; margin: 0 !important; padding: 0 !important;
       font-size: 26px !important; line-height: 1.6 !important;
       font-family: 'JetBrains Mono', monospace !important;
       text-shadow: none !important; white-space: pre-wrap !important;
@@ -269,13 +258,13 @@
       <div class="grid-bg"></div>
       <div class="content-inner">
         <div class="top-meta">
-          <div class="badge-series">{{MODULE_NAME}}</div>
-          <div class="badge-day">Day {{DAY}}</div>
+          <div class="badge-series">1. React Fundamentals</div>
+          <div class="badge-day">Day 8</div>
         </div>
-        <h1 class="s-title">{{TITLE}}</h1>
+        <h1 class="s-title">State with <span class="hl">useState</span></h1>
         <div class="s1-hook-card">
           <div class="s1-hook-lbl">⚠️ The Stakes</div>
-          <div class="s1-hook-txt">{{HOOK_TEXT}}</div>
+          <div class="s1-hook-txt">If you don't use this, your app will <strong>freeze</strong> and never update the UI on clicks.</div>
         </div>
         <div class="s-footer">
           <div><span class="handle">@debugwithayush</span></div>
@@ -305,7 +294,14 @@
       <div class="grid-bg"></div>
       <div class="content-inner">
         <h2 class="s-heading">How it <span class="hl">actually</span> works</h2>
-        {{BULLETS_HTML}}
+        
+        <ul class="mech-list">
+          <li><div class="mech-icon">🧠</div><div>Stores data in React's <strong>internal memory block</strong> for the component.</div></li>
+          <li><div class="mech-icon">⚡</div><div>Calling the setter function <strong>forces React to re-render</strong> the component.</div></li>
+          <li><div class="mech-icon">🔄</div><div>Replaces the old value with a <strong>fresh snapshot</strong> of the state.</div></li>
+          <li><div class="mech-icon">🛡️</div><div>Data persists across renders without being <strong>reset to default</strong>.</div></li>
+        </ul>
+
         <div class="s-footer">
           <div><span class="handle">@debugwithayush</span></div>
           <div>Swipe →</div>
@@ -340,10 +336,14 @@
           <div class="editor-window" style="border-left: 6px solid var(--danger);">
             <div class="editor-header">
                <div style="font-size:24px;">❌</div>
-               <div class="ed-tab">{{CODE_BEFORE_LABEL}}</div>
+               <div class="ed-tab">bad-approach.jsx</div>
             </div>
             <div class="editor-body">
-              <pre><code class="language-javascript">{{CODE_BEFORE}}</code></pre>
+              <pre><code class="language-javascript">let count = 0;
+
+function increment() {
+  count += 1; // UI will not update!
+}</code></pre>
             </div>
           </div>
           
@@ -351,10 +351,14 @@
           <div class="editor-window" style="border-left: 6px solid var(--success);">
             <div class="editor-header">
                <div style="font-size:24px;">✅</div>
-               <div class="ed-tab">{{CODE_AFTER_LABEL}}</div>
+               <div class="ed-tab">optimized.jsx</div>
             </div>
             <div class="editor-body">
-              <pre><code class="language-javascript">{{CODE_AFTER}}</code></pre>
+              <pre><code class="language-javascript">const [count, setCount] = useState(0);
+
+function increment() {
+  setCount(prev => prev + 1); // Triggers re-render!
+}</code></pre>
             </div>
           </div>
         </div>
@@ -388,7 +392,14 @@
       <div class="content-inner">
         <h2 class="s-heading">Under the <span class="hl">Hood</span> ⚙️</h2>
         <div style="margin-bottom: auto; margin-top: 20px;">
-          {{TIMELINE_HTML}}
+          
+          <ul class="mech-list">
+            <li><div class="mech-icon">1️⃣</div><div>Component mounts and initializes <strong>count to 0</strong>.</div></li>
+            <li><div class="mech-icon">2️⃣</div><div>User clicks button → <strong>setCount(1)</strong> is queued.</div></li>
+            <li><div class="mech-icon">3️⃣</div><div>React schedules a <strong>re-render</strong> of the component.</div></li>
+            <li><div class="mech-icon">4️⃣</div><div>Component re-runs with the <strong>new snapshot</strong> (count = 1).</div></li>
+          </ul>
+
         </div>
         <div class="s-footer">
           <div><span class="handle">@debugwithayush</span></div>
@@ -422,11 +433,11 @@
         <div class="split-layout">
           <div class="info-card success">
             <div class="ic-title">✅ When to use it</div>
-            <div class="ic-body">{{REAL_WORLD}}</div>
+            <div class="ic-body">Use it whenever a variable changes dynamically and you need the <strong>UI to immediately reflect</strong> that change.</div>
           </div>
           <div class="info-card warning">
             <div class="ic-title">⚠️ The Catch (Limitation)</div>
-            <div class="ic-body">{{GOTCHA}}</div>
+            <div class="ic-body">State updates are <strong>asynchronous</strong>. If you try to read `count` immediately after `setCount()`, it will still have the old value.</div>
           </div>
         </div>
 
@@ -467,7 +478,7 @@
                <div class="ed-tab" style="color: #d8b4fe;">Interview Question</div>
             </div>
             <div class="editor-body" style="font-size: 32px; line-height: 1.5; font-weight: 500;">
-              {{INTERVIEW_Q}}
+              Why should you use a callback function `prev =&gt; prev + 1` inside setState instead of `count + 1`? Drop your answer in the comments! 👇
             </div>
           </div>
 
@@ -477,14 +488,14 @@
                <div class="ed-tab" style="color: var(--accent);">Pro Tip</div>
             </div>
             <div class="editor-body" style="font-size: 30px; line-height: 1.5; color: #CBD5E1;">
-              {{PRO_TIP}}
+              Never mutate state directly (like pushing to an array). Always pass a <strong>brand new object or array</strong> to setState.
             </div>
           </div>
 
         </div>
 
         <div style="text-align: center; margin-bottom: 30px; padding: 25px; background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
-           <div style="font-family: 'Outfit', sans-serif; font-size: 34px; font-weight: 800;">Next Topic: <span style="color:var(--accent);">{{NEXT_TOPIC}}</span></div>
+           <div style="font-family: 'Outfit', sans-serif; font-size: 34px; font-weight: 800;">Next Topic: <span style="color:var(--accent);">Event Handling</span></div>
         </div>
 
         <div class="s-footer">
@@ -498,47 +509,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
-  <script>
-    // Logic for Puppeteer screenshot generation
-    const slides = document.querySelectorAll('.slide');
-    
-    // Check if we are running in Puppeteer (we can inject a param or just check URL)
-    // For local preview, it shows all slides side-by-side. 
-    // If window.showSlide is called (by Puppeteer), we switch to puppeteer-mode
-    window.getTotalSlides = () => slides.length;
-
-    window.showSlide = function(index) {
-      document.body.classList.add('puppeteer-mode');
-      slides.forEach((el, i) => {
-        if (i === index) el.classList.add('active');
-        else el.classList.remove('active');
-      });
-
-      const target = slides[index];
-      if (!target) return;
-
-      // Auto-scale code blocks if they overflow vertically
-      const codeBlocks = target.querySelectorAll('pre');
-      if (codeBlocks.length > 0) {
-        let fs = 26;
-        while (target.scrollHeight > 1350 && fs > 16) {
-          fs--;
-          codeBlocks.forEach(b => b.style.setProperty('font-size', fs + 'px', 'important'));
-        }
-      }
-
-      // Auto-scale text elements
-      const textEls = target.querySelectorAll('.mech-list li, .ic-body, .s1-hook-txt, .editor-body');
-      if (textEls.length > 0 && target.scrollHeight > 1350) {
-        let fs = 32;
-        while (target.scrollHeight > 1350 && fs > 20) {
-          fs--;
-          textEls.forEach(el => {
-            el.style.setProperty('font-size', fs + 'px', 'important');
-          });
-        }
-      }
-    };
-  </script>
 </body>
 </html>

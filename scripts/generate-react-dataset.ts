@@ -287,9 +287,10 @@ REQUIREMENTS:
 
 2. explanation_1 (WHAT & WHY bullets)
    - Return a JSON ARRAY of exactly 4 strings.
-   - Provide REAL depth. Do not just restate the dictionary definition. Explain the actual mechanism (who sets it, how it flows, what's happening underneath).
+   - Bullet 1 MUST be a simple, relatable real-world analogy to anchor the concept for absolute beginners.
+   - Bullets 2-4: Provide REAL depth. Explain the actual mechanism (who sets it, how it flows, what's happening underneath).
    - Cut generic filler bullets — every line must teach something a beginner didn't already know.
-   - Each string = one bullet. Max 12 words per bullet.
+   - Each string = one bullet. Max 14 words per bullet.
    - Use **word** for emphasis. No HTML tags.
 
 3. code (Before/After comparison)
@@ -298,12 +299,12 @@ REQUIREMENTS:
      - "before": max 4 lines of code showing the WRONG approach
      - "after_label": short label like "Optimized"
      - "after": max 6 lines of code showing the CORRECT approach
-   - Code must be realistic. NO comments unless truly necessary.
+   - Code must be realistic. Use highly descriptive variable names that tell a story (e.g. 'activeUsers' instead of 'data'). NO comments unless truly necessary.
 
 4. explanation_2 (Under the Hood — Timeline)
    - Return a JSON OBJECT with one field:
      - "steps": array of 3-4 short strings describing the step-by-step mechanism.
-     - Each step: max 12 words. Plain English. No bullet points inside strings.
+     - Each step: max 15 words. Plain English. No bullet points inside strings.
    - Example: {"steps": ["Component renders — hook is called.", "React checks the dependency array [items]", "Changed? Yes → Recalculate. No → Return cached value."]}
 
 5. real_world_usecase

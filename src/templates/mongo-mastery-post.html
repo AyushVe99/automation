@@ -96,6 +96,7 @@
       font-weight: 700;
       color: #475569;
       flex-grow: 1;
+      width: 100%;
     }
     .ln { position: relative; display: flex; justify-content: center; width: 100%; }
     .ln.active { color: var(--accent); }
@@ -164,7 +165,7 @@
     /* Slide Titles */
     .s-title {
       font-size: 85px; font-weight: 900; line-height: 1.05; letter-spacing: -2px;
-      margin-top: 40px; margin-bottom: 40px;
+      margin-top: auto; margin-bottom: 40px;
     }
     .s-title .hl { color: var(--accent); }
     
@@ -194,7 +195,7 @@
     .editor-body { padding: 30px; }
     
     pre[class*="language-"] {
-      background: transparent !important; margin: 0 !important; padding: 0 !important;
+      background: rgba(0,0,0,0.2) !important; margin: 0 !important; padding: 15px !important; border-radius: 8px !important;
       font-size: 26px !important; line-height: 1.6 !important;
       font-family: 'JetBrains Mono', monospace !important;
       text-shadow: none !important; white-space: pre-wrap !important;
@@ -334,12 +335,12 @@
       <div class="content-inner">
         <h2 class="s-heading">The <span class="hl">Implementation</span></h2>
         
-        <div style="display:flex; flex-direction:column; gap:20px; margin-bottom:auto;">
+        <div style="display:flex; flex-direction:column; gap:30px; margin-top:auto; margin-bottom:auto;">
           <!-- Bad Code -->
           <div class="editor-window" style="border-left: 6px solid var(--danger);">
             <div class="editor-header">
                <div style="font-size:24px;">❌</div>
-               <div class="ed-tab">bad-approach.jsx</div>
+               <div class="ed-tab">{{CODE_BEFORE_LABEL}}</div>
             </div>
             <div class="editor-body">
               <pre><code class="language-javascript">{{CODE_BEFORE}}</code></pre>
@@ -350,7 +351,7 @@
           <div class="editor-window" style="border-left: 6px solid var(--success);">
             <div class="editor-header">
                <div style="font-size:24px;">✅</div>
-               <div class="ed-tab">optimized.jsx</div>
+               <div class="ed-tab">{{CODE_AFTER_LABEL}}</div>
             </div>
             <div class="editor-body">
               <pre><code class="language-javascript">{{CODE_AFTER}}</code></pre>

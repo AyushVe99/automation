@@ -192,30 +192,34 @@ export async function generateImage(post: Post): Promise<string[]> {
     // Parse bullets (explanation_1 = JSON array)
     const bulletsHtml = (() => {
       const bulletEmojis = ['🧠', '⚡', '📉', '🎯'];
-      const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${accentColor};">$1</strong>`);
+      const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, `<strong>$1</strong>`);
       try {
         const parsed = JSON.parse(post.explanation_1 || '[]');
         if (Array.isArray(parsed) && parsed.length > 0) {
           const items = parsed.slice(0, 4).map((b: string, i: number) =>
-            `<li class="bullet-list-item" style="display:flex;align-items:center;gap:24px;font-size:35px;font-weight:500;color:#E2E8F0;line-height:1.3;">
-              <span class="bi" style="font-size:38px;flex-shrink:0;width:50px;text-align:center;">${bulletEmojis[i] || '👉'}</span>
-              <span>${boldify(escapeHtml(b))}</span>
-            </li>`
+            `<li><div class="mech-icon">${bulletEmojis[i] || '👉'}</div><div>${boldify(escapeHtml(b))}</div></li>`
           ).join('');
-          return `<ul class="bullet-list" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:28px;flex:1;justify-content:center;">${items}</ul>`;
+          return `<ul class="mech-list">${items}</ul>`;
         }
       } catch { /* fallback */ }
-      return `<ul class="bullet-list" style="list-style:none;padding:0;margin:0;"><li style="font-size:28px;color:#94A3B8;">${escapeHtml(post.explanation_1 || '')}</li></ul>`;
+      return `<ul class="mech-list"><li><div class="mech-icon">👉</div><div>${escapeHtml(post.explanation_1 || '')}</div></li></ul>`;
     })();
 
     // Parse timeline (explanation_2.steps)
     const timelineHtml = (() => {
+      const numberEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣'];
+      const boldify = (s: string) => s.replace(/\*\*([^*]+)\*\*/g, `<strong>$1</strong>`);
       try {
         const e2 = JSON.parse(post.explanation_2 || '{}');
         const steps: string[] = Array.isArray(e2) ? e2 : (e2.steps || []);
-        if (steps.length > 0) return renderTimeline(steps);
+        if (steps.length > 0) {
+           const items = steps.map((step: string, i: number) => 
+              `<li><div class="mech-icon">${numberEmojis[i] || '👉'}</div><div>${boldify(escapeHtml(step))}</div></li>`
+           ).join('');
+           return `<ul class="mech-list">${items}</ul>`;
+        }
       } catch { /* fallback */ }
-      return renderTimeline([post.explanation_2 || '']);
+      return `<ul class="mech-list"><li><div class="mech-icon">1️⃣</div><div>${escapeHtml(post.explanation_2 || '')}</div></li></ul>`;
     })();
 
     // Boldify helper for real-world/gotcha text
