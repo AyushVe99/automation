@@ -131,6 +131,7 @@
       flex-direction: column;
       padding: 70px 80px 60px 80px;
       position: relative;
+      min-width: 0;
     }
 
     /* Subtle background grid */
@@ -143,7 +144,8 @@
       pointer-events: none;
     }
 
-    .content-inner { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+    .content-inner { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; width: 100%; max-width: 100%; min-width: 0; }
+    .content-inner > div { min-width: 0; }
 
     /* Typography */
     h1, h2, h3 { font-family: 'Outfit', sans-serif; margin: 0; }
@@ -180,6 +182,7 @@
       overflow: hidden; display: flex; flex-direction: column;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
       margin-top: 20px;
+      width: 100%; max-width: 100%; min-width: 0;
     }
     .editor-header {
       background: #1F2937; border-bottom: 1px solid #374151;
@@ -199,8 +202,9 @@
       font-size: 26px !important; line-height: 1.6 !important;
       font-family: 'JetBrains Mono', monospace !important;
       text-shadow: none !important; white-space: pre-wrap !important;
+      word-break: break-word !important; overflow-x: hidden !important;
     }
-    code[class*="language-"] { color: #e2e8f0 !important; text-shadow: none !important; }
+    code[class*="language-"] { color: #e2e8f0 !important; text-shadow: none !important; word-break: break-word !important; }
 
     /* Bullet Lists - Mechanism focused */
     .mech-list { list-style: none; display: flex; flex-direction: column; gap: 35px; margin-top: 20px; }
@@ -500,21 +504,66 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
   <script>
     // Logic for Puppeteer screenshot generation
-    const slides = document.querySelectorAll('.slide');
     
-    // Check if we are running in Puppeteer (we can inject a param or just check URL)
-    // For local preview, it shows all slides side-by-side. 
-    // If window.showSlide is called (by Puppeteer), we switch to puppeteer-mode
-    window.getTotalSlides = () => slides.length;
+    window.getTotalSlides = () => {
+      const implSlide = document.querySelector('.slide-3');
+      if (implSlide) {
+        // Temporarily enable puppeteer mode and show slide 3 to measure
+        document.body.classList.add('puppeteer-mode');
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        implSlide.classList.add('active');
+        
+        // Measure with default font size
+        if (implSlide.scrollHeight > 1350) {
+           // Split it
+           const newSlide = implSlide.cloneNode(true);
+           newSlide.classList.remove('slide-3');
+           newSlide.classList.remove('active');
+           
+           const origEditors = implSlide.querySelectorAll('.editor-window');
+           if (origEditors.length > 1) {
+              origEditors[1].remove(); // remove Good Code from original
+           }
+           
+           const newEditors = newSlide.querySelectorAll('.editor-window');
+           if (newEditors.length > 1) {
+              newEditors[0].remove(); // remove Bad Code from new slide
+           }
+           
+           implSlide.after(newSlide);
+           
+           // Update line numbers for all slides
+           const allSlides = document.querySelectorAll('.slide');
+           const total = allSlides.length;
+           allSlides.forEach((s, idx) => {
+              const lnContainer = s.querySelector('.line-numbers');
+              if (lnContainer) {
+                 lnContainer.innerHTML = '';
+                 for(let i=0; i<total; i++) {
+                    const ln = document.createElement('div');
+                    ln.className = 'ln';
+                    if (i === idx) ln.classList.add('active');
+                    ln.innerText = String(i+1).padStart(2, '0');
+                    lnContainer.appendChild(ln);
+                 }
+              }
+           });
+        }
+        implSlide.classList.remove('active');
+        document.body.classList.remove('puppeteer-mode');
+      }
+      return document.querySelectorAll('.slide').length;
+    };
 
     window.showSlide = function(index) {
       document.body.classList.add('puppeteer-mode');
-      slides.forEach((el, i) => {
+      const currentSlides = document.querySelectorAll('.slide');
+      currentSlides.forEach((el, i) => {
         if (i === index) el.classList.add('active');
         else el.classList.remove('active');
       });
 
-      const target = slides[index];
+      const target = currentSlides[index];
       if (!target) return;
 
       // Auto-scale code blocks if they overflow vertically
